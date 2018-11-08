@@ -1,0 +1,62 @@
+.btn-accion-table {
+  padding: 0px 0.25rem 0px 0.25rem;
+  background: #dddddd;
+  color: black;
+}
+
+a.btn-accion-table:hover {
+  color: black;
+}
+
+a.none-text-decoration {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+a.none-text-decoration:hover {
+  font-weight: 500;
+}
+
+.tt-menu {
+  width: 100%;
+  background: white;
+  border: 1px solid #d2d6de;
+  margin-top: 10px;
+  padding: 5px 0px;
+}
+
+.tt-menu .tt-suggestion:hover {
+  background: #00c0ef;
+}
+
+.tt-menu .tt-suggestion.tt-selectable {
+  padding: 2px 5px;
+}
+
+.tt-menu .tt-suggestion.tt-selectable.tt-cursor {
+  background: #00c0ef;
+}
+
+.twitter-typeahead .tt-input.tt-zero-border {
+  border: 0px;
+}
+
+.twitter-typeahead .tt-input:focus {
+  outline-width: 0px;
+}
+
+.twitter-typeahead,
+.twitter-typeahead .tt-input {
+  width: 100% !important;
+}
+
+table.table-minimal tbody tr td {
+  font-size: 12px;
+  margin: 0px;
+  padding: 2px 4px;
+}
+
+.pl-2em {
+  padding-left: 2em !important;
+}
+
