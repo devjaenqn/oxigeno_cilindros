@@ -16,7 +16,13 @@ class Usuario extends Model
 
   }
 
+  public function role_usuario () {
+    return $this->hasOne('App\RolesUsuarios', 'user_id');
+  }
 
+  public function getRole () {
+    return $this->role_usuario->role->slug;
+  }
 
   public static function get_usuario_account ($name) {
 		return self::where('name', $name)

@@ -25,6 +25,7 @@ class LoginUserController extends Controller
 				// dd(DB::getQueryLog());
 				if ($usuario && password_verify($request->password, $usuario->password)) {
 					$request->session()->put('usuario_autenticado', true);
+					$usuario->role_usuario->role;
 					$request->session()->put('usuario_data', $usuario);
 					return redirect('home');
 				}

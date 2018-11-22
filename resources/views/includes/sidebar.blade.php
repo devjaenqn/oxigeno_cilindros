@@ -101,6 +101,7 @@
           </li>
         </ul>
       </li>
+      @if(Session::get('usuario_data')->getRole() == 'admin')
       <li class="nav-item nav-dropdown" >
         <a class="nav-link nav-dropdown-toggle" href="#">
           <i class="nav-icon icon-pencil"></i> Usuarios</a>
@@ -115,6 +116,7 @@
           </li>
         </ul>
       </li>
+      @endif
       {{-- <li class="nav-title">Components</li> --}}
 
       {{-- <li class="divider"></li>

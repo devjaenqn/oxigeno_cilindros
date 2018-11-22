@@ -4,7 +4,7 @@
     <span>&copy; 2018 Amazon Oxygen y Oxígeno TAO.</span>
   </div>
   <div class="ml-auto">
-    <span>Potenciado por </span>
-    <a href="https://coreui.io">GetShik</a>
+    <!-- <span>Potenciado por </span>
+    <a href="#">GetShik</a> -->
   </div>
 </footer>

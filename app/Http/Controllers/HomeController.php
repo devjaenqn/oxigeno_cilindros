@@ -11,9 +11,11 @@ use Illuminate\Support\Facades\Session;
 class HomeController extends Controller
 {
   public function news () {
+
     return view('home.news');
   }
   public function index () {
+    //dd(Session::get('usuario_data')->toArray());
     return view('home.dashboard');
   }
 
