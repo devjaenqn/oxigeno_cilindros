@@ -25,7 +25,7 @@ class Propietarios extends Model
     return $this->hasMany('App\PropietariosLocacion', 'entidad_id');
   }
 
-  public function existe ($numero, $documento_id) {
+  public static function  existe ($numero, $documento_id) {
     return self::where('numero', $numero)->where('tipo_doc', $documento_id)->first();
   }
 

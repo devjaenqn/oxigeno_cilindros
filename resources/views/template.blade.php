@@ -84,7 +84,7 @@
         </ol>
 
         <div class="container-fluid">
-          <div class="animated fadeIn">
+          <div class="animated fadeIn" id="master_vue">
             <!-- CONTENIDO -->
             @section('contenido')
               <h1>SIN CONTENIDO</h1>

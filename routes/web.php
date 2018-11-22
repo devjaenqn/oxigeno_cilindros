@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,38 +16,71 @@ Route::get('/', function () {
     return redirect('home/news');
 });
 
-Route::get('home', 'HomeController@index');
-Route::get('home/news', 'HomeController@news');
-Route::get('home/botellas', 'HomeController@botellas');
-Route::get('home/propietarios/', 'HomeController@propietarios');
+Route::middleware(['autenticado'])->group(function() {
 
-Route::get('home/recursos/sistemas', 'RecursosController@sistemas');
-Route::get('home/recursos/negocios', 'RecursosController@negocios');
+	Route::get('home', 'HomeController@index');
+	Route::get('home/news', 'HomeController@news');
+	Route::get('home/botellas', 'HomeController@botellas');
+	Route::get('home/propietarios/', 'HomeController@propietarios');
 
-// Route::get('home/cilindros/', 'HomeController@cilindros_listar');//listar
-// Route::get('home/cilindros/registro', 'HomeController@cilindros_registro');//registrar
-// Route::get('home/cilindros/{id}/editar', 'HomeController@cilindros_registro');//editar
+	Route::get('home/recursos/sistemas', 'RecursosController@sistemas');
+	Route::get('home/recursos/negocios', 'RecursosController@negocios');
 
-// Route::get('propietarios/listar', 'PropietariosController@listar');
-// Route::post('propietarios/agregar', 'PropietariosController@agregar');
+	// Route::get('home/cilindros/', 'HomeController@cilindros_listar');//listar
+	// Route::get('home/cilindros/registro', 'HomeController@cilindros_registro');//registrar
+	// Route::get('home/cilindros/{id}/editar', 'HomeController@cilindros_registro');//editar
+
+	// Route::get('propietarios/listar', 'PropietariosController@listar');
+	// Route::post('propietarios/agregar', 'PropietariosController@agregar');
+	Route::get('home/propietarios/deben', 'PropietariosController@deben');
+
+	//alternative api
+	Route::resource('home/cilindro', 'CilindroController')->only([
+	    'index', 'create', 'show', 'edit'
+	]);
+	Route::get('home/cilindro/{id}/{modo}', 'CilindroController@show');
+	Route::resource('home/produccion', 'ProduccionController')->only([
+	    'index', 'create', 'show', 'edit'
+	]);
+	Route::resource('home/despacho', 'DespachoController')->only([
+	    'index', 'create', 'show', 'edit'
+	]);
+	Route::resource('home/recibo', 'ReciboController')->only([
+	    'index', 'create', 'show', 'edit'
+	]);
+	Route::get('test', 'HomeController@test');
 
 
-Route::get('home/propietarios/deben', 'PropietariosController@deben');
+	foreach (['datatables', 'cambiar_password'] as $key => $value) {
+		Route::get('home/usuarios/'.$value, 'UsuariosController@'.$value);
+	}
+	Route::resource('home/usuarios', 'UsuariosController')->only([
+	    'index', 'create', 'show', 'edit'
+	]);
 
 
 
-//alternative api
-Route::resource('home/cilindro', 'CilindroController')->only([
-    'index', 'create', 'show', 'edit'
-]);
-Route::get('home/cilindro/{id}/{modo}', 'CilindroController@show');
-Route::resource('home/produccion', 'ProduccionController')->only([
-    'index', 'create', 'show', 'edit'
-]);
-Route::resource('home/despacho', 'DespachoController')->only([
-    'index', 'create', 'show', 'edit'
-]);
-Route::resource('home/recibo', 'ReciboController')->only([
-    'index', 'create', 'show', 'edit'
-]);
-Route::get('test', 'HomeController@test');
+	Route::get('logout', 'LoginUserController@logout');
+
+});
+
+
+
+// Route::get('login', 'LoginUserController@show_login');
+// Route::get('login', 'LoginUserController@show_login')->middleware();
+Route::get('login', function(Request $request) {
+	if ($request->session()->has('usuario_autenticado')) {
+    if ($request->session()->get('usuario_autenticado') == true)
+        return redirect('home');
+  }
+  return view('login');
+})->middleware();
+
+// Route::get('login_usuario', 'LoginUserController@inciar_session');
+
+
+
+
+
+
+

@@ -26,19 +26,17 @@
                           </div>
                         </div>
 
-                        <div class="form-group row mb-1 mt-1">
+                        {{-- <div class="form-group row mb-1 mt-1">
                           <label class="col-md-8 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="serie_lote">Serie :</label>
                           <div class="col-md-16">
-                            {{-- <input class="form-control p-1 text-select" id="serie_lote"  type="text" name="serie_lote" v-model="serie_lote" placeholder="0000" readonly="" value="asdasdasd"> --}}
                             <p class="form-control-static m-0 ">{{ strtoupper($produccion->serie_lote) }}</p>
-                            {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                           </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group row mb-1 mt-1">
                           <label class="col-md-8 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="numero_lote">Número :</label>
                           <div class="col-md-16">
                             {{-- <input class="form-control p-1 text-select" id="numero_lote"  type="text" name="numero_lote" v-model="numero_lote" placeholder="000000000"> --}}
-                            <p class="form-control-static m-0 ">{{ $produccion->numero_lote }}</p>
+                            <p class="form-control-static m-0 ">{{ strtoupper($produccion->serie_lote) }}-{{ $produccion->numero_lote }}</p>
                             {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                           </div>
                         </div>
@@ -57,49 +55,58 @@
                   {{-- <div class="card card-accent-success">
 
                       <div class="card-body"> --}}
-
-                <div class="col-sm-7">
-
-                  <div class="form-group row mb-1 mt-1">
-                    <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="fecha">Fecha :</label>
-                    <div class="col-md-15">
-                      <p class="form-control-static m-0 ">{{ $produccion->fecha }}</p>
-                      {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                <div class="col-sm-12">
+                  <div class="row">
+                    <div class="col-sm-24">
+                      <div class="form-group row mb-1 mt-1">
+                        <label class="col-md-12 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="fecha">Entrada :</label>
+                        <div class="col-md-12">
+                          <p class="form-control-static m-0 ">{{ $produccion->fecha_entrada }}</p>
+                          {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                        </div>
+                      </div>
                     </div>
+
                   </div>
-                  <div class="form-group row mb-1 mt-1">
-                    <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="operador">Operador :</label>
-                    <div class="col-md-15">
-                      <p class="form-control-static m-0 ">{{ strtoupper($produccion->operador->nombre.' '.$produccion->operador->apellidos) }}</p>
+                  <div class="row">
+                    <div class="col-sm-24">
+                      <div class="form-group row mb-1 mt-1">
+                        <label class="col-md-12 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left">Salida :</label>
+                        <div class="col-md-12">
+                          <p class="form-control-static m-0 ">{{ $produccion->fecha_salida }}</p>
+                          {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                        </div>
+                      </div>
+                    </div>
 
-                      {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
-                    </div>
+
                   </div>
-                  <div class="form-group row mb-1 mt-1">
-                    <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="turno">Turno :</label>
-                    <div class="col-md-15">
-                      <p class="form-control-static m-0 ">{{ $produccion->turno }}</p>
-                      {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                  <div class="row">
+                    <div class="col-sm-12">
+
+                      <div class="form-group row mb-1 mt-1">
+                        <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="operador">Operador :</label>
+                        <div class="col-md-15">
+                          <p class="form-control-static m-0 ">{{ strtoupper($produccion->operador->nombre.' '.$produccion->operador->apellidos) }}</p>
+
+                          {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                        </div>
+                      </div>
                     </div>
+                    <div class="col-sm-12">
+
+                      <div class="form-group row mb-1 mt-1">
+                        <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="turno">Turno :</label>
+                        <div class="col-md-15">
+                          <p class="form-control-static m-0 ">{{ $produccion->turno }}</p>
+                          {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-                <div class="col-sm-5">
 
-                  <div class="form-group row mb-1 mt-1">
-                    <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="entrada">Entrada :</label>
-                    <div class="col-md-15">
-                      <p class="form-control-static m-0 ">{{ $produccion->entrada }}</p>
-                      {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
-                    </div>
-                  </div>
-                  <div class="form-group row mb-1 mt-1">
-                    <label class="col-md-9 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="salida">Salida :</label>
-                    <div class="col-md-15">
-                      <p class="form-control-static m-0 ">{{ $produccion->salida }}</p>
-                      {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
-                    </div>
-                  </div>
-                </div>
 
                       {{-- </div>
                   </div> --}}
@@ -159,7 +166,7 @@
           <div class="row">
 
             <div class="col-sm-6">
-              Libras contador
+              {{-- Libras contador --}}
             </div>
 
           </div>
@@ -172,7 +179,7 @@
         </div>
         <div class="card-footer">
           <form class="form-horizontal"  @submit.prevent="frmOnSubmit_frmRegistro">
-            <button class="btn btn-sm btn-primary" type="submit">
+            <button class="btn btn-sm btn-primary" type="button" id="btn_print">
               <i class="fa fa-print"></i>&nbsp;&nbsp;Imprimir</button>
             <a href="{{ url('home/produccion') }}" class="btn btn-sm btn-danger" >
               <i class="fa fa-table"></i>&nbsp;&nbsp;Listar producción</a>
@@ -187,7 +194,9 @@
 @endsection
 @push('script')
 <script type="text/javascript">
-
+  $('#btn_print').on('click', () => {
+    window.print();
+  })
 </script>
 
 {{-- <script src="{{ url('vendors/jquery.maskedinput/dist/jquery.maskedinput.min.js') }}"></script>

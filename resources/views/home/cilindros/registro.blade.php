@@ -98,8 +98,8 @@
         <div class="card-footer">
           <button class="btn btn-sm btn-primary" type="submit">
             <i class="fa fa-dot-circle-o"></i> {{ $edit ? 'Actualizar' : 'Agregar' }}</button>
-          <a href="{{ url('home/cilindro') }}" class="btn btn-sm btn-danger" >
-            <i class="fa fa-ban"></i> Listar cilindros</a>
+          <a href="{{ url('home/cilindro') }}" class="btn btn-sm btn-success" >
+            <i class="fa fa-table"></i> Listar cilindros</a>
         </div>
         </form>
       </div>

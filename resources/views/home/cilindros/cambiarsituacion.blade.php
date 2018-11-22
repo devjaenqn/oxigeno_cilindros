@@ -79,8 +79,8 @@
                       <label class="col-md-6 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="sel_ubicacion">Ubicación :</label>
                       <div class="col-md-18">
                         <select v-model="ubicacion" name="sel_ubicacion" id="sel_ubicacion" class="form-control">
-                          <option value="fabrica">FABRICA</option>
-                          <option value="cliente">CLIENTE</option>
+                          {{-- <option value="fabrica">FABRICA</option>
+                          <option value="cliente">CLIENTE</option> --}}
                           <option value="iniciar_recibo">PARA INICIAR RECIBO</option>
                           {{-- <option value="perdido">PERDIDO</option> --}}
                           option

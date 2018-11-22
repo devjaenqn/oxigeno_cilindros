@@ -6,6 +6,7 @@ use App\DocumentosIdentidad;
 use App\Http\Resources\PropietariosResource;
 use App\Propietarios;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
@@ -13,9 +14,7 @@ class HomeController extends Controller
     return view('home.news');
   }
   public function index () {
-    // return view('home.dashboard');
     return view('home.dashboard');
-    // return redirect('/home/cilindro/');
   }
 
   public function propietarios () {
@@ -27,6 +26,7 @@ class HomeController extends Controller
   }
 
   public function cilindros_listar () {
+
     return view('home.cilindros.listar');
   }
   public function cilindros_registro () {

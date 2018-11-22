@@ -322,9 +322,10 @@ class ProduccionController extends Controller
         } else {
             $produccion = Produccion::find($id);
             $produccion->numero_lote = fill_zeros($produccion->numero_lote);
-            $produccion->entrada = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->entrada)->format('h:i A');
-            $produccion->fecha = Carbon::createFromFormat('Y-m-d', $produccion->fecha)->format('d/m/y');
-            $produccion->salida = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->salida)->format('h:i A');
+            // $produccion->hora_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->entrada)->format('h:i A');
+            $produccion->fecha_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->entrada)->format('d/m/y h:i A');
+            $produccion->fecha_salida = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->salida)->format('d/m/y h:i A');
+            // $produccion->hora_salida = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->salida)->format('h:i A');
             // $dd = new ProduccionResource($produccion);
             // return response()->json($dd);
             $data['edit'] = true;

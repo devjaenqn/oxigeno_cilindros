@@ -39,7 +39,7 @@
     </li> --}}
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
+        <img class="img-avatar" src="img/avatars/default.jpg" alt="admin@bootstrapmaster.com">
       </a>
       <div class="dropdown-menu dropdown-menu-right">
         {{-- <div class="dropdown-header text-center">
@@ -62,10 +62,10 @@
           <span class="badge badge-warning">42</span>
         </a> --}}
         <div class="dropdown-header text-center">
-          <strong>Settings</strong>
+          <strong>Menu</strong>
         </div>
-        <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
-        <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
+        {{-- <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Perfil</a> --}}
+        <a class="dropdown-item" href="{{ url('home/usuarios/cambiar_password') }}"><i class="fa fa-wrench"></i> Cambiar contraseña</a>
         {{-- <a class="dropdown-item" href="#">
           <i class="fa fa-usd"></i> Payments
           <span class="badge badge-secondary">42</span>
@@ -76,7 +76,7 @@
         </a> --}}
         {{-- <div class="divider"></div> --}}
         {{-- <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock Account</a> --}}
-        <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
+        <a class="dropdown-item" href="{{ url('logout') }}"><i class="fa fa-lock"></i> Salir</a>
       </div>
     </li>
   </ul>

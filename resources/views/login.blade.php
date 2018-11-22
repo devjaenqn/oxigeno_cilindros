@@ -32,12 +32,19 @@
   <body class="app flex-row align-items-center">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <div class="card-group">
             <div class="card p-4">
               <div class="card-body">
+                <form action="{{ url('api/login_usuario') }}" name="frm_login"  method="post">
+                  {{-- @csrf --}}
                 <h1>Iniciar sessión</h1>
-                <p class="text-muted">Ingrese con su cuenta de usuario</p>
+                @if(Session::has('error_login') && Session::get('error_login'))
+                  <p class="text-muted" id="show_msg">{{ Session::get('error_msg') }}</p>
+                @else
+                  <p class="text-muted" id="show_msg">Ingrese con su cuenta de usuario</p>
+                @endif
+
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text">
@@ -52,16 +59,17 @@
                       <i class="icon-lock"></i>
                     </span>
                   </div>
-                  <input class="form-control" type="password" placeholder="Cotraseña" name="usuario">
+                  <input class="form-control" type="password" placeholder="Cotraseña" name="password">
                 </div>
                 <div class="row">
-                  <div class="col-6">
-                    <button class="btn btn-primary px-4" type="button">ingresar</button>
+                  <div class="col-12">
+                    <button class="btn btn-primary " type="submit" name="btn_login"><i class="icon-login"></i>&nbsp;&nbsp;Ingresar</button>
                   </div>
                   <!-- <div class="col-6 text-right">
                     <button class="btn btn-link px-0" type="button">Forgot password?</button>
                   </div> -->
                 </div>
+                </form>
               </div>
             </div>
             <!-- <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">

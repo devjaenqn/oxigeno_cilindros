@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -24,6 +25,7 @@ class CilindroController extends Controller
      */
     public function index (Request $request)
     {
+
       //  $cilindros = Cilindro::all();
 
       // $pdf = PDF::loadView('home.cilindros.pdflistar', compact('cilindros'));

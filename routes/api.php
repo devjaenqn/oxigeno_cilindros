@@ -26,7 +26,7 @@ Route::get('propietarios/listar', 'PropietariosController@listar');
 //         Route::post('agregar', 'PropietariosController@agregar');
 //     });
 
-
+Route::post('login_usuario', 'LoginUserController@inciar_session');
 
 Route::resource ('propietarios', 'PropietariosController');
 Route::resource ('cilindro', 'CilindroController')->only([
@@ -39,6 +39,9 @@ Route::resource ('despacho', 'DespachoController')->only([
     'store', 'update', 'destroy'
 ]);
 Route::resource ('recibo', 'ReciboController')->only([
+    'store', 'update', 'destroy'
+]);
+Route::resource ('usuarios', 'UsuariosController')->only([
     'store', 'update', 'destroy'
 ]);
 Route::resource ('documentos_identidad', 'DocumentosIdentidadController');

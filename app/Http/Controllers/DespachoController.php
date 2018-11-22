@@ -552,12 +552,12 @@ class DespachoController extends Controller
 
 
             if (($code = Comprobante::getCode($name_code)) != 'undefined') {
-                $all = Despacho::getAllByProceso($code)->get()->map(function ($item) {
-                    $item->destino->entidad;
-                    $item->guia->negocio;
-                    $item->doc_numero = fill_zeros($item->doc_numero);
-                    return $item;
-                });
+                // $all = Despacho::getAllByProceso($code)->get()->map(function ($item) {
+                //     $item->destino->entidad;
+                //     $item->guia->negocio;
+                //     $item->doc_numero = fill_zeros($item->doc_numero);
+                //     return $item;
+                // });
 
                 $all = Despacho::with(['destino.entidad', 'guia.negocio'])
                         ->join('entidades', 'entidades.ent_id', '=', 'despacho.entidad_id')

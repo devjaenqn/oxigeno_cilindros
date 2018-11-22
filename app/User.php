@@ -25,6 +25,20 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'created_at', 'updated_at'
     ];
+    public static function existe_usuario ($name, $password) {
+        return self::where('name', $name)
+            ->where('password', $password)->count();
+    }
+
+
+
+    public static function get_usuario_account ($name, $password) {
+            return self::where('name', $name)
+            // ->where('password', $password)
+            // ->join('users_data', 'users.id', 'users_data.users_id')
+            ->get();
+
+    }
 }
