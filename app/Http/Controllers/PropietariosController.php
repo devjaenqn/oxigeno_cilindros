@@ -11,6 +11,17 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PropietariosController extends Controller
 {
+  public function balance () {
+    $query = DB::connection('mysql_balance_oxy');
+    $a = $query->select('select*from tbl_clientes');
+
+    $query_b = DB::connection('mysql_balance_tao');
+    $b = $query_b->select('select*from tbl_clientes');
+    $data['propietarios']= array_merge($a, $b);
+    // dd(json_encode($data['propietarios']));
+    return view('home.propietarios.balance', $data);
+  }
+
   public function datatables (Request $request) {
     $all = Propietarios::select('*')->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
 
