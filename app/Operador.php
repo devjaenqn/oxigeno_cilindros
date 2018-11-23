@@ -8,6 +8,7 @@ class Operador extends Model
 {
   protected $table = 'operador';
   protected $primaryKey = 'ope_id';
+  public $timestamps = false;
   // protected $fillable = [
   //   'nombre',
   //   'apellidos',
@@ -15,6 +16,7 @@ class Operador extends Model
   //   'fecha_nacimiento',
   //   'dni', 'estado'
   // ];
+
   protected $visible = ['nombre', 'apellidos', 'direccion'];
   protected $hidden = ['created_at', 'updated_at'];
 }

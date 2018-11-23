@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Operador;
+use App\Roles;
+use App\RolesUsuarios;
 use App\Usuario;
 use App\UsuarioData;
-use App\RolesUsuarios;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 class UsuariosController extends Controller
 {
     public function cambiar_password () {
@@ -111,6 +113,15 @@ class UsuariosController extends Controller
                     $role->role_id = $request->tipo;
                     $role->user_id = $new->id;
                     $role->save();
+                    if (Roles::getRoleById($request->tipo)->slug == 'operador') {
+                        $ope = new Operador();
+                        $ope->nombre = $request->nombre;
+                        $ope->apellidos = $request->apellidos;
+                        $ope->direccion = $request->direccion;
+                        $ope->dni = $request->dni;
+                        $ope->user_data_id = $new_data->du_id;
+                        $ope->save();
+                    }
                     $res['success'] = true;
                 }
             }

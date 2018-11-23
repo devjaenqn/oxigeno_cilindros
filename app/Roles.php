@@ -10,4 +10,8 @@ class Roles extends Model
   protected $primaryKey = 'id';
 
   protected $hidden = ['created_at', 'updated_at'];
+
+  public static function getRoleById ($id) {
+  	return self::select('name', 'slug')->where('id', $id)->first();
+  }
 }

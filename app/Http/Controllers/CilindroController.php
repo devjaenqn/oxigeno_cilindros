@@ -390,7 +390,7 @@ class CilindroController extends Controller
                 $temp['query'] = DB::getQueryLog();
                 dd($temp);
                 break;
-              case 'seguimiento_old':
+              case 'seguimiento':
                 // DB::enableQueryLog();
                 $cilindro = Cilindro::find($id);
                 $data = ['success' => false];
@@ -511,7 +511,7 @@ class CilindroController extends Controller
                 echo "</tbody></table>";
                 exit;
                 break;
-              case 'seguimiento':
+              case 'seguimiento_old':
                 $cilindro = Cilindro::find($id);
                 if ($cilindro) {
                   $data['cilindro'] = $cilindro;
