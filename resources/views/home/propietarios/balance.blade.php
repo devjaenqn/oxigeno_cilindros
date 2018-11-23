@@ -3,7 +3,11 @@
 <head>
   <title>PROPIETARIOS DE BALANCE</title>
   <link href="{{ url('css/app.css') }}" rel="stylesheet">
-  
+  <style type="text/css">
+    #tbl_propietarios{
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -12,7 +16,7 @@
     </div>
     <div class="row">
       <div class="col-sm-24">
-        <table id="tbl_propietarios" style="width: 100%">
+        <table id="tbl_propietarios" style="width: 100%" class=" table-bordered">
           <thead>
             <th>RAZON SOCIAL</th>
             <th>RUC/NUMERO</th>
@@ -38,6 +42,8 @@
   $(document).ready( function () {
     $('#tbl_propietarios').DataTable({
       data: data,
+      pageLength: 15,
+      dom: 'f<"table-responsive"t><"clearfix"><"pt-2">p',
       columns: [
         { data: 'cli_razon_social' },
         { data: 'cli_ruc' },
