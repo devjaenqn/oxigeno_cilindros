@@ -11893,13 +11893,22 @@ var $ = window.jQuery;
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      listaPropietarios: []
+      listaPropietarios: [],
+      tbl_datatable: null,
+      dt_tbl_datatable: null,
+      filtros: {
+        query: '',
+        deben: false
+      }
     };
   },
 
   methods: {
     goEdit: function goEdit(id) {
       this.$router.push({ name: 'editar', params: { id: id } });
+    },
+    onSubmit_frmAplicarFiltro: function onSubmit_frmAplicarFiltro() {
+      this.dt_tbl_datatable.draw();
     },
     fnOnClick_btnAcciones: function fnOnClick_btnAcciones(e) {
       var dataset = e.currentTarget.dataset;
@@ -11914,39 +11923,46 @@ var $ = window.jQuery;
       }
     }
   },
-  created: function created() {
+  created: function created() {},
+  mounted: function mounted() {
     var _this = this;
 
-    console.log('componente cargado');
-    axios.get(BASE_URL + '/api/propietarios/listar').then(function (res) {
-      console.log(res);
-      _this.listaPropietarios = res.data;
-      $('#tbl_propietarios').dataTable({
-        data: _this.listaPropietarios,
-        dom: '<"table-responsive"t>p',
-        columns: [{ data: 'nombre', render: function render(d, t, r) {
-            return d.toUpperCase();
-          } }, { data: 'numero', render: function render(d, t, r) {
-            return '<span class="badge badge-primary">' + r.documento.corto + '</span> ' + (d == null ? '' : d);
-          } }, { data: 'telefono' }, { data: 'estado', render: function render(d, t, r) {
-            return '<span class="badge badge-success">Active</span>';
-          } }, { data: 'ent_id', render: function render(d, t, r) {
-            return '\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="detalles"><i class="fa fa-eye"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="editar"><i class="fa fa-pencil"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
-          } }]
-      });
-      // $('#tbl_propietarios').on('click', '.btn-gotodetalles', function (e) {
-      //   e.preventDefault()
-      //   _this.$router.push({name: 'DetallesVenta', params: { id_venta: e.target.dataset.id }})
-      // })
-      $('#tbl_propietarios').on('click', '.btn-acciones', _this.fnOnClick_btnAcciones);
-    });
-  },
-  mounted: function mounted() {
     // console.log(dt)
     // console.log(jQuery)
     // $('#tbl_propietarios').dataTable()
 
 
+    // this.listaPropietarios = res.data
+    this.tbl_datatable = $('#tbl_propietarios');
+    this.dt_tbl_datatable = this.tbl_datatable.DataTable({
+      data: this.producciones,
+      dom: '<"table-responsive"t>p',
+      pageLength: 10,
+      processing: true,
+      ajax: {
+        url: BASE_URL + '/home/propietarios/datatables',
+        data: function data(d) {
+          d.buscar = _this.filtros.query;
+        }
+      },
+      serverSide: true,
+      columns: [{ data: 'nombre', render: function render(d, t, r) {
+          return d.toUpperCase();
+        } }, { data: 'numero', render: function render(d, t, r) {
+          return '<span class="badge badge-primary">' + r.corto + '</span> ' + (d == null ? '' : d);
+        } }, { data: 'telefono' }, { data: 'estado', render: function render(d, t, r) {
+          return '<span class="badge badge-success">Active</span>';
+        } }, { data: 'ent_id', render: function render(d, t, r) {
+          return '\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="detalles"><i class="fa fa-eye"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="editar"><i class="fa fa-pencil"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
+        } }],
+      columnDefs: [
+        // {
+        //   targets: [6],
+        //   className: 'text-right'
+        // }
+      ]
+    });
+    this.tbl_datatable.on('click', '.btn-acciones', this.fnOnClick_btnAcciones);
   }
 });
 
@@ -11968,25 +11984,131 @@ var render = function() {
             _c(
               "form",
               {
-                staticClass: "form-horizontal",
-                attrs: {
-                  action: "",
-                  method: "post",
-                  enctype: "multipart/form-data"
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.onSubmit_frmAplicarFiltro($event)
+                  }
                 }
               },
               [
                 _c("div", { staticClass: "row" }, [
-                  _vm._m(1),
+                  _c("div", { staticClass: "col-sm-8" }, [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "col-md-24" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.filtros.query,
+                              expression: "filtros.query"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            id: "buscar_propietario",
+                            type: "text",
+                            name: "buscar_propietario",
+                            placeholder: "Ingrese nombre o RUC"
+                          },
+                          domProps: { value: _vm.filtros.query },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.$set(
+                                _vm.filtros,
+                                "query",
+                                $event.target.value
+                              )
+                            }
+                          }
+                        })
+                      ])
+                    ])
+                  ]),
                   _vm._v(" "),
-                  _vm._m(2),
+                  _c("div", { staticClass: "col-sm-8" }, [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c("div", { staticClass: "col-md-18 col-form-label" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-check form-check-inline mr-1" },
+                          [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.filtros.deben,
+                                  expression: "filtros.deben"
+                                }
+                              ],
+                              staticClass: "form-check-input",
+                              attrs: {
+                                id: "check_debe",
+                                type: "checkbox",
+                                value: ""
+                              },
+                              domProps: {
+                                checked: Array.isArray(_vm.filtros.deben)
+                                  ? _vm._i(_vm.filtros.deben, "") > -1
+                                  : _vm.filtros.deben
+                              },
+                              on: {
+                                change: function($event) {
+                                  var $$a = _vm.filtros.deben,
+                                    $$el = $event.target,
+                                    $$c = $$el.checked ? true : false
+                                  if (Array.isArray($$a)) {
+                                    var $$v = "",
+                                      $$i = _vm._i($$a, $$v)
+                                    if ($$el.checked) {
+                                      $$i < 0 &&
+                                        _vm.$set(
+                                          _vm.filtros,
+                                          "deben",
+                                          $$a.concat([$$v])
+                                        )
+                                    } else {
+                                      $$i > -1 &&
+                                        _vm.$set(
+                                          _vm.filtros,
+                                          "deben",
+                                          $$a
+                                            .slice(0, $$i)
+                                            .concat($$a.slice($$i + 1))
+                                        )
+                                    }
+                                  } else {
+                                    _vm.$set(_vm.filtros, "deben", $$c)
+                                  }
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "form-check-label",
+                                attrs: { for: "check_debe" }
+                              },
+                              [_vm._v("Debe cilindros")]
+                            )
+                          ]
+                        )
+                      ])
+                    ])
+                  ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-sm-8" }, [
                     _c(
                       "div",
                       { staticClass: "float-right" },
                       [
-                        _vm._m(3),
+                        _vm._m(1),
                         _vm._v(" "),
                         _c(
                           "router-link",
@@ -12009,7 +12131,7 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _vm._m(4)
+        _vm._m(2)
       ])
     ])
   ])
@@ -12023,56 +12145,6 @@ var staticRenderFns = [
       _c("i", { staticClass: "fa fa-align-justify" }),
       _vm._v(" Propietarios - Listar\n      "),
       _c("div", { staticClass: "card-header-actions" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-8" }, [
-      _c("div", { staticClass: "form-group row" }, [
-        _c("div", { staticClass: "col-md-24" }, [
-          _c("input", {
-            staticClass: "form-control",
-            attrs: {
-              id: "text-input",
-              type: "text",
-              name: "text-input",
-              placeholder: "Ingrese nombre o RUC"
-            }
-          })
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-8" }, [
-      _c("div", { staticClass: "form-group row" }, [
-        _c("div", { staticClass: "col-md-18 col-form-label" }, [
-          _c("div", { staticClass: "form-check form-check-inline mr-1" }, [
-            _c("input", {
-              staticClass: "form-check-input",
-              attrs: {
-                id: "inline-checkbox1",
-                type: "checkbox",
-                value: "check1"
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "label",
-              {
-                staticClass: "form-check-label",
-                attrs: { for: "inline-checkbox1" }
-              },
-              [_vm._v("Debe cilindros")]
-            )
-          ])
-        ])
-      ])
     ])
   },
   function() {

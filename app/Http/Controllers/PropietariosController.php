@@ -7,9 +7,28 @@ use App\Propietarios;
 use App\PropietariosLocacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class PropietariosController extends Controller
 {
+  public function datatables (Request $request) {
+    $all = Propietarios::select('*')->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
+
+    $make = DataTables::of($all)
+            ->filter( function ($query) use ($request) {
+                if ($request->has('buscar')) {
+                    if (request('buscar') != '') {
+                        $query->where( function( $query ) use($request) {
+
+                            $query->orWhere('entidades.nombre', 'like', "%{$request->buscar}%");
+                            $query->orWhere('entidades.numero', 'like', "%{$request->buscar}%");
+
+                        });
+                    }
+                }
+            });
+    return $make->make(true);
+  }
   public function deben () {
     return view('home.propietarios.deben');
   }

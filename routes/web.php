@@ -21,7 +21,13 @@ Route::middleware(['autenticado'])->group(function() {
 	Route::get('home', 'HomeController@index');
 	Route::get('home/news', 'HomeController@news');
 	Route::get('home/botellas', 'HomeController@botellas');
+
+	foreach (['datatables', 'deben'] as $key => $value) {
+		Route::get('home/propietarios/'.$value, 'PropietariosController@'.$value);
+	}
+
 	Route::get('home/propietarios/', 'HomeController@propietarios');
+
 
 	Route::get('home/recursos/sistemas', 'RecursosController@sistemas');
 	Route::get('home/recursos/negocios', 'RecursosController@negocios');
@@ -32,7 +38,7 @@ Route::middleware(['autenticado'])->group(function() {
 
 	// Route::get('propietarios/listar', 'PropietariosController@listar');
 	// Route::post('propietarios/agregar', 'PropietariosController@agregar');
-	Route::get('home/propietarios/deben', 'PropietariosController@deben');
+
 
 	//alternative api
 	Route::resource('home/cilindro', 'CilindroController')->only([

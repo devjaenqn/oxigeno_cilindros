@@ -15,7 +15,7 @@ class Propietarios extends Model
     'direccion',
     'telefono', 'referencia', 'correo',
   ];
-  protected $hidden = ['created_at', 'updated_at' ,'telefono', 'correo'];
+  protected $hidden = ['created_at', 'updated_at'];
   // protected $visible = ['documento'];
   public function documento () {
     return $this->belongsTo('App\DocumentosIdentidad', 'tipo_doc', 'cod');
