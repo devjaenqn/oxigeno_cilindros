@@ -11877,6 +11877,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 // import axios from 'axios'
 // import $  from  'jquery'
@@ -11950,7 +11951,7 @@ var $ = window.jQuery;
           return d.toUpperCase();
         } }, { data: 'numero', render: function render(d, t, r) {
           return '<span class="badge badge-primary">' + r.corto + '</span> ' + (d == null ? '' : d);
-        } }, { data: 'telefono' }, { data: 'estado', render: function render(d, t, r) {
+        } }, { data: 'cilindros_total' }, { data: 'telefono' }, { data: 'estado', render: function render(d, t, r) {
           return '<span class="badge badge-success">Active</span>';
         } }, { data: 'ent_id', render: function render(d, t, r) {
           return '\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="detalles"><i class="fa fa-eye"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="editar"><i class="fa fa-pencil"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
@@ -12176,6 +12177,8 @@ var staticRenderFns = [
             _c("th", [_vm._v("RAZÓN SOCIAL")]),
             _vm._v(" "),
             _c("th", [_vm._v("DOC. NUM.")]),
+            _vm._v(" "),
+            _c("th", [_vm._v("CILINDROS")]),
             _vm._v(" "),
             _c("th", [_vm._v("TELÉFONO")]),
             _vm._v(" "),

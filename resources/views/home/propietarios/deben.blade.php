@@ -1,7 +1,5 @@
 @extends('template')
 @push('css')
-
-
   <link rel=stylesheet href="{{ url('vendors/datatable/datatables.css') }}">
 @endpush
 @section('breadcrumb')
@@ -10,10 +8,10 @@
   <li class="breadcrumb-item active">Deben</li>
 @endsection
 @section('contenido')
-  <div class="col-lg-24">
+  <div class="col-lg-24" id="debe_cilindros">
     <div class="card">
       <div class="card-header">
-        <i class="fa fa-align-justify"></i> ttt
+        <i class="fa fa-align-justify"></i> Propietarios - Deben
         <div class="card-header-actions">
         </div>
       </div>
@@ -66,7 +64,7 @@
 
         </div>
 
-        <table class="table table-responsive-sm table-sm" id="tbl_propietarios">
+        <table class="table table-responsive-sm table-sm" id="tbl_datatable">
           <thead>
             <tr>
               <th>RAZÓN SOCIAL</th>
@@ -82,8 +80,8 @@
       <div class="card-footer">
         <button class="btn btn-sm btn-primary" type="submit">
           <i class="fa fa-dot-circle-o"></i> Agregar</button>
-        <button class="btn btn-sm btn-danger" @click="btnOnClick_btnCancelar">
-          <i class="fa fa-ban"></i> Listar propietarios</button>
+        <button class="btn btn-sm btn-success" @click="btnOnClick_btnCancelar">
+          <i class="fa fa-table"></i> Listar propietarios</button>
       </div>
       </form>
     </div>

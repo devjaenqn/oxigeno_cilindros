@@ -22,8 +22,10 @@ class PropietariosController extends Controller
     return view('home.propietarios.balance', $data);
   }
 
-  public function datatables (Request $request) {
-    $all = Propietarios::select('*')->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
+  public function datatable_deben (Request $request) {
+    $all = Propietarios::select(
+      '*'
+    )->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
 
     $make = DataTables::of($all)
             ->filter( function ($query) use ($request) {
@@ -40,7 +42,28 @@ class PropietariosController extends Controller
             });
     return $make->make(true);
   }
+  public function datatables (Request $request) {
+    $propietario = new Propietarios();
+    $all = $propietario->setTable('view_entidades_detalles')->select(
+      '*'
+    )->join('documentos_identidad', 'view_entidades_detalles.tipo_doc', 'documentos_identidad.cod');
+
+    $make = DataTables::of($all)
+            ->filter( function ($query) use ($request) {
+                if ($request->has('buscar')) {
+                    if (request('buscar') != '') {
+                        $query->where( function( $query ) use($request) {
+                            $query->orWhere('view_entidades_detalles.nombre', 'like', "%{$request->buscar}%");
+                            $query->orWhere('view_entidades_detalles.numero', 'like', "%{$request->buscar}%");
+
+                        });
+                    }
+                }
+            });
+    return $make->make(true);
+  }
   public function deben () {
+
     return view('home.propietarios.deben');
   }
     public function listar () {

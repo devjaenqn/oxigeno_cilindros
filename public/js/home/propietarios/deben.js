@@ -80,12 +80,19 @@ new Vue({
   el: '#debe_cilindros',
   data: function data() {
     return {
-      dt_propietarios_debe: []
+      tbl_datatable: null,
+      dt_tbl_datatable: []
     };
   },
+
+  methods: {
+    btnOnClick_btnCancelar: function btnOnClick_btnCancelar() {
+      console.log('cancelar');
+    }
+  },
   mounted: function mounted() {
-    this.tbl_despacho = $('#tbl_despacho');
-    this.dt_tbl_despacho = this.tbl_despacho.DataTable({
+    this.tbl_datatable = $('#tbl_datatable');
+    this.dt_tbl_datatable = this.tbl_datatable.DataTable({
       data: this.producciones,
       // rowCallback: function (r, d) {
       //   // console.log(this)
@@ -100,7 +107,7 @@ new Vue({
       pageLength: 10,
       processing: true,
       ajax: {
-        url: BASE_URL + '/home/propietario/datatable?m=despacho',
+        url: BASE_URL + '/home/propietarios/datatable_deben',
         data: function data(d) {
           // d.buscar = _this3.filtros.query;
           // if (_this3.filtros.success_date) {
@@ -118,7 +125,7 @@ new Vue({
       // }]
     });
 
-    $('#tbl_despacho').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);
+    // $('#tbl_datatable').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);
   }
 });
 
