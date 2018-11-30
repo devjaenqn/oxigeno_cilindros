@@ -68,12 +68,12 @@
 /***/ 83:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(92);
+module.exports = __webpack_require__(84);
 
 
 /***/ }),
 
-/***/ 92:
+/***/ 84:
 /***/ (function(module, exports) {
 
 var registro = {

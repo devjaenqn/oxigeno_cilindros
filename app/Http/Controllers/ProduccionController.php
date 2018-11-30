@@ -87,7 +87,7 @@ class ProduccionController extends Controller
             }
         }
         // dd($data['js']);
-        $data['titulo_pagina'] = 'Porduccion - Crear';
+        $data['titulo_pagina'] = 'Produccion - Crear';
         return view('home.produccion.registro', $data);
     }
 

@@ -213,84 +213,86 @@ var registro = {
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this2 = this;
 
-      console.log('registro');
-      var now = moment();
-      // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
-      // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
+      if (confirm('¿Deseas continuar?')) {
+        loading.show();
+        var now = moment();
+        // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
+        // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
 
-      if (this.comprobante_success) {
-        // if (entrada.isValid() && salida.isValid()){
-        var success_reg = true;
+        if (this.comprobante_success) {
+          // if (entrada.isValid() && salida.isValid()){
+          var success_reg = true;
 
-        if (this.cliente.id == 0) {
-          success_reg = false;
-          toastr.warning('Seleccione un cliente', 'Revisar');
-        }
-
-        if (this.comprobante == 0) {
-          success_reg = false;
-          toastr.error('Guía no encontrada', 'Error');
-        }
-        if (!this.anular) {
-          if (this.cilindros.length <= 0) {
+          if (this.cliente.id == 0) {
             success_reg = false;
-            toastr.warning('Registre al menos un cilindro', 'Revisar');
+            toastr.warning('Seleccione un cliente', 'Revisar');
           }
-        }
 
-        if (this.cliente.destino != 0) {
-          var locacion = this.cliente.destinos.find(function (v) {
-            return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
-          });
-
-          if (typeof locacion == 'undefined') this.cliente.id = 0;
-        }
-
-        if (this.cliente.destino_nombre.trim() == '') {
-          success_reg = false;
-          toastr.warning('Ingrese destino', 'Revisar');
-        }
-
-        if (success_reg) {
-          var sendData = {
-            negocio: this.negocio,
-            anular: this.anular ? '1' : '0',
-            comprobante: this.comprobante,
-            serie: this.serie_comprobante,
-            referencia: this.referencia,
-            numero: this.numero_comprobante,
-            fecha: this.fecha_emision,
-            motivo: this.motivo,
-            observacion: this.observacion,
-            cliente: this.cliente.id,
-            destino: this.cliente.destino,
-            destino_nombre: this.cliente.destino_nombre.toUpperCase(),
-            total_cilindros: this.total_cilindros,
-            total_presion: this.total_libras,
-            total_cubicos: this.total_cubicos,
-            cilindros: this.cilindros
-          };
-          console.log(sendData);
-          axios.post(BASE_URL + '/api/recibo', sendData).then(function (res) {
-            console.log(res.data);
-            if (res.data.success) {
-              toastr.success('Registro realizado con éxito', 'Producción - Success');
-              _this2.resetForm();
+          if (this.comprobante == 0) {
+            success_reg = false;
+            toastr.error('Guía no encontrada', 'Error');
+          }
+          if (!this.anular) {
+            if (this.cilindros.length <= 0) {
+              success_reg = false;
+              toastr.warning('Registre al menos un cilindro', 'Revisar');
             }
-          }).catch(function (err) {
-            console.log(err.response);
-            // toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line)
-            toastr.error(parsePreJson(err.response.data));
-          });
-        }
+          }
 
-        // } else {
-        //   //fechas invalidas
-        //   toastr.warning('Fechas no válidas', 'Revisar')
-        // }
-      } else {
-        //no existe lote
-        toastr.error('Lote no encontrado', 'Error');
+          if (this.cliente.destino != 0) {
+            var locacion = this.cliente.destinos.find(function (v) {
+              return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
+            });
+
+            if (typeof locacion == 'undefined') this.cliente.id = 0;
+          }
+
+          if (this.cliente.destino_nombre.trim() == '') {
+            success_reg = false;
+            toastr.warning('Ingrese destino', 'Revisar');
+          }
+
+          if (success_reg) {
+            var sendData = {
+              negocio: this.negocio,
+              anular: this.anular ? '1' : '0',
+              comprobante: this.comprobante,
+              serie: this.serie_comprobante,
+              referencia: this.referencia,
+              numero: this.numero_comprobante,
+              fecha: this.fecha_emision,
+              motivo: this.motivo,
+              observacion: this.observacion,
+              cliente: this.cliente.id,
+              destino: this.cliente.destino,
+              destino_nombre: this.cliente.destino_nombre.toUpperCase(),
+              total_cilindros: this.total_cilindros,
+              total_presion: this.total_libras,
+              total_cubicos: this.total_cubicos,
+              cilindros: this.cilindros
+            };
+            axios.post(BASE_URL + '/api/recibo', sendData).then(function (res) {
+              loading.hide();
+              if (res.data.success) {
+                toastr.success('Registro realizado con éxito', 'Producción - Success');
+                _this2.resetForm();
+              }
+            }).catch(function (err) {
+              loading.hide();
+              toastr.error(parsePreJson(err.response.data));
+            });
+          } else {
+            loading.hide();
+          }
+
+          // } else {
+          //   //fechas invalidas
+          //   toastr.warning('Fechas no válidas', 'Revisar')
+          // }
+        } else {
+          loading.hide();
+          toastr.error('Lote no encontrado', 'Error');
+        }
       }
     },
     frmOnSubmit_frmAgregaCilindro: function frmOnSubmit_frmAgregaCilindro() {

@@ -179,63 +179,70 @@ var registro = {
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this3 = this;
 
-      var now = moment();
-      // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
-      // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
-      var entrada = moment(this.fecha + ' ' + this.entrada);
-      var salida = moment(this.fecha_salida + ' ' + this.salida);
+      if (confirm('Deseas continuar')) {
+        loading.show();
+        var now = moment();
+        // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
+        // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
+        var entrada = moment(this.fecha + ' ' + this.entrada);
+        var salida = moment(this.fecha_salida + ' ' + this.salida);
 
-      if (this.lote_success) {
-        if (entrada.isValid() && salida.isValid()) {
-          var success_reg = true;
+        if (this.lote_success) {
+          if (entrada.isValid() && salida.isValid()) {
+            var success_reg = true;
 
-          if (entrada >= salida) {
-            success_reg = false;
-            toastr.warning('La fecha de salida debe ser mayor', 'Revisar');
-          }
+            if (entrada >= salida) {
+              success_reg = false;
+              toastr.warning('La fecha de salida debe ser mayor', 'Revisar');
+            }
 
-          if (this.operador == 0) {
-            success_reg = false;
-            toastr.warning('Seleccione un operador', 'Revisar');
-          }
+            if (this.operador == 0) {
+              success_reg = false;
+              toastr.warning('Seleccione un operador', 'Revisar');
+            }
 
-          if (this.cilindros.length <= 0) {
-            success_reg = false;
-            toastr.warning('Registre al menos un cilindro', 'Revisar');
-          }
+            if (this.cilindros.length <= 0) {
+              success_reg = false;
+              toastr.warning('Registre al menos un cilindro', 'Revisar');
+            }
 
-          if (success_reg) {
-            var sendData = {
-              entrada: entrada.format('YYYY-MM-DD HH:mm:ss'),
-              salida: salida.format('YYYY-MM-DD HH:mm:ss'),
-              cilindros: this.cilindros,
-              operador: this.operador,
-              turno: this.turno,
-              fecha: this.fecha,
-              // fecha: now.format('YYYY-MM-DD'),
-              sistema: this.sistema,
-              observacion: this.observacion,
-              total_cilindros: this.total_cilindros,
-              total_libras: this.total_libras
-            };
-            axios.post(BASE_URL + '/api/produccion', sendData).then(function (res) {
-              console.log(res);
-              if (res.data.success) {
-                toastr.success('Registro realizado con éxito', 'Producción - Success');
-                _this3.resetForm();
-              }
-            }).catch(function (err) {
-              console.log(err.response);
-              toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line);
-            });
+            if (success_reg) {
+              var sendData = {
+                entrada: entrada.format('YYYY-MM-DD HH:mm:ss'),
+                salida: salida.format('YYYY-MM-DD HH:mm:ss'),
+                cilindros: this.cilindros,
+                operador: this.operador,
+                turno: this.turno,
+                fecha: this.fecha,
+                // fecha: now.format('YYYY-MM-DD'),
+                sistema: this.sistema,
+                observacion: this.observacion,
+                total_cilindros: this.total_cilindros,
+                total_libras: this.total_libras
+              };
+              axios.post(BASE_URL + '/api/produccion', sendData).then(function (res) {
+                loading.hide();
+                if (res.data.success) {
+                  toastr.success('Registro realizado con éxito', 'Producción - Success');
+                  _this3.resetForm();
+                }
+              }).catch(function (err) {
+                loading.hide();
+                toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line);
+              });
+            } else {
+              loading.hide();
+            }
+          } else {
+            loading.hide();
+            //fechas invalidas
+            toastr.warning('Fechas no válidas', 'Revisar');
           }
         } else {
-          //fechas invalidas
-          toastr.warning('Fechas no válidas', 'Revisar');
+          loading.hide();
+          //no existe lote
+          toastr.error('Lote no encontrado', 'Error');
         }
-      } else {
-        //no existe lote
-        toastr.error('Lote no encontrado', 'Error');
       }
     },
     frmOnSubmit_frmAgregaCilindro: function frmOnSubmit_frmAgregaCilindro() {

@@ -2310,52 +2310,85 @@ var win = window;
       this.propietario = null;
       this.$refs.propietario.focus();
     },
-    frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
+    frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro(event) {
       var _this2 = this;
 
-      this.error.propietario = false;
-      if (this.propietario != null) {
-        if (this.capacidad > 0 && this.presion > 0) {
+      if (confirm('Desea continuar')) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-          var sendData = {
-            serie: this.serie,
-            capacidad: this.capacidad,
-            presion: this.presion,
-            tapa: this.tapa,
-            propietario: this.propietario.ent_id
-          };
-          var config = {
-            method: this.edit ? 'PUT' : 'POST',
-            params: sendData,
-            url: this.edit ? BASE_URL + '/api/cilindro/' + this.cilindro.cil_id : BASE_URL + '/api/cilindro'
-          };
-          axios(config).then(function (res) {
-            // console.log(res)
-            if (res.data.success) {
-              // this.$router.push({path: '/'})
-              if (_this2.edit) {
-                toastr.success("La actualización se realizó con éxito", "Cilindro - Success");
+        try {
+          for (var _iterator = event.target.elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var x = _step.value;
 
-                // this.$router.push({path: '/'})
-              } else {
-                toastr.success("El registro se realizó con éxito", "Cilindro - Success");
-
-                _this2.resetData();
-              }
+            x.blur();
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
             }
-            if (res.data.existe) {
-              toastr.error("El número de serie se encuentra registrado", "Cilindro - Error");
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
             }
-          }).catch(function (err) {
-            console.log(err.response);
-            toastr.error(parsePreJson(err.response), 'Error');
-          });
-        } else {
-          toastr.error('Capacidad y presión deben ser mayores a cero', 'Cilindro - Error');
+          }
         }
-      } else {
-        this.error.propietario = true;
-        toastr.error('Seleccione un propietario', 'Cilindro - Error');
+
+        this.error.propietario = false;
+        loading.show();
+        if (this.propietario != null) {
+          if (this.capacidad > 0 && this.presion > 0) {
+
+            var sendData = {
+              serie: this.serie,
+              capacidad: this.capacidad,
+              presion: this.presion,
+              tapa: this.tapa,
+              propietario: this.propietario.ent_id
+            };
+            var config = {
+              method: this.edit ? 'PUT' : 'POST',
+              params: sendData,
+              url: this.edit ? BASE_URL + '/api/cilindro/' + this.cilindro.cil_id : BASE_URL + '/api/cilindro'
+            };
+            axios(config).then(function (res) {
+              loading.hide();
+              // console.log(res)
+              if (res.data.success) {
+                // this.$router.push({path: '/'})
+                if (_this2.edit) {
+                  toastr.success("La actualización se realizó con éxito", "Cilindro - Success");
+
+                  // this.$router.push({path: '/'})
+                } else {
+                  toastr.success("El registro se realizó con éxito", "Cilindro - Success");
+
+                  _this2.resetData();
+                }
+              }
+              if (res.data.existe) {
+
+                toastr.error("El número de serie se encuentra registrado", "Cilindro - Error");
+              }
+            }).catch(function (err) {
+              loading.hide();
+              console.log(err.response);
+              toastr.error(parsePreJson(err.response), 'Error');
+            });
+          } else {
+            loading.hide();
+            toastr.error('Capacidad y presión deben ser mayores a cero', 'Cilindro - Error');
+          }
+        } else {
+          loading.hide();
+          this.error.propietario = true;
+          toastr.error('Seleccione un propietario', 'Cilindro - Error');
+        }
       }
     },
 

@@ -31353,10 +31353,18 @@ return numeral;
 /***/ (function(module, exports) {
 
 window.showError = function (data) {
-  return data.message + '  \n  ' + data.file + '   -  ' + data.line;
+	return data.message + '  \n  ' + data.file + '   -  ' + data.line;
 };
 window.parsePreJson = function (data) {
-  return '<pre>' + JSON.stringify(data, undefined, 2) + '</pre>';
+	return '<pre>' + JSON.stringify(data, undefined, 2) + '</pre>';
+};
+window.loading = {
+	show: function show() {
+		$('#load-container').removeClass('d-none');
+	},
+	hide: function hide() {
+		$('#load-container').addClass('d-none');
+	}
 };
 
 /***/ }),
