@@ -68,7 +68,7 @@
 
       <li class="nav-item nav-dropdown" >
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-pencil"></i> Propietarios</a>
+          <i class="nav-icon icon-pencil"></i> PROPIETARIOS</a>
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
@@ -83,7 +83,7 @@
       </li>
       <li class="nav-item nav-dropdown" >
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-pencil"></i> PROPIETARIOS</a>
+          <i class="nav-icon icon-pencil"></i> DESPACHO</a>
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
