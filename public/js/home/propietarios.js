@@ -12333,35 +12333,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this2 = this;
 
-      this.error.numero = false;
-      var sendData = {
-        documento: this.documento,
-        numero: this.numero,
-        nombre: this.nombre,
-        direccion: this.direccion,
-        telefono: this.celular,
-        referencia: this.referencia,
-        correo: this.correo
-      };
-      var config = {
-        method: this.edit ? 'PUT' : 'POST',
-        params: sendData,
-        url: this.edit ? BASE_URL + '/api/propietarios/' + this.propietario.ent_id : BASE_URL + '/api/propietarios'
-      };
+      if (confirm('¿Deseas continuar?')) {
+        loading.show();
+        this.error.numero = false;
+        var sendData = {
+          documento: this.documento,
+          numero: this.numero,
+          nombre: this.nombre,
+          direccion: this.direccion,
+          telefono: this.celular,
+          referencia: this.referencia,
+          correo: this.correo
+        };
+        var config = {
+          method: this.edit ? 'PUT' : 'POST',
+          params: sendData,
+          url: this.edit ? BASE_URL + '/api/propietarios/' + this.propietario.ent_id : BASE_URL + '/api/propietarios'
+        };
 
-      axios(config).then(function (res) {
-        console.log(res);
-        if (res.data.success) {
-          toastr.success("El registro se realizó con éxito", "Propietario - Success");
-          _this2.resetData();
-        }
-        // this.$router.push({path: '/'})
-      }).catch(function (err) {
-        console.log(err.response);
-        _this2.error.numero = true;
-        toastr.error("El número de RUC se encuentra registrado", "Propietario - Error");
-        // toastr.info('Are you the 6 fingered man?')
-      });
+        axios(config).then(function (res) {
+          loading.hide();
+          if (res.data.success) {
+            toastr.success("El registro se realizó con éxito", "Propietario - Success");
+            _this2.resetData();
+          }
+          // this.$router.push({path: '/'})
+        }).catch(function (err) {
+          loading.hide();
+          _this2.error.numero = true;
+          toastr.error("El número de RUC se encuentra registrado", "Propietario - Error");
+          // toastr.info('Are you the 6 fingered man?')
+        });
+      }
     },
     btnOnClick_btnCancelar: function btnOnClick_btnCancelar() {
       this.$router.push({ path: '/' });

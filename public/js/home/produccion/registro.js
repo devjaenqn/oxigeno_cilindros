@@ -179,7 +179,7 @@ var registro = {
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this3 = this;
 
-      if (confirm('Deseas continuar')) {
+      if (confirm('¿Deseas continuar?')) {
         loading.show();
         var now = moment();
         // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
