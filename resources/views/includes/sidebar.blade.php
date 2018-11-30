@@ -29,9 +29,19 @@
         </ul>
       </li> --}}
 
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url('home/cilindro') }}">
-          <i class="nav-icon icon-pencil"></i> Cilindros</a>
+      <li class="nav-item nav-dropdown">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+          <i class="nav-icon icon-puzzle"></i> CILINDRO</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link pl-2em" href="{{ url('home/cilindro') }}">
+              <i class="nav-icon icon-puzzle"></i>    Lista</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link pl-2em" href="{{ url('home/cilindro/create') }}">
+              <i class="nav-icon icon-puzzle"></i>    Registro</a>
+          </li>
+        </ul>
       </li>
       {{-- <li class="nav-item">
         <a class="nav-link" href="{{ url('home/produccion') }}">
@@ -39,7 +49,7 @@
       </li> --}}
       <li class="nav-item nav-dropdown">
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-puzzle"></i> Producción</a>
+          <i class="nav-icon icon-puzzle"></i> PRODUCCIÓN</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
             <a class="nav-link pl-2em" href="{{ url('home/produccion') }}">
@@ -73,7 +83,7 @@
       </li>
       <li class="nav-item nav-dropdown" >
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-pencil"></i> Despacho</a>
+          <i class="nav-icon icon-pencil"></i> PROPIETARIOS</a>
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
@@ -88,7 +98,7 @@
       </li>
       <li class="nav-item nav-dropdown" >
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-pencil"></i> Recibo</a>
+          <i class="nav-icon icon-pencil"></i> RECIBO</a>
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
@@ -104,7 +114,7 @@
       @if(Session::get('usuario_data')->getRole() == 'admin')
       <li class="nav-item nav-dropdown" >
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-pencil"></i> Usuarios</a>
+          <i class="nav-icon icon-pencil"></i> USUARIOS</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
             <a class="nav-link pl-2em" href="{{ url('home/usuarios') }}">
