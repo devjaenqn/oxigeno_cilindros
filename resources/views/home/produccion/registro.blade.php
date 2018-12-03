@@ -58,7 +58,7 @@
                       <label class="col-md-6 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="observacion">Observación</label>
                       <div class="col-md-18">
 
-                        <textarea class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="observacion" name="observacion" v-model="observacion" placeholder="Ingresar observación" rows="1" form="frm_registro_produccion">
+                        <textarea class="form-control pl-2 pt-1 pr-2 pb-1 text-select text-uppercase" id="observacion" name="observacion" v-model="observacion" placeholder="Ingresar observación" rows="1" form="frm_registro_produccion">
                         </textarea>
                         {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                       </div>

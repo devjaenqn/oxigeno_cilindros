@@ -2243,63 +2243,7 @@ var win = window;
     });
   },
 
-  // beforeRouteEnter (to, from, next) {
-  //   console.log('before')
-  //   console.log(to)
-  //   next(res => {
-  //     console.log(res)
-  //     return true
-  //   })
-  // },
-  // beforeRouteUpdate (to, from, next) {
-  //   // console.log('update')
-  //   // console.log(from)
-  //   // console.log(to)
-  //   this.getPropietario(to.params.id)
-  //   next(true)
-  // },
   methods: {
-    // editar () {
-    //   console.log('editar')
-    // },
-    getCilindro: function getCilindro(id) {
-      var _this = this;
-
-      console.log(id);
-      setTimeout(function () {
-        axios.get(BASE_URL + '/api/cilindro/' + id + '?type=json').then(function (res) {
-          console.log(res.data);
-          if (_this.edit && res.data.success) {
-            _this.cilindro = res.data.data;
-
-            //     "cil_id": 6,
-            // "serie": "5555890951",
-            // "codigo": "5555890951",
-            // "capacidad": "10.00",
-            // "tapa": "0",
-            // "presion": "2700.00",
-            // "propietario_id": 48,
-            // "situacion": "1",
-            // "created_at": "2018-08-30 22:18:04",
-            // "updated_at": "2018-08-30 22:18:04",
-            // "cargado": "0",
-            // "defectuoso": "0"
-
-            _this.nombre = _this.cilindro.propietario_id;
-            _this.serie = _this.cilindro.serie;
-            _this.capacidad = _this.cilindro.capacidad;
-            _this.presion = _this.cilindro.presion;
-            _this.tapa = +_this.cilindro.tapa;
-            // this.error = this.cilindro.
-            // this.propietario = this.cilindro.
-
-          }
-        }).catch(function (err) {
-          console.log(err);
-          console.log(err.response);
-        });
-      }, 10000);
-    },
     resetData: function resetData() {
       this.nombre = '';
       this.serie = '';
@@ -2308,6 +2252,7 @@ var win = window;
       this.tapa = 0;
       this.error.propietario = false;
       this.propietario = null;
+      $('#propietario').typeahead('val', '');
       this.$refs.propietario.focus();
     },
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro(event) {
@@ -2343,7 +2288,6 @@ var win = window;
         loading.show();
         if (this.propietario != null) {
           if (this.capacidad > 0 && this.presion > 0) {
-
             var sendData = {
               serie: this.serie,
               capacidad: this.capacidad,
@@ -2358,26 +2302,19 @@ var win = window;
             };
             axios(config).then(function (res) {
               loading.hide();
-              // console.log(res)
               if (res.data.success) {
-                // this.$router.push({path: '/'})
                 if (_this2.edit) {
                   toastr.success("La actualización se realizó con éxito", "Cilindro - Success");
-
-                  // this.$router.push({path: '/'})
                 } else {
                   toastr.success("El registro se realizó con éxito", "Cilindro - Success");
-
                   _this2.resetData();
                 }
               }
               if (res.data.existe) {
-
                 toastr.error("El número de serie se encuentra registrado", "Cilindro - Error");
               }
             }).catch(function (err) {
               loading.hide();
-              console.log(err.response);
               toastr.error(parsePreJson(err.response), 'Error');
             });
           } else {
@@ -2391,31 +2328,16 @@ var win = window;
         }
       }
     },
-
-    // btnOnClick_btnCancelar () {
-    //   // this.$router.push({path: '/'})
-
-    //   console.log(this)
-    // },
     fnTargetPropietario: function fnTargetPropietario(e, d) {
-      // console.log(data)
       this.propietario = d;
       this.nombre = d.nombre + ' - ' + d.numero;
     }
   },
-  created: function created() {
-    if (this.edit) console.log('ACTUALIZAR CILINDROS');else console.log('REGISTRO CILINDROS');
-    console.log(this);
-    // if (win.editmode) {
-    //   this.edit = true
-    //   this.getCilindro(win.idcilindro)
-    // } else {
-    //   console.log('no found')
-    // }
-  },
+  created: function created() {},
   mounted: function mounted() {
+    var _this3 = this;
 
-    console.log('mounted');
+    var _this = this;
     $('#propietario').typeahead({
       highlight: true,
       hint: false,
@@ -2427,21 +2349,18 @@ var win = window;
         return d.nombre + ' - ' + d.numero;
       },
       source: function source(q, cb, asy) {
-        // let result = []
         if (q.trim() != '') {
           axios.get(BASE_URL + '/api/propietarios?q=' + q).then(function (res) {
-            console.log(res.data);
             asy(res.data);
-            // return res.data
           });
-
-          // let regex = new RegExp(q, 'i');
-          // cb(_this.listaBancos.filter(v => {
-          //   return regex.test(v.banco_name)
-          // }))
         }
       }
-    }).bind('typeahead:select', this.fnTargetPropietario).bind('typeahead:autocomplete', this.fnTargetPropietario);
+    }).bind('typeahead:select', this.fnTargetPropietario).bind('typeahead:change', function () {
+      if (_this3.propietario == null) {
+        $('#propietario').typeahead('val', '');
+        _this3.nombre = '';
+      }
+    }).bind('typeahead:autocomplete', this.fnTargetPropietario);
   }
 });
 
