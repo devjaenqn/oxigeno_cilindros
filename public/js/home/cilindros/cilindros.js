@@ -2077,6 +2077,7 @@ var app = new Vue({
   name: 'listar',
   data: function data() {
     return {
+      timeoutfiltertext: null,
       cilindros: [],
       dt_tbl_cilindros: null,
       tbl_cilindros: null,
@@ -2088,6 +2089,16 @@ var app = new Vue({
     };
   },
 
+  watch: {
+    'filtros.query': function filtrosQuery(nv) {
+      var _this = this;
+
+      clearTimeout(this.timeoutfiltertext);
+      this.timeoutfiltertext = setTimeout(function () {
+        _this.dt_tbl_cilindros.draw();
+      }, 200);
+    }
+  },
   methods: {
     getSituacion: function getSituacion(num) {
       switch (+num) {
@@ -2179,7 +2190,7 @@ var app = new Vue({
     // })
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     // axios.get(BASE_URL + '/home/cilindro?type=json').then(res => {
     // console.log(res.data)
@@ -2194,7 +2205,7 @@ var app = new Vue({
       ajax: {
         url: BASE_URL + '/home/cilindro?type=json',
         data: function data(d) {
-          d.custom_filter = _this.filtros;
+          d.custom_filter = _this2.filtros;
         }
       },
       serverSide: true,
@@ -2203,10 +2214,11 @@ var app = new Vue({
         } }, { data: 'capacidad' }, { data: 'propietario.nombre', render: function render(d, t, r) {
           return d.toUpperCase();
         } }, { data: 'presion' }, { data: 'situacion', render: function render(d, t, r) {
-          var cargado = _this.getCargado(r.cargado);
+          var cargado = _this2.getCargado(r.cargado);
 
-          var span = '<span class="badge badge-' + _this.getSituacion(d).color + ' rounded-2">' + _this.getSituacion(d).name + '</span>\n                        <span class="badge badge-' + cargado.color + ' rounded-2">' + cargado.attr + '</span>\n                        ';
+          var span = '<span class="badge badge-' + _this2.getSituacion(d).color + ' rounded-2">' + _this2.getSituacion(d).name + '</span>\n                        <span class="badge badge-' + cargado.color + ' rounded-2">' + cargado.attr + '</span>\n                        ';
           if (r.defectuoso == 1) span += '<span class="badge badge-danger rounded-2">D</span>';
+          if (r.evento == 'create') span += '<span class="badge badge-info rounded-2">new</span>';
           return span;
         } }, { data: 'cil_id', render: function render(d, t, r) {
           return '\n                  <a href="' + (BASE_URL + '/home/cilindro/' + d + '/cambiar_situacion') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="cambiar_situacion"><i class="fa fa-refresh"></i> </a>\n                  <a href="' + (BASE_URL + '/home/cilindro/' + d + '/seguimiento') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="historial"><i class="fa fa-exchange"></i> </a>\n                  <a href="' + (BASE_URL + '/home/cilindro/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles"><i class="fa fa-eye"></i> </a>\n                  <a href="' + (BASE_URL + '/home/cilindro/' + d + '/edit') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones"  data-id="' + d + '" data-accion="editar"><i class="fa fa-pencil"></i> </a>\n                  <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar"><i class="fa fa-trash"></i> </button>\n\n                ';
