@@ -86,7 +86,7 @@
             <thead>
               <tr>
                 <th>FECHA</th>
-                <th>SERIE</th>
+                <th>SISTEMA</th>
                 <th>LOTE</th>
                 <th>ENTRADA</th>
                 <th>SALIDA</th>

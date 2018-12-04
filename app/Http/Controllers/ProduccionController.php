@@ -271,7 +271,7 @@ class ProduccionController extends Controller
             $all = Produccion::with(['operador', 'detalles'])
                 ->join('operador', 'operador.ope_id', '=', 'produccion.operador_id')
                 ->join('produccion_cilindros', 'produccion_cilindros.produccion_id', '=', 'produccion.pro_id')
-                ->selectRaw('distinct produccion.*, operador.nombre, operador.apellidos');
+                ->selectRaw('distinct produccion.*, operador.nombre, operador.apellidos, CONCAT(produccion.serie_lote, "-", produccion.numero_lote) as lote_format');
                     // return datatables()->of(CilindroResource::collection($all))->toJson();
             $make = DataTables::of($all)
                     ->filter(function ($query) use ($request) {

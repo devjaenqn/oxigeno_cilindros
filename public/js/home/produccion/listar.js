@@ -196,9 +196,13 @@ var listar = {
         }
       },
       serverSide: true,
-      columns: [{ data: 'fecha' }, { data: 'serie_lote', render: function render(d, t, r) {
+      columns: [{ data: 'fecha' },
+      // {data: 'serie_lote', render: (d, t, r) => {
+      { data: 'sistema_lote', render: function render(d, t, r) {
           return d.toUpperCase();
-        } }, { data: 'numero_lote' }, { data: 'entrada', render: function render(d, t, r) {
+        } },
+      // {data: 'numero_lote'},
+      { data: 'lote_format' }, { data: 'entrada', render: function render(d, t, r) {
           var date = moment(d);
           return '<span title="' + date.format('HH:mm') + '">' + date.format('hh:mm A') + '</span>';
         } }, { data: 'salida', render: function render(d, t, r) {
