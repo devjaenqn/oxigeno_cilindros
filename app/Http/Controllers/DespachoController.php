@@ -287,6 +287,7 @@ class DespachoController extends Controller
     // }
     public function store(Request $request)
     {
+        // dd($request);
         $valida = $request->validate([
             'negocio' => 'required',
             'comprobante' => 'required',

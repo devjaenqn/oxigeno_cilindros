@@ -300,7 +300,9 @@ var listar = {
       //   else return  salida + transporte + confirma
       // }},
       // {data: 'guia.negocio.attr'},
-      { data: 'doc_serie' }, { data: 'doc_numero' }, { data: 'destino.entidad.nombre', render: function render(d, t, r) {
+      { data: 'doc_serie' }, { data: 'doc_numero', render: function render(d, t, r) {
+          return d + (+r.anulado == 1 ? '&nbsp;<span class="badge badge-danger rounded-2">A</span>' : '');
+        } }, { data: 'destino.entidad.nombre', render: function render(d, t, r) {
           return d.toUpperCase();
         } }, { data: 'total_cilindros' }, { data: 'total_cubicos' }, { data: 'des_id', render: function render(d, t, r) {
           var confirma = '';

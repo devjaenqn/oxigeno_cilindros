@@ -131,6 +131,7 @@ var registro = {
       var _this = this;
 
       this.anular = false;
+      this.anular = false;
 
       this.motivo = 'VENTA';
       this.referencia = '';
@@ -326,11 +327,14 @@ var registro = {
                   toastr.success(mensaje, 'Despacho -Success');
                   _this2.resetForm();
                 } else {
+
+                  if (_this2.anular) _this2.anular = false;
                   if (res.data.show_message) {
                     toastr.warning(res.data.msg, 'Despacho - Revisar');
                   }
                 }
               }).catch(function (err) {
+                if (_this2.anular) _this2.anular = false;
                 loading.hide();
                 toastr.error(parsePreJson(err.response.data));
               });
@@ -341,17 +345,20 @@ var registro = {
                   toastr.success(mensaje, 'Despacho -Success');
                   _this2.resetForm();
                 } else {
+                  if (_this2.anular) _this2.anular = false;
                   if (res.data.show_message) {
                     toastr.warning(res.data.msg, 'Despacho - Revisar');
                   }
                 }
               }).catch(function (err) {
+                if (_this2.anular) _this2.anular = false;
                 loading.hide();
                 toastr.error(parsePreJson(err.response.data));
               });
             }
           } else {
             loading.hide();
+            if (this.anular) this.anular = false;
           }
 
           // } else {
@@ -360,9 +367,12 @@ var registro = {
           // }
         } else {
           //no existe lote
+          if (this.anular) this.anular = false;
           loading.show();
           toastr.error('Lote no encontrado', 'Error');
         }
+      } else {
+        if (this.anular) this.anular = false;
       }
     },
     frmOnSubmit_frmAgregaCilindro: function frmOnSubmit_frmAgregaCilindro() {

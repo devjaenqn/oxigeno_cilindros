@@ -140,7 +140,7 @@
                                   <input class="form-control pt-1 pr-2 pl-2 pb-1 text-select text-uppercase" id="doc"  type="text" name="doc"  placeholder="Tipo" v-model="cliente.tipo_doc" readonly="">
                                   {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                                 </div>
-                                <label class="col-md-2 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="numero">Num</label>
+                                <label class="col-md-2 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="numero">#</label>
                                 <div class="col-md-10">
                                   <input class="form-control pt-1 pr-2 pl-2 pb-1 text-select" id="numero"  type="text" name="numero"  placeholder="NÚMERO" v-model="cliente.numero_doc" readonly="">
                                   {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
