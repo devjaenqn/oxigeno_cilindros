@@ -27,7 +27,7 @@
                         <select name="sistema" id="sistema" v-model="sistema" class="form-control pl-2 pt-1 pr-2 pb-1" style="height: 31px" required="" form="frm_registro_produccion">
                           @if ($sistemas->count() > 0)
                             @foreach ($sistemas as $sis)
-                              <option value="{{ $sis->sis_id }}">{{ strtoupper($sis->sistema) }}</option>
+                              <option  value="{{ $sis->sis_id }}">{{ strtoupper($sis->sistema) }}</option>
                             @endforeach
                           @else
                             <option value="0">DEFINIR SISTEMAS</option>
@@ -49,7 +49,7 @@
                         <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select text-uppercase" id="serie_lote"  type="text" name="serie_lote" v-model="serie_lote" placeholder="0000" required="" form="frm_registro_produccion" readonly="">
                       </div>
                       <div class="col-md-12">
-                        <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="numero_lote"  type="text" name="numero_lote" v-model="numero_lote" placeholder="000000000" required="" form="frm_registro_produccion" readonly="">
+                        <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="numero_lote"  type="text" name="numero_lote" v-model="numero_lote" placeholder="000000000" required="" form="frm_registro_produccion" {{ $edit ? 'readonly=""' : 'readonly=""' }}>
                         {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                       </div>
                     </div>
@@ -74,7 +74,7 @@
                   <div class="form-group row mb-1 mt-1">
                     <label class="col-md-6 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="fecha">Entrada</label>
                     <div class="col-md-18">
-                      <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="fecha"  type="date" name="fecha" v-model="fecha" placeholder="DD/MM/YYYY" value="2018-11-11" required="" form="frm_registro_produccion">
+                      <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="fecha"  type="date" name="fecha_entrada" v-model="fecha" placeholder="DD/MM/YYYY" value="2018-11-11" required="" form="frm_registro_produccion">
                       {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                     </div>
                   </div>
@@ -84,7 +84,7 @@
                   <div class="form-group row mb-1 mt-1">
                     {{-- <label class="col-md-7 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="entrada">Entrada</label> --}}
                     <div class="col-md-24">
-                      <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="entrada"  type="time" name="entrada" v-model="entrada" placeholder="00:00" required="" form="frm_registro_produccion">
+                      <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select" id="entrada"  type="time" name="entrada_salida" v-model="entrada" placeholder="00:00" required="" form="frm_registro_produccion">
                       {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                     </div>
                   </div>
@@ -121,7 +121,7 @@
                           <div class="col-md-18">
                             <select name="operador" id="operador" v-model="operador" class="form-control pl-2 pt-1 pr-2 pb-1" style="height: 31px" required="" form="frm_registro_produccion">
                               @foreach ($operadores as $ope)
-                                <option value="{{ $ope->ope_id }}">{{ strtoupper($ope->nombre.' '.$ope->apellidos) }}</option>
+                                <option value="{{ $ope->ope_id }}"  >{{ strtoupper($ope->nombre.' '.$ope->apellidos) }}</option>
                               @endforeach
                             </select>
 
@@ -243,7 +243,7 @@
                           <td>@{{ cil.capacidad }}</td>
                           <td>@{{ cil.cantidad }}</td>
                           <td>
-                            <button class="btn btn-sm btn-default btn-accion-table btn-acciones" @click="cilindros.splice(index,1)" type="button" data-id="${d}" data-accion="eliminar" title="Quitar cilindro"><i class="fa fa-trash"></i> </button>
+                            <button v-if="cil.delete" class="btn btn-sm btn-default btn-accion-table btn-acciones" @click="cilindros.splice(index,1)" type="button" data-id="${d}" data-accion="eliminar" title="Quitar cilindro"><i class="fa fa-trash"></i> </button>
                           </td>
                         </tr>
                         <tr v-if="cilindros.length == 0">

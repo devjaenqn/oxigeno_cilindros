@@ -60,20 +60,20 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 70);
+/******/ 	return __webpack_require__(__webpack_require__.s = 72);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 70:
+/***/ 72:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(71);
+module.exports = __webpack_require__(73);
 
 
 /***/ }),
 
-/***/ 71:
+/***/ 73:
 /***/ (function(module, exports) {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -88,18 +88,19 @@ var registro = {
       // lote_success: false,
       // serie_lote: '',
       // numero_lote: '',
-      // fecha: moment().format('YYYY-MM-DD'),
-      // fecha_salida: moment().format('YYYY-MM-DD'),
-      // operador: 0,
+      fecha: moment().format('YYYY-MM-DD'),
+      fecha_salida: moment().format('YYYY-MM-DD'),
+      operador: 0,
       turno: '7AM - 7PM',
-      // entrada: '00:00',
-      // salida: '00:00',
-      // observacion: '',
+      entrada: '00:00',
+      salida: '00:00',
+      observacion: '',
+      edit: true,
       cilindro_th: null,
       // sistema: 0,
       // total_cilindros: 0,
       // total_libras: 0,
-      // cilindros: [],
+      cilindros: [],
       cilindro: {
         marcar_salida: false,
         id: 0,
@@ -110,8 +111,6 @@ var registro = {
         propietario_id: 0,
         observacion: '',
         cantidad: 0,
-        registrado: 0,
-        delete: true,
         ingreso: moment().format('YYYY-MM-DD HH:mm:ss'),
         salida: moment().format('YYYY-MM-DD HH:mm:ss'),
         salida_date: moment().format('YYYY-MM-DD'),
@@ -155,9 +154,8 @@ var registro = {
       this.cilindro.propietario = '';
       this.cilindro.propietario_id = 0;
       this.cilindro.cantidad = 0;
-      this.cilindro.registrado = 0;
       this.cilindro.retiro = '0';
-      this.cilindro.delete = true;
+
       this.cilindro.salida_date = this.fecha;
       this.cilindro.observacion = '';
       this.cilindro.salida_time = this.salida;
@@ -182,177 +180,71 @@ var registro = {
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this3 = this;
 
-      msg.pregunta('Producción', '¿Desea continuar?', function (quest) {
-        if (quest) {
-          var now = moment();
-          // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
-          // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
-          var entrada = moment(_this3.fecha + ' ' + _this3.entrada);
-          var salida = moment(_this3.fecha_salida + ' ' + _this3.salida);
+      if (confirm('¿Deseas continuar?')) {
+        loading.show();
+        var now = moment();
+        // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
+        // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
+        var entrada = moment(this.fecha + ' ' + this.entrada);
+        var salida = moment(this.fecha_salida + ' ' + this.salida);
 
-          if (_this3.lote_success) {
-            if (entrada.isValid() && salida.isValid()) {
-              var success_reg = true;
+        if (this.lote_success) {
+          if (entrada.isValid() && salida.isValid()) {
+            var success_reg = true;
 
-              if (entrada >= salida) {
-                success_reg = false;
-                toastr.warning('La fecha de salida debe ser mayor', 'Revisar');
-              }
+            if (entrada >= salida) {
+              success_reg = false;
+              toastr.warning('La fecha de salida debe ser mayor', 'Revisar');
+            }
 
-              if (_this3.operador == 0) {
-                success_reg = false;
-                toastr.warning('Seleccione un operador', 'Revisar');
-              }
+            if (this.operador == 0) {
+              success_reg = false;
+              toastr.warning('Seleccione un operador', 'Revisar');
+            }
 
-              if (_this3.cilindros.length <= 0) {
-                success_reg = false;
-                toastr.warning('Registre al menos un cilindro', 'Revisar');
-              }
+            if (this.cilindros.length <= 0) {
+              success_reg = false;
+              toastr.warning('Registre al menos un cilindro', 'Revisar');
+            }
 
-              if (success_reg) {
-                var sendData = {
-                  entrada: entrada.format('YYYY-MM-DD HH:mm:ss'),
-                  salida: salida.format('YYYY-MM-DD HH:mm:ss'),
-                  cilindros: _this3.cilindros,
-                  operador: _this3.operador,
-                  turno: _this3.turno,
-                  fecha: _this3.fecha,
-                  registrado: _this3.registrado,
-                  sistema: _this3.sistema,
-                  observacion: _this3.observacion,
-                  total_cilindros: _this3.total_cilindros,
-                  total_libras: _this3.total_libras,
-                  modo: 'none'
-                };
-
-                if (!_this3.edit) return axios.post(BASE_URL + '/api/produccion', sendData);else {
-                  sendData.modo = 'produccion';
-                  return axios.put(BASE_URL + '/api/produccion/' + _this3.produccion_id, sendData);
+            if (success_reg) {
+              var sendData = {
+                entrada: entrada.format('YYYY-MM-DD HH:mm:ss'),
+                salida: salida.format('YYYY-MM-DD HH:mm:ss'),
+                cilindros: this.cilindros,
+                operador: this.operador,
+                turno: this.turno,
+                fecha: this.fecha,
+                // fecha: now.format('YYYY-MM-DD'),
+                sistema: this.sistema,
+                observacion: this.observacion,
+                total_cilindros: this.total_cilindros,
+                total_libras: this.total_libras
+              };
+              axios.post(BASE_URL + '/api/produccion', sendData).then(function (res) {
+                loading.hide();
+                if (res.data.success) {
+                  toastr.success('Registro realizado con éxito', 'Producción - Success');
+                  _this3.resetForm();
                 }
-              }
+              }).catch(function (err) {
+                loading.hide();
+                toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line);
+              });
             } else {
-              //fechas invalidas
-              toastr.warning('Fechas no válidas', 'Revisar');
+              loading.hide();
             }
           } else {
-            //no existe lote
-            toastr.error('Lote no encontrado', 'Error');
+            loading.hide();
+            //fechas invalidas
+            toastr.warning('Fechas no válidas', 'Revisar');
           }
+        } else {
+          loading.hide();
+          //no existe lote
+          toastr.error('Lote no encontrado', 'Error');
         }
-      }).then(function (res) {
-        if (res.data) {
-          if (res.data.success) {
-            // toastr.success('Registro realizado con éxito', 'Producción - Success')
-            var title = '',
-                text = '';
-            if (_this3.edit) {
-              title = 'Actualizado';
-              text = 'Producción actualizada';
-            } else {
-              title = 'Registrado';
-              text = 'Datos registrado';
-            }
-            msg.success(title, text, 5000).then(function (event) {
-              location.href = base_url('home/produccion');
-            });
-          }
-        }
-      }).catch(function (err) {
-        if (err.response) toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line);else toastr.error(err);
-      });
-      // msg.pregunta('Producción', '¿Desea continuar?').then(res => {
-      //   if (res) {
-      //     loading.show()
-      //     let now = moment()
-      //     // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
-      //     // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
-      //     let entrada = moment(this.fecha + ' ' + this.entrada)
-      //     let salida = moment(this.fecha_salida + ' ' + this.salida)
-
-      //     if (this.lote_success) {
-      //       if (entrada.isValid() && salida.isValid()){
-      //         let success_reg = true
-
-      //         if (entrada >= salida) {
-      //           success_reg = false
-      //           toastr.warning('La fecha de salida debe ser mayor', 'Revisar')
-      //         }
-
-      //         if (this.operador == 0) {
-      //           success_reg = false
-      //           toastr.warning('Seleccione un operador', 'Revisar')
-      //         }
-
-      //         if (this.cilindros.length <= 0) {
-      //           success_reg = false
-      //           toastr.warning('Registre al menos un cilindro', 'Revisar')
-      //         }
-
-      //         if (success_reg) {
-      //           let sendData = {
-      //             entrada: entrada.format('YYYY-MM-DD HH:mm:ss'),
-      //             salida: salida.format('YYYY-MM-DD HH:mm:ss'),
-      //             cilindros: this.cilindros,
-      //             operador: this.operador,
-      //             turno: this.turno,
-      //             fecha: this.fecha,
-      //             registrado: this.registrado,
-      //             sistema: this.sistema,
-      //             observacion: this.observacion,
-      //             total_cilindros: this.total_cilindros,
-      //             total_libras: this.total_libras,
-      //             modo: 'none'
-      //           }
-      //           _this = this
-      //           function __fnOnSuccess (res) {
-      //             console.log(this.edit)
-      //             loading.hide()
-      //             if (res.data.success) {
-      //               // toastr.success('Registro realizado con éxito', 'Producción - Success')
-      //               let title = '', msg = ''
-      //               if (_this.edit) {
-      //                 title = 'Actualizado'
-      //                 msg = 'Producción actualizada'
-      //               } else {
-      //                 title = 'Registrado'
-      //                 msg = 'Datos registrado'
-      //               }
-      //               swal({
-      //                 title: title,
-      //                 text: msg,
-      //                 type: 'success',
-      //                 timer: 2000,
-      //                 allowOutsideClick: false
-      //               }).then(event => {
-      //                 location.href = base_url('home/produccion')
-      //               })
-      //             }
-      //           }
-      //           function __fnOnError (res) {
-      //             loading.hide()
-      //             toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line)
-      //           }
-      //           if (!this.edit)
-      //             axios.post(BASE_URL + '/api/produccion', sendData).then(__fnOnSuccess).catch(__fnOnError)
-      //           else{
-      //             sendData.modo = 'produccion'
-      //             axios.put(BASE_URL + '/api/produccion/' + this.produccion_id, sendData).then(__fnOnSuccess).catch(__fnOnError)
-      //           }
-      //         } else {
-      //           loading.hide()
-      //         }
-      //       } else {
-      //         loading.hide()
-      //         //fechas invalidas
-      //         toastr.warning('Fechas no válidas', 'Revisar')
-      //       }
-      //     } else {
-      //       loading.hide()
-      //       //no existe lote
-      //       toastr.error('Lote no encontrado', 'Error')
-      //     }
-      //   }
-      // })
+      }
     },
     frmOnSubmit_frmAgregaCilindro: function frmOnSubmit_frmAgregaCilindro() {
       console.log('registrar cilindro');
@@ -373,8 +265,6 @@ var registro = {
               cantidad: this.cilindro.cantidad, //presion
               ingreso: entrada.format('YYYY-MM-DD HH:mm:ss'),
               retiro: '0',
-              registrado: this.cilindro.registrado,
-              delete: this.cilindro.delete,
               salida: salida.format('YYYY-MM-DD HH:mm:ss'),
               observacion: this.cilindro.observacion
             };
@@ -418,7 +308,6 @@ var registro = {
   },
   watch: {
     fecha: function fecha(nv, ov) {
-      console.log(nv);
       this.cilindro.salida_date = nv;
       this.fecha_salida = nv;
     },
@@ -460,11 +349,6 @@ var registro = {
     console.log(this);
     console.log('registro produccion');
     // this.sistema = this.data_sistemas[0].sis_id
-
-    if (this.edit) {
-      //cargar cilindros
-      this.cilindros;
-    }
   },
   mounted: function mounted() {
 

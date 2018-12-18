@@ -1,12 +1,4 @@
 <!DOCTYPE html>
-<!--
-* CoreUI - Free Bootstrap Admin Template
-* @version v2.0.0
-* @link https://coreui.io
-* Copyright (c) 2018 creativeLabs Łukasz Holeczek
-* Licensed under MIT (https://coreui.io/license)
--->
-
 <html lang="en">
   <head>
     <base href="{{ url('/') }}">
@@ -24,10 +16,11 @@
     <link href="vendors/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
     <!-- Main styles for this application-->
     {{-- <link href="css/style.css" rel="stylesheet"> --}}
+    <link href="vendors/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="css/app.css" rel="stylesheet">
     <link href="css/style-app.css" rel="stylesheet">
     <link href="vendors/pace-progress/css/pace.css" rel="stylesheet">
-    <link href="vendors/sweetalert2/dist/sweetalert2.min.css" rel="stylesheet">
+
     <link href="vendors/toastr/build/toastr.min.css" rel="stylesheet">
 
     <style type="text/css" media="print">
@@ -52,6 +45,9 @@
     @stack('css')
     <script>
       const BASE_URL = "{{ url('/') }}";
+      function base_url(url_ref = ''){
+        return "{{ url('/') }}/" + url_ref;
+      }
     </script>
   </head>
   <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
@@ -138,6 +134,7 @@
     <script src="vendors/moment/moment.min.js"></script>
     <script src="vendors/typeahead.js/dist/typeahead.bundle.js"></script>
     <script type="text/javascript">
+      var localvalues = new LocalS();
       $('body').on('focus', '.text-select', function(e){
         this.select()
       })

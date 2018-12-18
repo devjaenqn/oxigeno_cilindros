@@ -59,13 +59,13 @@
 
                           <div class="form-group row mb-1 mt-1">
                             <label class="col-md-6 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="serie_comprobante">Serie</label>
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                               <input class="form-control pt-1 pr-2 pl-2 pb-1 text-select text-uppercase" id="serie_comprobante"  type="text" name="serie_comprobante" v-model="serie_comprobante" placeholder="0000" readonly="">
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                             </div>
 
                             <label class="col-md-4 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="numero_comprobante">Número</label>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                               <input class="form-control pt-1 pr-2 pl-2 pb-1 text-select" id="numero_comprobante"  type="text" name="numero_comprobante" v-model="numero_comprobante" placeholder="000000000">
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                             </div>
@@ -73,12 +73,12 @@
 
                           <div class="form-group row mb-1 mt-1">
                             <label class="col-md-6 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="fecha_emision">Emisión</label>
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                               <input class="form-control pt-1 pr-1 pl-2 pb-1 text-select" id="fecha_emision"  type="date" name="fecha_emision" v-model="fecha_emision" placeholder="DD/MM/YYYY" >
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                             </div>
 
-                            <label class="col-md-4 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="motivo">Motivo</label>
+                            <label class="col-md-2 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="motivo">Mot.</label>
                             <div class="col-md-6">
                               <input class="form-control pt-1 pr-2 pl-2 pb-1 text-select text-uppercase" id="motivo"  type="text" name="motivo" v-model="motivo" placeholder="Motivo">
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}

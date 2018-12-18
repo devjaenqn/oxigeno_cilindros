@@ -60,20 +60,20 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 73);
+/******/ 	return __webpack_require__(__webpack_require__.s = 76);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 73:
+/***/ 76:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(74);
+module.exports = __webpack_require__(77);
 
 
 /***/ }),
 
-/***/ 74:
+/***/ 77:
 /***/ (function(module, exports) {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -254,126 +254,139 @@ var registro = {
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this2 = this;
 
-      if (confirm('Desea continuar')) {
-        loading.show();
-        var now = moment();
-        // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
-        // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
-
-        if (this.comprobante_success) {
-          // if (entrada.isValid() && salida.isValid()){
-          var success_reg = true;
-
-          if (this.cliente.id == 0) {
-            success_reg = false;
-            toastr.warning('Seleccione un cliente', 'Revisar');
-          }
-
-          if (this.comprobante == 0) {
-            success_reg = false;
-            toastr.error('Guía no encontrada', 'Error');
-          }
-          if (!this.anular) {
-            if (this.cilindros.length <= 0) {
+      msg.pregunta('Despacho', '¿Desea continuar?', function (quest) {
+        if (quest) {
+          var now = moment();
+          if (_this2.comprobante_success) {
+            var success_reg = true;
+            if (_this2.cliente.id == 0) {
               success_reg = false;
-              toastr.warning('Registre al menos un cilindro', 'Revisar');
+              toastr.warning('Seleccione un cliente', 'Revisar');
             }
-          }
+            if (_this2.comprobante == 0) {
+              success_reg = false;
+              toastr.error('Guía no encontrada', 'Error');
+            }
+            if (!_this2.anular) {
+              if (_this2.cilindros.length <= 0) {
+                success_reg = false;
+                toastr.warning('Registre al menos un cilindro', 'Revisar');
+              }
+            }
 
-          if (this.cliente.destino != 0) {
-            var locacion = this.cliente.destinos.find(function (v) {
-              return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
-            });
-
-            if (typeof locacion == 'undefined') this.cliente.destino = 0;
-          }
-
-          if (this.cliente.destino_nombre.trim() == '') {
-            success_reg = false;
-            toastr.warning('Ingrese destino', 'Revisar');
-          }
-
-          if (success_reg) {
-            var sendData = {
-              negocio: this.negocio,
-              anular: this.anular ? '1' : '0',
-              comprobante: this.comprobante,
-              serie: this.serie_comprobante,
-              referencia: this.referencia,
-              numero: this.numero_comprobante,
-              fecha: this.fecha_emision,
-              motivo: this.motivo,
-              observacion: this.observacion,
-              cliente: this.cliente.id,
-              destino: this.cliente.destino,
-              destino_nombre: this.cliente.destino_nombre.toUpperCase(),
-              total_cilindros: this.total_cilindros,
-              total_presion: this.total_libras,
-              total_cubicos: this.total_cubicos,
-              cilindros: this.cilindros,
-              metodo: this.is_edit ? 'modificar_despacho' : ''
-
-              // let config = {
-              //   method: this.is_edit ? 'PUT' : 'POST',
-              //   params: sendData,
-              //   url: this.is_edit ? BASE_URL + '/api/despacho/' + this.data_despacho.des_id : BASE_URL + '/api/despacho'
-              // }
-            };var mensaje = this.is_edit ? 'Despacho actualizado con éxito' : 'Registro realizado con éxito';
-            // console.log(sendData)
-            if (this.is_edit) {
-              axios.put(BASE_URL + '/api/despacho/' + this.data_despacho.des_id, sendData).then(function (res) {
-                loading.hide();
-                if (res.data.success) {
-                  toastr.success(mensaje, 'Despacho -Success');
-                  _this2.resetForm();
-                } else {
-
-                  if (_this2.anular) _this2.anular = false;
-                  if (res.data.show_message) {
-                    toastr.warning(res.data.msg, 'Despacho - Revisar');
-                  }
-                }
-              }).catch(function (err) {
-                if (_this2.anular) _this2.anular = false;
-                loading.hide();
-                toastr.error(parsePreJson(err.response.data));
+            if (_this2.cliente.destino != 0) {
+              var locacion = _this2.cliente.destinos.find(function (v) {
+                return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
               });
+
+              if (typeof locacion == 'undefined') _this2.cliente.destino = 0;
+            }
+
+            if (_this2.cliente.destino_nombre.trim() == '') {
+              success_reg = false;
+              toastr.warning('Ingrese destino', 'Revisar');
+            }
+
+            if (success_reg) {
+              var sendData = {
+                negocio: _this2.negocio,
+                anular: _this2.anular ? '1' : '0',
+                comprobante: _this2.comprobante,
+                serie: _this2.serie_comprobante,
+                referencia: _this2.referencia,
+                numero: _this2.numero_comprobante,
+                fecha: _this2.fecha_emision,
+                motivo: _this2.motivo,
+                observacion: _this2.observacion,
+                cliente: _this2.cliente.id,
+                destino: _this2.cliente.destino,
+                destino_nombre: _this2.cliente.destino_nombre.toUpperCase(),
+                total_cilindros: _this2.total_cilindros,
+                total_presion: _this2.total_libras,
+                total_cubicos: _this2.total_cubicos,
+                cilindros: _this2.cilindros,
+                metodo: _this2.is_edit ? 'modificar_despacho' : ''
+              };
+              if (_this2.is_edit) {
+                return axios.put(BASE_URL + '/api/despacho/' + _this2.data_despacho.des_id, sendData);
+              } else {
+                return axios.post(BASE_URL + '/api/despacho', sendData);
+              }
             } else {
-              axios.post(BASE_URL + '/api/despacho', sendData).then(function (res) {
-                loading.hide();
-                if (res.data.success) {
-                  toastr.success(mensaje, 'Despacho -Success');
-                  _this2.resetForm();
-                } else {
-                  if (_this2.anular) _this2.anular = false;
-                  if (res.data.show_message) {
-                    toastr.warning(res.data.msg, 'Despacho - Revisar');
-                  }
-                }
-              }).catch(function (err) {
-                if (_this2.anular) _this2.anular = false;
-                loading.hide();
-                toastr.error(parsePreJson(err.response.data));
-              });
+              if (_this2.anular) _this2.anular = false;
             }
           } else {
-            loading.hide();
-            if (this.anular) this.anular = false;
+            if (_this2.anular) _this2.anular = false;
+            toastr.error('Lote no encontrado', 'Error');
           }
-
-          // } else {
-          //   //fechas invalidas
-          //   toastr.warning('Fechas no válidas', 'Revisar')
-          // }
-        } else {
-          //no existe lote
-          if (this.anular) this.anular = false;
-          loading.show();
-          toastr.error('Lote no encontrado', 'Error');
         }
-      } else {
-        if (this.anular) this.anular = false;
-      }
+        // else {
+        //   if (this.anular)
+        //     this.anular = false
+        // }
+      }).then(function (res) {
+        console.log(res);
+        if (res.data) {
+          if (res.data.success) {
+            var mensaje = 'Elemento registrado con éxito!';
+            if (_this2.is_edit) {
+              mensaje = 'Elemento actualizado con éxito';
+            }
+            msg.success('Despacho', mensaje, 5000).then(function (event) {
+              location.href = base_url('home/despacho');
+            });
+          } else {
+            if (_this2.anular) _this2.anular = false;
+            if (res.data.show_message) {
+              toastr.warning(res.data.msg, 'Revisar!');
+            }
+          }
+        } else if (res.cancel) {
+          console.log('cancel proce');
+          if (_this2.anular) _this2.anular = false;
+        }
+      });
+
+      // .then(res => {
+      //                 // loading.hide()
+      //                 if (res.data.success) {
+      //                   toastr.success(mensaje, 'Despacho -Success')
+      //                   this.resetForm()
+      //                 } else {
+      //                   if (this.anular)
+      //                     this.anular = false
+      //                   if (res.data.show_message) {
+      //                     toastr.warning(res.data.msg, 'Despacho - Revisar')
+      //                   }
+      //                 }
+
+      //             }).catch(err => {
+      //               if (this.anular)
+      //                 this.anular = false
+      //               // loading.hide()
+      //               toastr.error(parsePreJson(err.response.data))
+      //             })
+
+
+      // .then(res => {
+      //     // loading.hide()
+      //     if (res.data.success) {
+      //       toastr.success(mensaje, 'Despacho -Success')
+      //       this.resetForm()
+      //     } else {
+      //       if (this.anular)
+      //         this.anular = false
+      //       if (res.data.show_message) {
+      //         toastr.warning(res.data.msg, 'Despacho - Revisar')
+      //       }
+      //     }
+
+      // }).catch(err => {
+      //   if (this.anular)
+      //     this.anular = false
+      //   // loading.hide()
+      //   toastr.error(parsePreJson(err.response.data))
+      // })
     },
     frmOnSubmit_frmAgregaCilindro: function frmOnSubmit_frmAgregaCilindro() {
       console.log('registrar cilindro');

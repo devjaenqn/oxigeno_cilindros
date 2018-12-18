@@ -69,6 +69,9 @@ class ProduccionController extends Controller
             'data_sistemas' => SistemaResource::collection($sistemas),
             'sistema' => 0,
             'serie_lote' => '',
+            'operador' => 0,
+            'produccion_id' => 0,
+            'edit' => false,
             'lote_success' => false,
             'numero_lote' => '',
             // 'data_lotes' => $sistemas->map(function ($item) {
@@ -80,10 +83,17 @@ class ProduccionController extends Controller
             $sis = $sistemas[0];
             // dd($sis);
             $data['js']['sistema'] = $sis->sis_id;
+            $data['js']['produccion'] = null;
             if ($sis->lote != null) {
                 $data['js']['serie_lote'] = $sis->lote->serie;
                 $data['js']['lote_success'] = true;
                 $data['js']['numero_lote'] = $sis->lote->actual;
+                $data['js']['entrada'] = '00:00';
+                $data['js']['salida'] = '00:00';
+                $data['js']['fecha'] = Carbon::now()->format('Y-m-d');
+                $data['js']['fecha_salida'] = Carbon::now()->format('Y-m-d');
+                $data['js']['observacion'] = '';
+                $data['js']['cilindros'] = [];
             }
         }
         // dd($data['js']);
@@ -99,6 +109,7 @@ class ProduccionController extends Controller
      */
     public function store(Request $request)
     {
+        // dd('store');
         $valida = $request->validate([
             'entrada' => 'required',
             'salida' => 'required',
@@ -345,7 +356,90 @@ class ProduccionController extends Controller
      */
     public function edit($id)
     {
-        //
+
+        $produccion = Produccion::find($id);
+        $edit = true;
+        if ($produccion) {
+            $data['edit'] = $edit;
+            $data['produccion'] = $produccion;
+            $data['name'] = 'jaen';
+            $data['operadores'] = Operador::all();
+            // $sistemas = Sistema::where('attr', 's')->get();
+            $sistemas = Sistema::all();
+            $sistemas->map(function ($item) {
+                if ($item->lote != null)
+                    $item->lote->actual = fill_zeros($item->lote->actual);
+                return $item;
+            });
+            $data['sistemas'] = $sistemas;
+
+
+            // $data['lote'] = Lote::active()->get();
+            $data['js'] = [
+                'data_sistemas' => SistemaResource::collection($sistemas),
+                'sistema' => 0,
+                'serie_lote' => '',
+                'lote_success' => false,
+                'numero_lote' => '',
+                'produccion_id' => $produccion->pro_id,
+                'edit' => true,
+                'operador' => $produccion->operador_id,
+                // 'data_lotes' => $sistemas->map(function ($item) {
+
+                //     // return $item->lote;
+                // })->toArray()
+            ];
+            if ($sistemas->count() > 0) {
+                $sis = $sistemas[0];
+                if ($edit){
+                    $sis = $sistemas->where('sis_id', $produccion->lote->sistema->sis_id)->first();
+                }
+
+
+                // dd($sis);
+
+                $data['js']['sistema'] = $sis->sis_id;
+                $data['js']['produccion'] = $produccion;
+                if ($sis->lote != null) {
+                    // dd($produccion->detalles);
+                    $data['js']['serie_lote'] = $sis->lote->serie;
+                    $data['js']['lote_success'] = true;
+                    $data['js']['numero_lote'] = fill_zeros($produccion->numero_lote);
+                    $data['js']['entrada'] = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->entrada)->format('H:i');
+                    $data['js']['salida'] = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->salida)->format('H:i');
+                    $data['js']['fecha'] = Carbon::createFromFormat('Y-m-d', $produccion->fecha)->format('Y-m-d');
+                    $data['js']['fecha_salida'] = Carbon::createFromFormat('Y-m-d', $produccion->fecha)->format('Y-m-d');
+                    $data['js']['observacion'] = $produccion->observacion;
+                    // dd($produccion);
+                    $data['js']['cilindros'] = $produccion->detalles->map(function($item) {
+                        return [
+                            'marcar_salida' => +$item->retiro == 1 ? true : false,
+                            'id' => $item->cilindro_id,
+                            'serie' => $item->cilindro->serie,
+                            'codigo' => $item->cilindro->codigo,
+                            'capacidad' => $item->pro_capacidad,
+                            'propietario' => $item->propietario_name,
+                            'propietario_id' => $item->propietario_id,
+                            'observacion' => $item->observacion,
+                            'retiro' => $item->retiro,
+                            'cantidad' => $item->pro_presion,
+                            'registrado' => 1,
+                            'delete' => false,
+                            'ingreso' => $item->ingreso,//fehca completa
+                            'salida' => $item->salida,//fecha completa
+                            'salida_date' => Carbon::createFromFormat('Y-m-d H:i:s', $item->salida)->format('y-m-d'),//fecha de salida
+                            'salida_time' => Carbon::createFromFormat('Y-m-d H:i:s', $item->salida)->format('H:i')//hora de la fecha de salida
+                        ];
+                    });
+
+
+                }
+            }
+            // dd($data['js']);
+            $data['titulo_pagina'] = 'Produccion - Editar';
+            return view('home.produccion.registro', $data);
+        } else
+            abort(404);
     }
 
     /**
@@ -358,43 +452,189 @@ class ProduccionController extends Controller
     public function update(Request $request, $id)
     {
         $res = ['success' => false];
-        if ($request->filled('modo')) {
-            $now = Carbon::now();
-            switch (request('modo')) {
-                case 'finalizar':
-                    DB::transaction(function () use($now, $id, &$res) {
-                        // DB::enableQueryLog();
-                        $produccion = Produccion::find($id);
-                        $produccion->finalizado = '1';
-                        $produccion->save();
+        $success = $request->validate([
+                        'entrada' => 'required',
+                    ]);
+        if ($success) {
+            if ($request->filled('modo')) {
+                $now = Carbon::now();
+                switch (request('modo')) {
+                    case 'finalizar':
+                        DB::transaction(function () use($now, $id, &$res) {
+                            // DB::enableQueryLog();
+                            $produccion = Produccion::find($id);
+                            $produccion->finalizado = '1';
+                            $produccion->save();
 
-                        $cilindros = $produccion->detalles()->select('cilindro_id')->get();
-                        // $send = $cilindros->map( function ($item) {
-                        //     return $item->cilindro_id;
-                        // });
-                        $send_seguimiento = [];
-                        $cilindros_id = [];
-                        foreach ($cilindros as $cil) {
-                            $cilindros_id[] = $cil->cilindro_id;
-                            $send_seguimiento[] = [
-                                'cilindro_id' => $cil->cilindro_id,
-                                'created_at' => $now,
-                                'updated_at' => $now,
-                                'evento' => 'cargado',
-                                'descripcion' => 'Cargado, lote producción finalizado',
-                                'referencia_id' => $produccion->pro_id,
-                                'origen' => 'app',
-                                'fecha' => $now
-                            ];
-                        }
+                            $cilindros = $produccion->detalles()->select('cilindro_id')->get();
+                            // $send = $cilindros->map( function ($item) {
+                            //     return $item->cilindro_id;
+                            // });
+                            $send_seguimiento = [];
+                            $cilindros_id = [];
+                            foreach ($cilindros as $cil) {
+                                $cilindros_id[] = $cil->cilindro_id;
+                                $send_seguimiento[] = [
+                                    'cilindro_id' => $cil->cilindro_id,
+                                    'created_at' => $now,
+                                    'updated_at' => $now,
+                                    'evento' => 'cargado',
+                                    'descripcion' => 'Cargado, lote producción finalizado',
+                                    'referencia_id' => $produccion->pro_id,
+                                    'origen' => 'app',
+                                    'fecha' => $now
+                                ];
+                            }
+                            Cilindro::whereIn('cil_id', $cilindros_id)->update(['cargado' => Cilindro::getEstado('cargado')]);
+                            CilindroSeguimiento::insert($send_seguimiento);
+                            // $res['query'] = DB::getQueryLog();
+                            $res['success'] = true;
+                            $res['data'] = $produccion;
+                        });
+                        break;
+                    case 'produccion':
+                        $valida = $request->validate([
+                            'entrada' => 'required',
+                            'salida' => 'required',
+                            'cilindros' => 'required',
+                            'operador' => 'required',
+                            'turno' => 'required',
+                            'fecha' => 'required',
+                            // 'sistema' => 'required',
+                            'observacion' => 'required',
+                            'total_cilindros' => 'required',
+                            'total_libras' => 'required',
+                        ]);
+                        DB::transaction(function () use ($request, $id, &$res) {
+                            $produccion = Produccion::find($id);
+                            if ($produccion) {
+                                $operador = Operador::find(request('operador'));
 
-                        Cilindro::whereIn('cil_id', $cilindros_id)->update(['cargado' => Cilindro::getEstado('cargado')]);
-                        CilindroSeguimiento::insert($send_seguimiento);
-                        // $res['query'] = DB::getQueryLog();
-                        $res['success'] = true;
-                        $res['data'] = $produccion;
-                    });
-                    break;
+                                $produccion->entrada = $request->entrada;
+                                $produccion->salida = $request->salida;
+                                $produccion->operador_id = $request->operador;
+                                $produccion->operador_nombre = strtoupper($operador->nombre.' '.$operador->apellidos);
+                                $produccion->fecha = $request->fecha;
+                                $produccion->turno = strtoupper($request->turno);
+                                $produccion->observacion = strtoupper($request->observacion);
+                                $produccion->total_cilindros = $request->total_cilindros;
+                                $produccion->total_presion = $request->total_libras;
+
+                                $cilindros_registrados = $produccion->detalles;
+                                //posibilidade de poder modificar el estado de los nuevos cilindros, agregar a cada modificación una referneica en las observaciones,pra indicar que se agrego el cilindro como parte de una modificación
+                                $cil_nuevos = collect($request->cilindros)->where('registrado', 0);
+                                //clindros nuevos, seguimiento, estado
+                                $send_produccion_cilindros = [];
+                                $send_seguimiento = [];
+                                $cilindros_id = [];
+                                $cilindros_id_retiro = [];
+                                $cilindros_retirados = [];
+                                $now = Carbon::now();
+
+                                foreach ($cil_nuevos as $cil) {
+                                    // $cilindro = Cilindro::find($cil['id']);
+
+                                    if ($cil['retiro'] == '1') {
+                                        $cilindros_id_retiro[] = $cil['id'];
+                                        $cilindros_retirados[] = ['id' => $cil['id'], 'salida' => $cil['salida']];
+                                    } else {
+                                        $cilindros_id[] = $cil['id'];
+                                    }
+                                    //jalar del mismo o solo
+                                    $send_produccion_cilindros[] = [
+                                        'produccion_id' => $produccion->pro_id,
+                                        'cilindro_id' => $cil['id'],
+                                        'pro_capacidad' => $cil['capacidad'],
+                                        'pro_presion' => $cil['cantidad'],
+                                        'propietario_name' => $cil['propietario'],
+                                        'propietario_id' => $cil['propietario_id'],
+                                        'cilindro_serie' => $cil['serie'],
+                                        'cilindro_codigo' => $cil['codigo'],
+                                        'created_at' => $cil['ingreso'],
+                                        'updated_at' => $cil['salida'],
+                                        'ingreso' => $cil['ingreso'],
+                                        'salida' => $cil['salida'],
+                                        'retiro' => $cil['retiro'],
+                                        'observacion' => $cil['observacion'].PHP_EOL.'Agreado después '.$now->format('Y-m-d H:i:s')
+                                    ];
+                                    $orden_seg = 1;
+                                    if (CilindroSeguimiento::existe_en_fecha($cil['id'], request('fecha'))) {
+                                        $orden_seg = CilindroSeguimiento::extraer_nuevo_orden($cil['id'], request('fecha'));
+                                    }
+                                    //ingreso a sistema (motor)
+                                    $send_seguimiento[] = [
+                                        'cilindro_id' => $cil['id'],
+                                        'created_at' => $now,
+                                        'updated_at' => $now,
+                                        'orden_seg' => $orden_seg,
+                                        'evento' => 'cargando',
+                                        'descripcion' => 'Cargando, lote producción'.PHP_EOL.'Agregado después '.$now->format('Y-m-d H:i:s'),
+                                        'referencia_id' => $produccion->pro_id,
+                                        'origen' => 'app',
+                                        'fecha' => request('fecha'),
+                                        'fecha_detalle' => $cil['ingreso']
+                                    ];
+                                    //finaliza carga
+                                    $send_seguimiento_finaliza[] = [
+                                        'cilindro_id' => $cil['id'],
+                                        'created_at' => $now,
+                                        'updated_at' => $now,
+                                        'orden_seg' => $orden_seg,
+                                        'evento' => 'cargado',
+                                        'descripcion' => 'Cargado, lote producción finalizado'.PHP_EOL.'Agregado después '.$now->format('Y-m-d H:i:s'),
+                                        'referencia_id' => $produccion->pro_id,
+                                        'origen' => 'app',
+                                        'fecha' => request('fecha'),
+                                        'fecha_detalle' => $cil['salida']
+                                    ];
+                                }
+
+                                // $cilindros_id = $send->map(function ($item) {
+                                //         return $item['cilindro_id'];
+                                // });
+
+
+                                //marcar cargando
+                                if ($cil_nuevos->count() > 0) {
+                                    ProduccionCilindros::insert($send_produccion_cilindros);
+
+                                    Cilindro::whereIn('cil_id', $cilindros_id + $cilindros_id_retiro)->update([
+                                        'cargado' => Cilindro::getEstado('cargando'),
+                                        'evento' => 'cargando',
+                                        'updated_at' => request('entrada')
+                                    ]);
+
+                                    CilindroSeguimiento::insert($send_seguimiento);
+
+                                    $estado = Cilindro::getEstado('cargado');
+                                    Cilindro::whereIn('cil_id', $cilindros_id)->update([
+                                        'cargado' => $estado,
+                                        'evento' => 'cargado',
+                                        'updated_at' => $now
+                                    ]);
+
+                                    foreach ($cilindros_retirados as $value) {
+
+                                        Cilindro::where('cil_id', $value['id'])->update([
+                                            'cargado' => $estado,
+                                            'evento' => 'cargado',
+                                            'updated_at' => $now
+                                        ]);
+                                    }
+                                    CilindroSeguimiento::insert($send_seguimiento_finaliza);
+                                    // dd($cil_nuevos);
+                                }
+                                if ($produccion->save()) {
+                                    $res['success'] = true;
+                                }
+
+                            }
+                        });
+                        //solo se recibirá ciertos parámetros
+                        // dd($request);
+
+                        break;
+                }
             }
         }
         return response()->json($res);

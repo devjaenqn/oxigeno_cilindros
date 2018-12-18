@@ -343,14 +343,29 @@ class DespachoController extends Controller
 
                 $despacho->doc_referencia = request('referencia', '');
                 //incrementar el correlativo
-                if (+request('numero') == $guia->actual){
+                $numero_doc = +request('numero');
+                if ($numero_doc >= $guia->actual){
                     $despacho->doc_numero = $guia->actual;
-                    $guia->actual += 1;
+                    if ($numero_doc > $guia->actual)
+                        $guia->actual = $numero_doc;
+                    else
+                        $guia->actual += 1;
                 } else {
-                    $despacho->doc_numero = +request('numero');
-                    if ($guia->actual < +request('numero'))
-                        $guia->actual = +request('numero') + 1;
+                    $despacho->doc_numero = $numero_doc;
+                    // if ($guia->actual < +$numero_doc)
+                    // $next_numero = $numero_doc + 1;
+                    // if (Despacho::existe_numero(+request('comprobante'), $next_numero))
+                    // $guia->actual = +$numero_doc + 1;
                 }
+
+                // if (+request('numero') == $guia->actual){
+                //     $despacho->doc_numero = $guia->actual;
+                //     $guia->actual += 1;
+                // } else {
+                //     $despacho->doc_numero = +request('numero');
+                //     if ($guia->actual < +request('numero'))
+                //         $guia->actual = +request('numero') + 1;
+                // }
 
 
                 $guia->save();

@@ -13087,9 +13087,9 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(35);
-__webpack_require__(41);
 __webpack_require__(42);
-module.exports = __webpack_require__(43);
+__webpack_require__(43);
+module.exports = __webpack_require__(44);
 
 
 /***/ }),
@@ -13105,6 +13105,7 @@ module.exports = __webpack_require__(43);
 
 __webpack_require__(36);
 __webpack_require__(40);
+__webpack_require__(41);
 
 window.Vue = __webpack_require__(28);
 Vue.prototype.numeral = numeral;
@@ -31352,6 +31353,8 @@ return numeral;
 /* 40 */
 /***/ (function(module, exports) {
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 window.showError = function (data) {
 	return data.message + '  \n  ' + data.file + '   -  ' + data.line;
 };
@@ -31367,11 +31370,104 @@ window.loading = {
 	}
 };
 
+window.msg = {
+	success: function success() {
+		var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+		var texto = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+		var timer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+		return swal({
+			title: title,
+			text: texto,
+			type: 'success',
+			customClass: 'sac',
+			timer: timer,
+			allowOutsideClick: false
+		});
+	},
+	pregunta: function pregunta(title, text) {
+		var loader = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+		return new Promise(function (resolver, reject) {
+			swal({
+				title: title,
+				text: text,
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Aceptar',
+				cancelButtonText: 'Cancelar',
+				customClass: 'sac',
+				showLoaderOnConfirm: typeof loader == 'function',
+				preConfirm: typeof loader == 'function' ? loader : null
+			}).then(function (result) {
+				console.log(result);
+				if (result.value) {
+					if (_typeof(result.value) == 'object' && result.value.toString() == '[object Promise]') {
+						result.value.then(function (res) {
+							resolver(res);
+						}).catch(function (err) {
+							reject(err);
+						});
+					} else resolver(result.value);
+				} else if (result.dismiss == swal.DismissReason.backdrop || result.dismiss == swal.DismissReason.close || result.dismiss == swal.DismissReason.cancel || result.dismiss == swal.DismissReason.esc) {
+					resolver({ cancel: true });
+				}
+
+				// return new Promise((res, rej) => {
+				// 	if (typeof result.value != 'undefined') {
+				// 		res(result.value)
+				// 	}
+				// 	res(false)
+				// })
+			}).catch(function (err) {
+				reject(err);
+			});
+		});
+	}
+};
+
 /***/ }),
 /* 41 */
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+window.LocalS = function () {
+	function LocalS() {
+		_classCallCheck(this, LocalS);
+
+		this.existeLocal = typeof window.localStorage !== 'undefined';
+	}
+
+	_createClass(LocalS, [{
+		key: 'setVal',
+		value: function setVal(name, value) {
+			if (this.existeLocal) localStorage.setItem(name, value);
+		}
+	}, {
+		key: 'getVal',
+		value: function getVal(name) {
+			var defaultval = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+			if (this.existeLocal) {
+				var t = localStorage.getItem(name);
+				if (t == null) {
+					if (defaultval != null) {
+						localStorage.setItem(name, defaultval);
+						return defaultval;
+					}
+				}
+				return t;
+			}
+			return defaultval;
+		}
+	}]);
+
+	return LocalS;
+}();
 
 /***/ }),
 /* 42 */
@@ -31381,6 +31477,12 @@ window.loading = {
 
 /***/ }),
 /* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

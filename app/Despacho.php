@@ -22,6 +22,7 @@ class Despacho extends Model
   }
 
 
+
   public function guia () {
     return $this->belongsTo('App\NegocioComprobantes', 'documento_id');
   }

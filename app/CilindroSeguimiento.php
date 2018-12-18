@@ -45,7 +45,12 @@ class CilindroSeguimiento extends Model
     $temp = self::where('cilindro_id', $cilindro_id)->where('fecha', DB::raw("DATE('".$fecha."')"))->count();
     return $temp > 0;
   }
-
+  /**
+   * [extraer_nuevo_orden Obtiene el orden de eguimiento del cilindro, sucede que en ocasiones el cilindro puede entrar en producción la misma fecha con este orden se determina quién entró antes y quién después]
+   * @param  [type] $cilindro_id [description]
+   * @param  [type] $fecha       [description]
+   * @return [type]              [description]
+   */
   public static function extraer_nuevo_orden($cilindro_id, $fecha) {
     $temp = DB::table('cilindros_seguimiento')->select(DB::raw('MAX(orden_seg) as mayor'))->where('cilindro_id', $cilindro_id)->where('fecha', DB::raw("DATE('".$fecha."')"))
       ->first();

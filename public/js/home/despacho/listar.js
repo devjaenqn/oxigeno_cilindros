@@ -60,20 +60,20 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 75);
+/******/ 	return __webpack_require__(__webpack_require__.s = 78);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 75:
+/***/ 78:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(76);
+module.exports = __webpack_require__(79);
 
 
 /***/ }),
 
-/***/ 76:
+/***/ 79:
 /***/ (function(module, exports) {
 
 var listar = {
@@ -93,14 +93,24 @@ var listar = {
       tbl_despacho: null,
       filtros: {
         query: '',
-        fecha_desde: moment().format('YYYY-MM-DD'),
-        fecha_hasta: moment().format('YYYY-MM-DD'),
+        fecha_desde: localvalues.getVal('despacho_filter_fecha_desde', moment().format('YYYY-MM-DD')),
+        fecha_hasta: localvalues.getVal('despacho_filter_fecha_hasta', moment().format('YYYY-MM-DD')),
+        // fecha_desde: moment().format('YYYY-MM-DD'),
+        // fecha_hasta: moment().format('YYYY-MM-DD'),
         success_date: true,
         filtro_date: 'same'
       }
     };
   },
 
+  watch: {
+    'filtros.fecha_desde': function filtrosFecha_desde(nv) {
+      localvalues.setVal('despacho_filter_fecha_desde', nv);
+    },
+    'filtros.fecha_hasta': function filtrosFecha_hasta(nv) {
+      localvalues.setVal('despacho_filter_fecha_hasta', nv);
+    }
+  },
   methods: {
     getSituacion: function getSituacion(num) {
       switch (+num) {
@@ -139,6 +149,8 @@ var listar = {
       console.log(e);
     },
     onSubmit_frmAplicarFiltro: function onSubmit_frmAplicarFiltro() {
+      var norender = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       var desde = moment(this.filtros.fecha_desde);
       var hasta = moment(this.filtros.fecha_hasta);
       this.filtros.success_date = true;
@@ -148,15 +160,14 @@ var listar = {
         } else if (desde.unix() == hasta.unix()) {
           this.filtros.filtro_date = 'same';
         } else {
-          toastr.warning('Fechas no válidas para la búsqueda x', 'Revisar');
+          if (!norender) toastr.warning('Fechas no válidas para la búsqueda x', 'Revisar');
           this.filtros.success_date = false;
         }
       } else {
-        toastr.warning('Fechas no válidas para la búsqueda', 'Revisar');
+        if (!norender) toastr.warning('Fechas no válidas para la búsqueda', 'Revisar');
         this.filtros.success_date = false;
       }
-
-      if (this.filtros.success_date) this.dt_tbl_despacho.draw();
+      if (!norender) if (this.filtros.success_date) this.dt_tbl_despacho.draw();
     },
     fnOnSubmit_registrarLlegada: function fnOnSubmit_registrarLlegada() {
       var _this = this;
@@ -233,6 +244,7 @@ var listar = {
     }
   },
   created: function created() {
+    this.onSubmit_frmAplicarFiltro(true);
     console.log(this);
     console.log('componente cargado');
     // axios.get(BASE_URL + '/api/cilindro').then(res => {

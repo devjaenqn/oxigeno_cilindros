@@ -34,12 +34,10 @@
           <i class="nav-icon icon-puzzle"></i> CILINDRO</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/cilindro') }}">
-              <i class="nav-icon icon-puzzle"></i>    Lista</a>
+            <a class="nav-link pl-3em" href="{{ url('home/cilindro') }}">Lista</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/cilindro/create') }}">
-              <i class="nav-icon icon-puzzle"></i>    Registro</a>
+            <a class="nav-link pl-3em" href="{{ url('home/cilindro/create') }}">Registro</a>
           </li>
         </ul>
       </li>
@@ -52,12 +50,10 @@
           <i class="nav-icon icon-puzzle"></i> PRODUCCIÓN</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/produccion') }}">
-              <i class="nav-icon icon-puzzle"></i>    Lista</a>
+            <a class="nav-link pl-3em" href="{{ url('home/produccion') }}">Lista</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/produccion/create') }}">
-              <i class="nav-icon icon-puzzle"></i>    Registro</a>
+            <a class="nav-link pl-3em" href="{{ url('home/produccion/create') }}">Registro</a>
           </li>
         </ul>
       </li>
@@ -72,12 +68,10 @@
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/propietarios') }}">
-              <i class="nav-icon icon-pencil"></i>    Gestion</a>
+            <a class="nav-link pl-3em" href="{{ url('home/propietarios') }}">Gestion</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/propietarios/deben') }}">
-              <i class="nav-icon icon-pencil"></i> Poseen Cilindros</a>
+            <a class="nav-link pl-3em" href="{{ url('home/propietarios/deben') }}">Poseen Cilindros</a>
           </li>
         </ul>
       </li>
@@ -87,12 +81,10 @@
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/despacho') }}">
-              <i class="nav-icon icon-pencil"></i>    Lista</a>
+            <a class="nav-link pl-3em" href="{{ url('home/despacho') }}">Lista</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/despacho/create') }}">
-              <i class="nav-icon icon-pencil"></i>    Registro</a>
+            <a class="nav-link pl-3em" href="{{ url('home/despacho/create') }}">Registro</a>
           </li>
         </ul>
       </li>
@@ -102,12 +94,10 @@
 
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/recibo') }}">
-              <i class="nav-icon icon-pencil"></i>    Lista</a>
+            <a class="nav-link pl-3em" href="{{ url('home/recibo') }}">Lista</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/recibo/create') }}">
-              <i class="nav-icon icon-pencil"></i>    Registro</a>
+            <a class="nav-link pl-3em" href="{{ url('home/recibo/create') }}">Registro</a>
           </li>
         </ul>
       </li>
@@ -117,12 +107,10 @@
           <i class="nav-icon icon-pencil"></i> USUARIOS</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/usuarios') }}">
-              <i class="nav-icon icon-pencil"></i>    Lista</a>
+            <a class="nav-link pl-3em" href="{{ url('home/usuarios') }}">Lista</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link pl-2em" href="{{ url('home/usuarios/create') }}">
-              <i class="nav-icon icon-pencil"></i>    Registro</a>
+            <a class="nav-link pl-3em" href="{{ url('home/usuarios/create') }}">Registro</a>
           </li>
         </ul>
       </li>

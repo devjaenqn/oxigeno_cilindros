@@ -16,6 +16,7 @@
     "/js/home/propietarios/deben.js": "/js/home/propietarios/deben.js",
     "/js/home/produccion/registro.js": "/js/home/produccion/registro.js",
     "/js/home/produccion/listar.js": "/js/home/produccion/listar.js",
+    "/js/home/produccion/editar.js": "/js/home/produccion/editar.js",
     "/js/home/despacho/registro.js": "/js/home/despacho/registro.js",
     "/js/home/despacho/listar.js": "/js/home/despacho/listar.js",
     "/js/home/cilindros/seguimiento.js": "/js/home/cilindros/seguimiento.js",
