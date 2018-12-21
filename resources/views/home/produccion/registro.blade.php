@@ -134,7 +134,11 @@
                         <div class="form-group row mb-1 mt-1">
                           <label class="col-md-6 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="turno">Turno</label>
                           <div class="col-md-18">
-                            <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select text" id="turno"  type="text" name="turno" v-model="turno" placeholder="Turno" required="" form="frm_registro_produccion">
+                            {{-- <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select text" id="turno"  type="text" name="turno" v-model="turno" placeholder="Turno" required="" form="frm_registro_produccion"> --}}
+                            <select name="turno" id="turno" class="form-control" required="required" v-model="turno" form="frm_registro_produccion">
+                              <option value="7AM - 7PM">7AM - 7PM</option>
+                              <option value="7PM - 7AM">7PM - 7AM</option>
+                            </select>
 
                           </div>
                         </div>
