@@ -784,7 +784,8 @@ class CilindroController extends Controller
             $ubicacion = '';
             switch ($request->ubicacion) {
               case 'fabrica':
-                $ubicacion = '1';
+                // $ubicacion = '1';
+                $ubicacion = Cilindro::getSituacion('fabrica');
                 break;
               case 'cliente':
                 $ubicacion = '3';
@@ -840,9 +841,9 @@ class CilindroController extends Controller
                     //seguimiento
                     $seguimiento = new CilindroSeguimiento();
                     $seguimiento->cilindro_id = $cilindro->cil_id;
-                    $seguimiento->evento = 'cargado';
+                    $seguimiento->evento = 'cargando';
                     $seguimiento->forzado = '1';
-                    $seguimiento->descripcion = 'CARGADO DESDE SITUACIÓN';
+                    $seguimiento->descripcion = 'CARGANDO DESDE SITUACIÓN';
                     if (request('motivo') != '') {
                       $seguimiento->descripcion .= ', '.request('motivo');
                     }
@@ -851,6 +852,21 @@ class CilindroController extends Controller
                     $seguimiento->origen = 'app';
                     $seguimiento->fecha = request('fecha').' '.request('hora');
                     $seguimiento->save();
+
+                    //seguimiento
+                    $seguimiento_b = new CilindroSeguimiento();
+                    $seguimiento_b->cilindro_id = $cilindro->cil_id;
+                    $seguimiento_b->evento = 'cargado';
+                    $seguimiento_b->forzado = '1';
+                    $seguimiento_b->descripcion = 'CARGADO DESDE SITUACIÓN';
+                    if (request('motivo') != '') {
+                      $seguimiento_b->descripcion .= ', '.request('motivo');
+                    }
+                    $seguimiento_b->referencia_id = 0;
+                    // $seguimiento_b->referencia_id = $cilindro->cil_id;
+                    $seguimiento_b->origen = 'app';
+                    $seguimiento_b->fecha = request('fecha').' '.request('hora');
+                    $seguimiento_b->save();
 
                     $res['success'] = true;
                   });

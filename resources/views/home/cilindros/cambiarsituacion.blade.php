@@ -70,7 +70,7 @@
           </div>
         </div>
         <hr>
-        <h4>SITUACIÓN ACTUAL</h4>
+        <h4>CAMBIAR</h4>
             <div class="row">
               <div class="col-sm-10">
                 {{-- <div class="card card-accent-success">
@@ -82,6 +82,7 @@
                           {{-- <option value="fabrica">FABRICA</option>
                           <option value="cliente">CLIENTE</option> --}}
                           <option value="iniciar_recibo">PARA INICIAR RECIBO</option>
+                          <option value="fabrica">FABRICA</option>
                           {{-- <option value="perdido">PERDIDO</option> --}}
                           option
                         </select>
