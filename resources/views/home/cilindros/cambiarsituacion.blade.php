@@ -81,8 +81,9 @@
                         <select v-model="ubicacion" name="sel_ubicacion" id="sel_ubicacion" class="form-control">
                           {{-- <option value="fabrica">FABRICA</option>
                           <option value="cliente">CLIENTE</option> --}}
-                          <option value="iniciar_recibo">PARA INICIAR RECIBO</option>
                           <option value="fabrica">FABRICA</option>
+                          <option value="cliente">CLIENTE</option>
+                          <option value="iniciar_recibo">PARA INICIAR RECIBO</option>
                           {{-- <option value="perdido">PERDIDO</option> --}}
                           option
                         </select>
@@ -93,7 +94,7 @@
                 </div> --}}
               </div>
             </div>
-            <div class="row">
+            <div class="row" v-if="!filtrarSituacion(['iniciar_recibo'])">
               <div class="col-sm-10">
                 {{-- <div class="card card-accent-success">
                   <div class="card-body"> --}}
@@ -103,7 +104,8 @@
                         <select v-model="situacion" name="sel_situacion" id="sel_situacion" class="form-control">
                           {{-- <option {{ $selected['trasegada'] ? 'selected' : '' }} value="trasegada">TRASEGADA</option>
                           <option {{ $selected['defectuosa'] ? 'selected' : '' }} value="defectuosa">DEFECTUOSA</option> --}}
-                          <option {{ $selected['cargada'] ? 'selected' : '' }} value="cargada">CARGADA</option>
+                          <option v-if="filtrarSituacion(['cliente', 'fabrica'])" {{ $selected['cargada'] ? 'selected' : '' }} value="cargada">CARGADA</option>
+                          <option v-if="filtrarSituacion(['fabrica'])" {{ $selected['vacio'] ? 'selected' : '' }} value="vacio">VACIO</option>
                           {{-- <option {{ $selected['vacio'] ? 'selected' : '' }} value="vacio">VACIO</option>
                           <option {{ $selected['cliente'] ? 'selected' : '' }} value="cliente">CLIENTE</option> --}}
                         </select>

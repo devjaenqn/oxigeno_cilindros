@@ -604,6 +604,68 @@ class CilindroController extends Controller
                   return view('home.cilindros.cambio_temporal', $data);
                 }
                 break;
+              case 'cambio':
+
+                $cilindro = Cilindro::find($id);
+                if ($request->filled('accion')) {
+                  if ($request->accion == 'registrar') {
+
+                    $temp = new CilindroTemporal();
+                    $temp->serie = $cilindro->serie;
+                    $temp->codigo = $cilindro->serie;
+                    $temp->situacion = $cilindro->situacion;
+                    $temp->cargado = $cilindro->cargado;
+                    $temp->defectuoso = $cilindro->defectuoso;
+                    $temp->trasegada = $cilindro->trasegada;
+                    $temp->evento = $cilindro->evento;
+                    $temp->despacho_id_salida = $cilindro->despacho_id_salida;
+                    $temp->recibo_id_entrada = $cilindro->recibo_id_entrada;
+                    $temp->cilindro_id = $cilindro->cil_id;
+                    $temp->motivo = $request->motivo;
+                    $temp->save();
+
+
+
+                    $cilindro->situacion = $request->situacion;
+                    $cilindro->cargado = $request->cargado;
+                    $cilindro->defectuoso = $request->defectuoso;
+                    $cilindro->trasegada = $request->trasegada;
+                    $cilindro->evento = $request->evento;
+                    $cilindro->despacho_id_salida = $request->despacho_id_salida;
+                    $cilindro->recibo_id_entrada = $request->recibo_id_entrada;
+                    // $cilindro->temporal_mode = '1';
+                    $cilindro->save();
+
+                    return redirect('home/cilindro/'.$cilindro->cil_id);
+                  }
+
+                  if ($request->accion == 'normalizar') {
+                    $temp = $cilindro->temporal;
+
+                    $cilindro->situacion = $temp->situacion;
+                    $cilindro->cargado = $temp->cargado;
+                    $cilindro->defectuoso = $temp->defectuoso;
+                    $cilindro->trasegada = $temp->trasegada;
+                    $cilindro->evento = $temp->evento;
+                    $cilindro->despacho_id_salida = $temp->despacho_id_salida;
+                    $cilindro->recibo_id_entrada = $temp->recibo_id_entrada;
+                    $cilindro->temporal_mode = '0';
+                    $cilindro->save();
+
+                    $temp->delete();
+                    return redirect('home/cilindro/'.$cilindro->cil_id);
+                  }
+
+                } else {
+                  $data = [];
+
+                  $data['cilindro'] = $cilindro;
+                  // dd($cilindro->temporal);
+                  $data['temporal'] = $cilindro->temporal;
+
+                  return view('home.cilindros.cambio_temporal_b', $data);
+                }
+                break;
               default:
                 $cilindro = Cilindro::find($id);
                 break;
@@ -801,6 +863,10 @@ class CilindroController extends Controller
                   $cilindro->evento = 'cliente';
                   $cilindro->cargado = '2';//cargado
                   $cilindro->situacion = '3';//cliente
+                  $cilindro->defectuoso = 0;
+                  $cilindro->trasegada = 0;
+                  $cilindro->despacho_id_salida = 0;
+                  $cilindro->recibo_id_entrada = 0;
                   $cilindro->save();
 
                   //seguimiento
@@ -822,6 +888,7 @@ class CilindroController extends Controller
                 });
                 break;
             }
+            //situacion
             if ($avanzar) {
               switch ($request->situacion) {
                 case 'trasegada':
@@ -836,6 +903,10 @@ class CilindroController extends Controller
                     $cilindro->evento = 'cargado';
                     $cilindro->cargado = '2';
                     $cilindro->situacion = $ubicacion;
+                    $cilindro->defectuoso = 0;
+                    $cilindro->trasegada = 0;
+                    $cilindro->despacho_id_salida = 0;
+                    $cilindro->recibo_id_entrada = 0;
                     $cilindro->save();
 
                     //seguimiento
@@ -875,6 +946,51 @@ class CilindroController extends Controller
 
                   break;
                 case 'vacio':
+
+                  DB::transaction(function () use ($cilindro, &$res, $ubicacion) {
+                    $pre_evento = $cilindro->evento;
+                    $cilindro->evento = 'vacio';
+                    $cilindro->cargado = '0';
+                    $cilindro->situacion = $ubicacion;
+                    $cilindro->defectuoso = 0;
+                    $cilindro->trasegada = 0;
+                    $cilindro->despacho_id_salida = 0;
+                    $cilindro->recibo_id_entrada = 0;
+                    $cilindro->save();
+
+                    //seguimiento
+                    $seguimiento = new CilindroSeguimiento();
+                    $seguimiento->cilindro_id = $cilindro->cil_id;
+                    $seguimiento->evento = 'vacio';
+                    $seguimiento->forzado = '1';
+                    $seguimiento->descripcion = 'VACIO DESDE SITUACIÓN';
+                    if (request('motivo') != '') {
+                      $seguimiento->descripcion .= ', '.request('motivo');
+                    }
+                    $seguimiento->referencia_id = 0;
+                    // $seguimiento->referencia_id = $cilindro->cil_id;
+                    $seguimiento->origen = 'app';
+                    $seguimiento->fecha = request('fecha').' '.request('hora');
+                    $seguimiento->fecha_detalle = request('fecha').' '.request('hora');
+                    $seguimiento->save();
+
+                    //seguimiento
+                    // $seguimiento_b = new CilindroSeguimiento();
+                    // $seguimiento_b->cilindro_id = $cilindro->cil_id;
+                    // $seguimiento_b->evento = 'cargado';
+                    // $seguimiento_b->forzado = '1';
+                    // $seguimiento_b->descripcion = 'CARGADO DESDE SITUACIÓN';
+                    // if (request('motivo') != '') {
+                    //   $seguimiento_b->descripcion .= ', '.request('motivo');
+                    // }
+                    // $seguimiento_b->referencia_id = 0;
+                    // // $seguimiento_b->referencia_id = $cilindro->cil_id;
+                    // $seguimiento_b->origen = 'app';
+                    // $seguimiento_b->fecha = request('fecha').' '.request('hora');
+                    // $seguimiento_b->save();
+
+                    $res['success'] = true;
+                  });
 
 
                   break;

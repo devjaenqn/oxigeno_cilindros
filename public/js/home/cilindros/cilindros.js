@@ -2085,7 +2085,7 @@ var app = new Vue({
       filtros: {
         fn: 'default',
         situacion: [0, 1, 2, 3],
-        query: ''
+        query: cilindro_url
       }
     };
   },
@@ -2096,6 +2096,7 @@ var app = new Vue({
 
       clearTimeout(this.timeoutfiltertext);
       this.timeoutfiltertext = setTimeout(function () {
+        history.pushState(null, "", base_url('home/cilindro?c=' + nv));
         _this.dt_tbl_cilindros.draw();
       }, 200);
     }
@@ -2185,6 +2186,7 @@ var app = new Vue({
   },
   created: function created() {
     console.log('componente cargado');
+
     // axios.get(BASE_URL + '/api/cilindro').then(res => {
     //   console.log(res)
     //   this.cilindros = res.data
@@ -2528,57 +2530,93 @@ var win = window;
 	template: '#vue_cilindro_situacion',
 	data: function data() {
 		return {
-			ubicacion: 'cliente',
+			ubicacion: 'fabrica',
 			cilindro: OBJ_CILINDRO,
-			situacion: '',
+			situacion: 'vacio',
 			motivo: '',
 			fecha: moment().format('YYYY-MM-DD'),
 			hora: '00:00'
 		};
 	},
 
-	methods: {
-		frmOnSubmit_cambiarSituacion: function frmOnSubmit_cambiarSituacion(e) {
-			var sendParams = {
-				situacion: this.situacion,
-				motivo: this.motivo,
-				ubicacion: this.ubicacion,
-				fecha: this.fecha,
-				hora: this.hora
-			};
-			axios.put(BASE_URL + '/api/cilindro/' + this.cilindro.cil_id + '?m=cambiar_situacion', sendParams).then(function (res) {
-				console.log(res.data);
-				if (res.data.success) {
-					toastr.success('Actualización completada con éxito', 'Cilindro - Success');
-				}
-			}).catch(function (e) {
-				console.log(e.response);
-			});
-		}
-	},
-	created: function created() {
-		var process_evento = true;
-		if (this.cilindro.defectuoso == '1') {
-			this.situacion = 'defectuoso';
-			process_evento = false;
-		}
-		if (this.cilindro.trasegada == '1') {
-			this.situacion = 'trasegada';
-			process_evento = false;
-		}
-		if (process_evento) {
-			switch (this.cilindro.evento) {
-				case 'cliente':
-					this.situacion = 'cliente';
-					break;
-				case 'cargada':
-					this.situacion = 'cargada';
-					break;
-				case 'vacio':
+	watch: {
+		ubicacion: function ubicacion(nv) {
+			switch (nv) {
+				case 'fabrica':
 					this.situacion = 'vacio';
+					break;
+				case 'cliente':
+					this.situacion = 'cargada';
 					break;
 			}
 		}
+	},
+	methods: {
+		filtrarSituacion: function filtrarSituacion(value) {
+			var _this = this;
+
+			return typeof value.find(function (v) {
+				return v == _this.ubicacion;
+			}) != 'undefined';
+		},
+		frmOnSubmit_cambiarSituacion: function frmOnSubmit_cambiarSituacion(e) {
+			var _this2 = this;
+
+			msg.pregunta('Situación', '¿Desea continuar?', function (quest) {
+				if (quest) {
+					var sendParams = {
+						situacion: _this2.situacion,
+						motivo: _this2.motivo,
+						ubicacion: _this2.ubicacion,
+						fecha: _this2.fecha,
+						hora: _this2.hora
+					};
+					return axios.put(BASE_URL + '/api/cilindro/' + _this2.cilindro.cil_id + '?m=cambiar_situacion', sendParams);
+				}
+			}).then(function (res) {
+				if (res.data) {
+					if (res.data.success) {
+						msg.success('Actualiado', 'Situación de cilindro actualizado', 5000).then(function (event) {
+							location.href = base_url('home/cilindro?c=' + OBJ_CILINDRO.serie);
+						});
+					}
+				}
+			}).catch(function (err) {
+				if (err.response) toastr.error(err.response.data.message + '\n' + err.response.data.file + ' - ' + err.response.data.line);else toastr.error(err);
+			});
+			// axios.put(BASE_URL + '/api/cilindro/' + this.cilindro.cil_id + '?m=cambiar_situacion', sendParams).then( res => {
+			// 	console.log(res.data)
+			// 	if (res.data.success) {
+			// 		toastr.success('Actualización completada con éxito', 'Cilindro - Success')
+			// 	}
+			// }).catch(e => {
+			// 	console.log(e.response)
+			// })
+		}
+	},
+	created: function created() {
+		// let process_evento = true
+		// if (this.cilindro.defectuoso == '1'){
+		// 	this.situacion = 'defectuoso'
+		// 	process_evento = false
+		// }
+		// if (this.cilindro.trasegada == '1'){
+		// 	this.situacion = 'trasegada'
+		// 	process_evento = false
+		// }
+		// if (process_evento) {
+		// 	switch (this.cilindro.evento) {
+		// 		case 'cliente':
+		// 			this.situacion = 'cliente'
+		// 			break
+		// 		case 'cargada':
+		// 			this.situacion = 'cargada'
+		// 			break
+		// 		case 'vacio':
+		// 			this.situacion = 'vacio'
+		// 			break
+		// 	}
+		// }
 	}
 });
 
