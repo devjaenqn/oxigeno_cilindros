@@ -120,6 +120,8 @@ var registro = {
         propietario_id: 0,
         cantidad: 0,
         tapa: 0,
+        registrado: 0,
+        delete: true,
         observacion: ''
       }
     });
@@ -183,6 +185,8 @@ var registro = {
       this.cilindro.propietario_id = 0;
       this.cilindro.cantidad = 0;
       this.cilindro.tapa = 0;
+      this.cilindro.registrado = 0;
+      this.cilindro.delete = true;
       this.cilindro.observacion = '';
     },
     resetCliente: function resetCliente() {
@@ -398,8 +402,10 @@ var registro = {
             codigo: this.cilindro.codigo,
             capacidad: this.cilindro.capacidad,
             propietario: this.cilindro.propietario,
+            registrado: this.cilindro.registrado,
             propietario_id: this.cilindro.propietario_id,
             cantidad: this.cilindro.cantidad,
+            delete: this.cilindro.delete,
             tapa: this.cilindro.tapa,
             observacion: this.cilindro.observacion
           });
@@ -500,7 +506,6 @@ var registro = {
   },
   created: function created() {
     console.log(this);
-    console.log('registro produccion');
     if (this.is_edit) {
       this.comprobante = this.data_despacho.documento_id;
       this.serie_comprobante = this.data_despacho.doc_serie;
@@ -529,7 +534,9 @@ var registro = {
           propietario: v.propietario_nombre,
           propietario_id: v.propietario.ent_id,
           cantidad: v.des_presion,
+          registrado: 1,
           tapa: +v.cilindro_tapa,
+          delete: false,
           observacion: v.observacion
         };
       });

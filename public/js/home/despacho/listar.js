@@ -245,8 +245,6 @@ var listar = {
   },
   created: function created() {
     this.onSubmit_frmAplicarFiltro(true);
-    console.log(this);
-    console.log('componente cargado');
     // axios.get(BASE_URL + '/api/cilindro').then(res => {
     //   console.log(res)
     //   this.producciones = res.data

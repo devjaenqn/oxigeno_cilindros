@@ -345,11 +345,14 @@ class DespachoController extends Controller
                 //incrementar el correlativo
                 $numero_doc = +request('numero');
                 if ($numero_doc >= $guia->actual){
-                    $despacho->doc_numero = $guia->actual;
-                    if ($numero_doc > $guia->actual)
-                        $guia->actual = $numero_doc;
-                    else
+
+                    if ($numero_doc > $guia->actual){
+                        $despacho->doc_numero = $numero_doc;
+                        $guia->actual = $numero_doc + 1;
+                    } else {
+                        $despacho->doc_numero = $guia->actual;
                         $guia->actual += 1;
+                    }
                 } else {
                     $despacho->doc_numero = $numero_doc;
                     // if ($guia->actual < +$numero_doc)
@@ -371,7 +374,8 @@ class DespachoController extends Controller
                 $guia->save();
                 //fin incremento°!
                 $despacho->fecha_emision = request('fecha');
-                $despacho->motivo = strtoupper(request('motivo'));
+                $despacho->motivo = 'venta';
+                // $despacho->motivo = strtoupper(request('motivo'));
                 $despacho->observacion = request('observacion');
                 if (request('destino') == 0) { //agregar nueva locacion
                     $pre_locacion = PropietariosLocacion::existeLocacion($cliente->ent_id, request('destino_nombre'));
@@ -662,7 +666,6 @@ class DespachoController extends Controller
     {
 
         $negocios = Negocio::all();
-        // dd($aa[0]);
         // dd($negocios[0]);
         // dd($negocios[0]->getDocumentoActivo('guia'));
         // return response()->json($aa);
@@ -755,162 +758,176 @@ class DespachoController extends Controller
                     $now = Carbon::now();
                     $metodo = request('metodo');
                     switch ($metodo) {
+                        //utiliado al editar despacho
                         case 'modificar_despacho':
-                                $valida = $request->validate([
-                                    'negocio' => 'required',
-                                    'comprobante' => 'required',
-                                    'anular' => 'required',
-                                    'serie' => 'required',
-                                    'numero' => 'required',
-                                    'fecha' => 'required',
-                                    'motivo' => 'required',
-                                    'cliente' => 'required',
-                                    'destino' => 'required',
-                                    'destino_nombre' => 'required',
-                                    'total_cilindros' => 'required',
-                                    'total_presion' => 'required',
-                                    'total_cubicos' => 'required',
-                                    // 'cilindros' => 'required'
-                                ]);
+                            // dd($request);
+                            $valida = $request->validate([
+                                'negocio' => 'required',
+                                'comprobante' => 'required',
+                                'anular' => 'required',
+                                'serie' => 'required',
+                                'numero' => 'required',
+                                'fecha' => 'required',
+                                // 'motivo' => 'required',
+                                'cliente' => 'required',
+                                'destino' => 'required',
+                                'destino_nombre' => 'required',
+                                'total_cilindros' => 'required',
+                                'total_presion' => 'required',
+                                'total_cubicos' => 'required',
+                                // 'cilindros' => 'required'
+                            ]);
 
-                                $negocio = Negocio::find($request->negocio);
-                                $cliente = Propietarios::find($request->cliente);
-                                $guia = NegocioComprobantes::find($request->comprobante);
-                                $procesa = true;
+                            $negocio = Negocio::find($request->negocio);
+                            $cliente = Propietarios::find($request->cliente);
+                            $guia = NegocioComprobantes::find($request->comprobante);
+                            $procesa = true;
 
-                                if (!($despacho->documento_id == $request->comprobante && +$despacho->doc_numero == +$request->numero)) {
-                                    if (Despacho::existe_numero($request->comprobante, +$request->numero)) {
-                                        $procesa = false;
-                                        $res['show_message'] = true;
-                                        $res['msg'] = 'El número de guía se encuentra registrado';
-                                    }
+                            if (!($despacho->documento_id == $request->comprobante && +$despacho->doc_numero == +$request->numero)) {
+                                if (Despacho::existe_numero($request->comprobante, +$request->numero)) {
+                                    $procesa = false;
+                                    $res['show_message'] = true;
+                                    $res['msg'] = 'El número de guía se encuentra registrado';
                                 }
+                            }
 
 
-                                if ($procesa && $guia && $guia->negocio->neg_id == $negocio->neg_id) {
+                            if ($procesa && $guia && $guia->negocio->neg_id == $negocio->neg_id) {
 
-                                        // $despacho = new Despacho();
-                                        $despacho->documento_id = $guia->cne_id;
-                                        $despacho->doc_nombre = $guia->nombre;
-                                        $despacho->anulado = request('anular', '0');
-                                        $despacho->doc_serie = $guia->serie;
+                                    // $despacho = new Despacho();
+                                    $despacho->documento_id = $guia->cne_id;
+                                    $despacho->doc_nombre = $guia->nombre;
+                                    $despacho->anulado = request('anular', '0');
+                                    $despacho->doc_serie = $guia->serie;
 
-                                        $despacho->entidad_id = request('cliente');
+                                    $despacho->entidad_id = request('cliente');
 
-                                        $despacho->salida = '1';
-                                        $despacho->fecha_salida = request('fecha');
+                                    $despacho->salida = '1';
+                                    $despacho->fecha_salida = request('fecha');
 
-                                        $despacho->llegada = '1';
-                                        $despacho->fecha_llegada = request('fecha');
+                                    $despacho->llegada = '1';
+                                    $despacho->fecha_llegada = request('fecha');
 
-                                        $despacho->confirmada = '1';
-                                        $despacho->fecha_confirmada = request('fecha');
+                                    $despacho->confirmada = '1';
+                                    $despacho->fecha_confirmada = request('fecha');
 
-                                        $despacho->doc_referencia = request('referencia', '');
-                                        //incrementar el correlativo
+                                    $despacho->doc_referencia = request('referencia', '');
+                                    //incrementar el correlativo
 
-                                        $despacho->doc_numero = +request('numero');
-                                        // $guia->actual = +request('numero') + 1;
-
-
-
-                                        // $guia->save();
-                                        //fin incremento°!
-                                        $despacho->fecha_emision = request('fecha');
-                                        $despacho->motivo = strtoupper(request('motivo'));
-                                        $despacho->observacion = request('observacion');
-                                        if (request('destino') == 0) { //agregar nueva locacion
-                                            $pre_locacion = PropietariosLocacion::existeLocacion($cliente->ent_id, request('destino_nombre'), true);
-                                            // if ($pre_locacion == null) {
-                                            //     $locacion = new PropietariosLocacion();
-                                            //     $locacion->entidad_id = $cliente->ent_id;
-                                            //     $locacion->locacion = strtoupper(request('destino_nombre'));
-                                            //     $locacion->predeterminado = '0';
-                                            //     $locacion->save();
-
-                                            //     $despacho->destino_id = $locacion->elo_id;
-                                            //     $despacho->destino_nombre = $locacion->locacion;
-                                            // } else {
-                                            $despacho->destino_id = $pre_locacion->elo_id;
-                                            $despacho->destino_nombre = $pre_locacion->locacion;
-                                            // }
+                                    $despacho->doc_numero = +request('numero');
+                                    // $guia->actual = +request('numero') + 1;
 
 
 
+                                    // $guia->save();
+                                    //fin incremento°!
+                                    $despacho->fecha_emision = request('fecha');
+                                    $despacho->motivo = 'venta';
+                                    // $despacho->motivo = strtoupper(request('motivo'));
+                                    $despacho->observacion = request('observacion');
+                                    if (request('destino') == 0) { //agregar nueva locacion
+                                        $pre_locacion = PropietariosLocacion::existeLocacion($cliente->ent_id, request('destino_nombre'), true);
+                                        // if ($pre_locacion == null) {
+                                        //     $locacion = new PropietariosLocacion();
+                                        //     $locacion->entidad_id = $cliente->ent_id;
+                                        //     $locacion->locacion = strtoupper(request('destino_nombre'));
+                                        //     $locacion->predeterminado = '0';
+                                        //     $locacion->save();
+
+                                        //     $despacho->destino_id = $locacion->elo_id;
+                                        //     $despacho->destino_nombre = $locacion->locacion;
+                                        // } else {
+                                        $despacho->destino_id = $pre_locacion->elo_id;
+                                        $despacho->destino_nombre = $pre_locacion->locacion;
+                                        // }
+
+
+
+                                    } else {
+                                        $despacho->destino_id = request('destino');
+                                        $despacho->destino_nombre = request('destino_nombre');
+                                    }
+
+                                    $despacho->total_cilindros = request('total_cilindros');
+                                    $despacho->total_presion = request('total_presion');
+                                    $despacho->total_cubicos = request('total_cubicos');
+                                    $despacho->doc_referencia = request('referencia');
+                                    $despacho->save();
+
+
+
+                                    //registrar cilindros y cambiar estado
+                                    // $res['produccion_id']  = $produccion->pro_id;
+
+                                    $send = [];
+                                    $send_seguimiento = [];
+                                    $send_entrada_salida = [];
+                                    $send_seguimiento_salida = [];
+                                    $send_seguimiento_llegada = [];
+                                    $now = Carbon::now();
+                                    $cilindros_id = [];
+                                    $cilindros_actuales = $despacho->detalles;
+                                    //recolectar solo el id de los cilindros actualmente registrados
+                                    $cilindros_id_actuales = $despacho->detalles->map(function($item) {
+                                        return $item->cilindro_id;
+                                    });
+                                    $eliminar_id = [];
+                                    $actualizar_id = [];
+                                    //temporal, id de cilindros que serán registrados y/o actualizados
+                                    foreach (request('cilindros') as $cil) {
+                                        $cilindros_id[] = $cil['id'];
+                                    }
+                                    //determinar que cilindros serán eliminado
+                                    foreach ($cilindros_id_actuales as $key => $value) {
+                                        if (in_array($value, $cilindros_id)) {
+                                            $actualizar_id[] = $value;
                                         } else {
-                                            $despacho->destino_id = request('destino');
-                                            $despacho->destino_nombre = request('destino_nombre');
+                                            $eliminar_id[] = $value;
+                                        }
+                                    }
+                                    //eliminar
+                                    //el seguimiento del cilindro
+                                    //la salida
+                                    //
+                                    foreach ($eliminar_id as $key => $value) {
+                                        $despacho->detalles->where('cilindro_id', $value)->where('despacho_id', $despacho->des_id)->first()->delete();
+
+                                        CilindroSeguimiento::eliminar($value, 'despacho', $despacho->des_id, 'app');
+                                        CilindroSeguimiento::eliminar($value, 'transporte', $despacho->des_id, 'app');
+                                        CilindroSeguimiento::eliminar($value, 'cliente', $despacho->des_id, 'app');
+
+
+                                        CilindrosEntradaSalida::where('cilindro_id', $value)->where('guia_id', $despacho->des_id)->first()->delete();
+
+                                        //no se regresa a un estado previo en editar?
+
+
+                                        $eventos = CilindroSeguimiento::where('cilindro_id', $value)
+                                            ->whereIn('evento', ['vacio', 'cargando', 'cargado', 'despacho', 'transporte', 'cliente'])
+                                            ->where('fecha', '>=', $despacho->fecha_emision)
+                                            ->get();
+                                        if ($eventos->count() == 0) {
+                                            //modificar el estado del cilindro
+                                            $cilindro = Cilindro::find($value);
+                                            $cilindro->situacion = Cilindro::getSituacion('fabrica');
+                                            $cilindro->cargado = Cilindro::getEstado('cargado');
+                                            $cilindro->evento = 'cargado';
+                                            $cilindro->despacho_id_salida = 0;
+                                            $cilindro->save();
                                         }
 
-                                        $despacho->total_cilindros = request('total_cilindros');
-                                        $despacho->total_presion = request('total_presion');
-                                        $despacho->total_cubicos = request('total_cubicos');
-                                        $despacho->doc_referencia = request('referencia');
-                                        $despacho->save();
+                                    }
+                                    foreach (request('cilindros') as $cil) {
+                                        // $cilindro = Cilindro::find($cil['id']);
 
-
-
-                                        //registrar cilindros y cambiar estado
-                                        // $res['produccion_id']  = $produccion->pro_id;
-
-                                        $send = [];
-                                        $send_seguimiento = [];
-                                        $send_entrada_salida = [];
-                                        $send_seguimiento_salida = [];
-                                        $send_seguimiento_llegada = [];
-                                        $now = Carbon::now();
-                                        $cilindros_id = [];
-                                        $cilindros_actuales = $despacho->detalles;
-                                        $cilindros_id_actuales = $despacho->detalles->map(function($item) {
-                                            return $item->cilindro_id;
-                                        });
-                                        $eliminar_id = [];
-                                        $actualizar_id = [];
-                                        // dd(request('cilindros'));
-                                        foreach (request('cilindros') as $cil) {
-                                            $cilindros_id[] = $cil['id'];
-                                        }
-                                        foreach ($cilindros_id_actuales as $key => $value) {
-                                            if (in_array($value, $cilindros_id)) {
-                                                $actualizar_id[] = $value;
-                                            } else {
-                                                $eliminar_id[] = $value;
-                                            }
-                                        }
-                                        //eliminar
-
-                                        foreach ($eliminar_id as $key => $value) {
-                                            $despacho->detalles->where('cilindro_id', $value)->where('despacho_id', $despacho->des_id)->first()->delete();
-
-                                            CilindroSeguimiento::eliminar($value, 'despacho', $despacho->des_id, 'app');
-                                            CilindroSeguimiento::eliminar($value, 'transporte', $despacho->des_id, 'app');
-                                            CilindroSeguimiento::eliminar($value, 'cliente', $despacho->des_id, 'app');
-
-
-                                            CilindrosEntradaSalida::where('cilindro_id', $value)->where('guia_id', $despacho->des_id)->first()->delete();
-
-                                            //no se regresa a un estado previo en editar?
-                                            $eventos = CilindroSeguimiento::where('cilindro_id', $value)->whereIn('evento', ['vacio', 'cargando', 'cargado', 'despacho', 'transporte', 'cliente'])->where('fecha', '>=', $despacho->fecha_emision)->get();
-                                            if ($eventos->count() == 0) {
-                                                //modificar el estado del cilindro
-                                                $cilindro = Cilindro::find($value);
-                                                $cilindro->situacion = Cilindro::getSituacion('fabrica');
-                                                $cilindro->cargado = Cilindro::getEstado('cargado');
-                                                $cilindro->evento = 'cargado';
-                                                $cilindro->despacho_id_salida = 0;
-                                                $cilindro->save();
-                                            }
-
-                                        }
-                                        foreach (request('cilindros') as $cil) {
-                                            // $cilindro = Cilindro::find($cil['id']);
-
-                                            //jalar del mismo o solo
-                                            $registra = true;
-                                            foreach ($actualizar_id as $key => $value) {
-                                                if ($value == $cil['id']) {
-                                                    //actualizar
-                                                    $detalle_temp = $cilindros_actuales->where('cilindro_id', $value)->first();
+                                        //jalar del mismo o solo
+                                        $registra = true;
+                                        foreach ($actualizar_id as $key => $value) {
+                                            // if ($value == $cil['id']) {
+                                            if ($cil['registrado'] == 1 && in_array($cil['id'], $actualizar_id)) {
+                                                //actualizar los seguimeintos y la entrada y salida
+                                                $detalle_temp = $cilindros_actuales->where('cilindro_id', $value)->first();
+                                                if ($detalle_temp) {
                                                     $detalle_temp->des_capacidad = $cil['capacidad'];
                                                     $detalle_temp->des_presion = $cil['cantidad'];
                                                     $detalle_temp->des_cubico = $cil['capacidad'];
@@ -922,135 +939,124 @@ class DespachoController extends Controller
                                                     $detalle_temp->cilindro_tapa = ''.$cil['tapa'];
                                                     $detalle_temp->save();
 
-                                                    CilindroSeguimiento::where('cilindro_id', $value)->where('referencia_id', $despacho->des_id)->whereIn('evento', ['despacho', 'transporte', 'cliente'])->update([
-                                                        'fecha' => request('fecha')
+                                                    CilindroSeguimiento::where('cilindro_id', $value)
+                                                        ->where('referencia_id', $despacho->des_id)
+                                                        ->whereIn('evento', ['despacho', 'transporte', 'cliente'])
+                                                        ->update([
+                                                        'fecha' => request('fecha'),
+                                                        'fecha_detalle' => request('fecha')
                                                     ]);
 
-                                                    CilindrosEntradaSalida::where('cilindro_id', $value)->where('guia_id', $despacho->des_id)->update([
+                                                    CilindrosEntradaSalida::where('cilindro_id', $value)
+                                                        ->where('guia_id', $despacho->des_id)
+                                                        ->update([
                                                         'salida' => request('fecha'),
                                                         'observacion_salida' => $cil['observacion']
                                                     ]);
-
-
                                                     $registra = false;
-                                                    break;
                                                 }
+                                                break;
                                             }
-                                            // $cilindros_id[] = $cil['id'];
-                                            if ($registra) {
-                                                $send[] = [
-                                                    'despacho_id' => $despacho->des_id,
-                                                    'cilindro_id' => $cil['id'],
-                                                    'des_capacidad' => $cil['capacidad'],
-                                                    'des_presion' => $cil['cantidad'],
-                                                    'propietario_id' => $cil['propietario_id'],
-                                                    'des_cubico' => $cil['capacidad'],
-                                                    'propietario_nombre' => $cil['propietario'],
-                                                    'cilindro_serie' => $cil['serie'],
-                                                    'cilindro_codigo' => $cil['codigo'],
-                                                    'observacion' => $cil['observacion'],
-                                                    'cilindro_tapa' => ''.$cil['tapa'].'',
-                                                    'created_at' => Carbon::now(),
-                                                    'updated_at' => Carbon::now()
-                                                ];
-
-                                                $send_seguimiento[] = [
-                                                    'cilindro_id' => $cil['id'],
-                                                    'created_at' => Carbon::now(),
-                                                    'updated_at' => Carbon::now(),
-                                                    'evento' => 'despacho',
-                                                    'descripcion' => 'Cilindro registrado en despacho, listo para salir',
-                                                    'referencia_id' => $despacho->des_id,
-                                                    'origen' => 'app',
-                                                    'fecha' => request('fecha')
-                                                ];
-                                                $send_seguimiento_salida[] = [
-                                                    'cilindro_id' => $cil['id'],
-                                                    'created_at' => Carbon::now(),
-                                                    'updated_at' => Carbon::now(),
-                                                    'evento' => 'transporte',
-                                                    'descripcion' => 'Cilindro en transporte con destino al cliente',
-                                                    'referencia_id' => $despacho->des_id,
-                                                    'origen' => 'app',
-                                                    'fecha' => request('fecha')
-                                                ];
-                                                $send_seguimiento_llegada[] = [
-                                                    'cilindro_id' => $cil['id'],
-                                                    'created_at' => Carbon::now(),
-                                                    'updated_at' => Carbon::now(),
-                                                    'evento' => 'cliente',
-                                                    'descripcion' => 'Cilindro en cliente',
-                                                    'referencia_id' => $despacho->des_id,
-                                                    'origen' => 'app',
-                                                    'fecha' => request('fecha')
-                                                ];
-
-                                                $send_entrada_salida[] = [
-                                                    'cilindro_id' => $cil['id'],
-                                                    'salida' => request('fecha'),
-                                                    'guia_id' => $despacho->des_id,
-                                                    'observacion_salida' => $cil['observacion'],
-                                                    'created_at' => Carbon::now(),
-                                                    'updated_at' => Carbon::now(),
-                                                ];
-                                            }
-
-                                            //agregar seguimiento de salida llega y confirmación
-
-
-
-                                            //FINagregar seguimiento de salida llega y confirmación
-
-                                            // $send_seguimiento[] = [
-                                            //     'cilindro_id' => $cil['id'],
-                                            //     'created_at' => $now,
-                                            //     'updated_at' => $now,
-                                            //     'evento' => 'despacho',
-                                            //     'descripcion' => 'Cilindro registrado en despacho, listo para salir',
-                                            //     'referencia_id' => $despacho->des_id,
-                                            //     'origen' => 'app',
-                                            //     'fecha' => $now
-                                            // ];
-
-                                            // $cilindro->cargado = 2;
-                                            // $cilindro
-                                            // $cilindro->situación = 2;
                                         }
-                                        if (request('anular') != '1') {
-                                            //CAMBIAR SITUACION DE CILINDRO A -> TRANSPORTE
-                                            // $estado = Cilindro::getSituacion('transporte');
+                                        // $cilindros_id[] = $cil['id'];
+                                        // if ($registra) {
+                                        if ($cil['registrado'] == 0) {
+                                            $send[] = [
+                                                'despacho_id' => $despacho->des_id,
+                                                'cilindro_id' => $cil['id'],
+                                                'des_capacidad' => $cil['capacidad'],
+                                                'des_presion' => $cil['cantidad'],
+                                                'propietario_id' => $cil['propietario_id'],
+                                                'des_cubico' => $cil['capacidad'],
+                                                'propietario_nombre' => $cil['propietario'],
+                                                'cilindro_serie' => $cil['serie'],
+                                                'cilindro_codigo' => $cil['codigo'],
+                                                'observacion' => $cil['observacion'],
+                                                'cilindro_tapa' => ''.$cil['tapa'].'',
+                                                'created_at' => Carbon::now(),
+                                                'updated_at' => Carbon::now()
+                                            ];
 
-                                            // Cilindro::whereIn('cil_id', $send->map(function ($item) {
-                                            //         return $item['cilindro_id'];
-                                            //     }))->update(['situacion' => $estado]);
+                                            $send_seguimiento[] = [
+                                                'cilindro_id' => $cil['id'],
+                                                'created_at' => Carbon::now(),
+                                                'updated_at' => Carbon::now(),
+                                                'evento' => 'despacho',
+                                                'descripcion' => 'Cilindro registrado en despacho, listo para salir',
+                                                'referencia_id' => $despacho->des_id,
+                                                'origen' => 'app',
+                                                'fecha' => request('fecha'),
+                                                'fecha_detalle' => request('fecha')
+                                            ];
+                                            $send_seguimiento_salida[] = [
+                                                'cilindro_id' => $cil['id'],
+                                                'created_at' => Carbon::now(),
+                                                'updated_at' => Carbon::now(),
+                                                'evento' => 'transporte',
+                                                'descripcion' => 'Cilindro en transporte con destino al cliente',
+                                                'referencia_id' => $despacho->des_id,
+                                                'origen' => 'app',
+                                                'fecha' => request('fecha'),
+                                                'fecha_detalle' => request('fecha')
+                                            ];
+                                            $send_seguimiento_llegada[] = [
+                                                'cilindro_id' => $cil['id'],
+                                                'created_at' => Carbon::now(),
+                                                'updated_at' => Carbon::now(),
+                                                'evento' => 'cliente',
+                                                'descripcion' => 'Cilindro en cliente',
+                                                'referencia_id' => $despacho->des_id,
+                                                'origen' => 'app',
+                                                'fecha' => request('fecha'),
+                                                'fecha_detalle' => request('fecha')
+                                            ];
 
-                                            Cilindro::whereIn('cil_id', $cilindros_id)->update([
-                                                'despacho_id_salida' => $despacho->des_id,
-                                                'evento' => 'despacho'
-                                            ]);
-                                            CilindroSeguimiento::insert($send_seguimiento);
-                                            CilindrosEntradaSalida::insert($send_entrada_salida);
-
-                                            //salida
-                                            Cilindro::whereIn('cil_id', $cilindros_id)->update(['situacion' => Cilindro::getSituacion('transporte'), 'evento' => 'transporte']);
-                                            CilindroSeguimiento::insert($send_seguimiento_salida);
-                                            //llegada
-                                            Cilindro::whereIn('cil_id', $cilindros_id)->update(['situacion' => Cilindro::getSituacion('cliente'), 'evento' => 'cliente']);
-                                            CilindroSeguimiento::insert($send_seguimiento_llegada);
-
-
-                                            //seguimiento ara salida y llegada
-
+                                            $send_entrada_salida[] = [
+                                                'cilindro_id' => $cil['id'],
+                                                'salida' => request('fecha'),
+                                                'guia_id' => $despacho->des_id,
+                                                'observacion_salida' => $cil['observacion'],
+                                                'created_at' => Carbon::now(),
+                                                'updated_at' => Carbon::now(),
+                                            ];
                                         }
-                                        if (count($send) > 0)
-                                            DespachoCilindros::insert($send);
+                                    }
+
+                                    if (request('anular') != '1') {
+                                        //CAMBIAR SITUACION DE CILINDRO A -> TRANSPORTE
+                                        // $estado = Cilindro::getSituacion('transporte');
+
+                                        // Cilindro::whereIn('cil_id', $send->map(function ($item) {
+                                        //         return $item['cilindro_id'];
+                                        //     }))->update(['situacion' => $estado]);
+
+                                        Cilindro::whereIn('cil_id', $cilindros_id)->update([
+                                            'despacho_id_salida' => $despacho->des_id,
+                                            'evento' => 'despacho'
+                                        ]);
+                                        CilindroSeguimiento::insert($send_seguimiento);
+                                        CilindrosEntradaSalida::insert($send_entrada_salida);
+
+                                        //salida
+                                        Cilindro::whereIn('cil_id', $cilindros_id)->update(['situacion' => Cilindro::getSituacion('transporte'), 'evento' => 'transporte']);
+                                        CilindroSeguimiento::insert($send_seguimiento_salida);
+                                        //llegada
+                                        Cilindro::whereIn('cil_id', $cilindros_id)->update(['situacion' => Cilindro::getSituacion('cliente'), 'evento' => 'cliente']);
+                                        CilindroSeguimiento::insert($send_seguimiento_llegada);
+
+
+                                        //seguimiento ara salida y llegada
+
+                                    }
+                                    if (count($send) > 0)
+                                        DespachoCilindros::insert($send);
 
 
 
 
-                                    // $res['detalles'] = $produccion->detalles;
-                                    $res['success'] = true;
-                                }
+                                // $res['detalles'] = $produccion->detalles;
+                                $res['success'] = true;
+                            }
 
 
 
