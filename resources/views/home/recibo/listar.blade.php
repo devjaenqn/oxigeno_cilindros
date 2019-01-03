@@ -15,7 +15,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-sm-24">
-              <form class="form-horizontal" @submit.prevent="onSubmit_frmAplicarFiltro">
+              <form class="form-horizontal" @submit.prevent="onSubmit_frmAplicarFiltro()">
                 <div class="row">
 
                   <div class="col-sm-8">
