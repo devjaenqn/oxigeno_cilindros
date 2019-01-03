@@ -22,7 +22,7 @@
                     <div class="form-group row">
                       <!-- <label class="col-md-3 col-form-label" for="text-input">Text Input</label> -->
                       <div class="col-md-24">
-                        <input class="form-control" id="txt_buscar" type="search" name="text-input" placeholder="Ingrese nombre o RUC" v-model="filtros.query" form="frm_send_filter">
+                        <input class="form-control text-select" id="txt_buscar" type="search" name="text-input" placeholder="Ingrese nombre o RUC" v-model="filtros.query" form="frm_send_filter">
                       </div>
                     </div>
                   </div>

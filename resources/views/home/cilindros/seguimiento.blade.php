@@ -16,17 +16,17 @@
 
           <div class="row">
             <div class="col-sm-24">
-              <form class="form-horizontal" @submit.prevent="onSubmit_frmAplicarFiltro">
+              <form class="form-horizontal" @submit.prevent="onSubmit_frmAplicarFiltro()">
                 <div class="row">
 
-                  <div class="col-sm-6">
+                 {{--  <div class="col-sm-6">
                     <div class="form-group row">
                       <!-- <label class="col-md-3 col-form-label" for="text-input">Text Input</label> -->
                       <div class="col-md-24">
                         <input class="form-control" id="guia_recibo" type="text" name="guia_recibo" placeholder="Guía, recibo" v-model="filtros.query">
                       </div>
                     </div>
-                  </div>
+                  </div> --}}
                   <div class="col-sm-12">
                      <div class="form-group row">
                         <label class="col-md-3 col-form-label" for="text-input">Desde</label>
@@ -41,7 +41,7 @@
                       </div>
                     </div>
 
-                    <div class="col-sm-6">
+                    <div class="col-sm-12">
                       <div class="float-right">
 
                         <button class="btn btn-sm btn-primary" type="submit">

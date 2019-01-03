@@ -91,7 +91,7 @@ var registro = {
       // fecha: moment().format('YYYY-MM-DD'),
       // fecha_salida: moment().format('YYYY-MM-DD'),
       // operador: 0,
-      turno: '7AM - 7PM',
+      // turno: '7AM - 7PM',
       // entrada: '00:00',
       // salida: '00:00',
       // observacion: '',
@@ -463,7 +463,7 @@ var registro = {
 
     if (this.edit) {
       //cargar cilindros
-      this.cilindros;
+      // this.cilindros
     }
   },
   mounted: function mounted() {

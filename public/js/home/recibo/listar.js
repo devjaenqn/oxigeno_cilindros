@@ -85,14 +85,22 @@ var listar = {
       tbl_recibo: null,
       filtros: {
         query: '',
-        fecha_desde: moment().format('YYYY-MM-DD'),
-        fecha_hasta: moment().format('YYYY-MM-DD'),
+        fecha_desde: localvalues.getVal('recibo_filter_fecha_desde', moment().format('YYYY-MM-DD')),
+        fecha_hasta: localvalues.getVal('recibo_filter_fecha_hasta', moment().format('YYYY-MM-DD')),
         success_date: true,
         filtro_date: 'same'
       }
     };
   },
 
+  watch: {
+    'filtros.fecha_desde': function filtrosFecha_desde(nv) {
+      localvalues.setVal('recibo_filter_fecha_desde', nv);
+    },
+    'filtros.fecha_hasta': function filtrosFecha_hasta(nv) {
+      localvalues.setVal('recibo_filter_fecha_hasta', nv);
+    }
+  },
   methods: {
     getSituacion: function getSituacion(num) {
       switch (+num) {
@@ -128,6 +136,8 @@ var listar = {
       return 'X';
     },
     onSubmit_frmAplicarFiltro: function onSubmit_frmAplicarFiltro() {
+      var norender = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       var desde = moment(this.filtros.fecha_desde);
       var hasta = moment(this.filtros.fecha_hasta);
       this.filtros.success_date = true;
@@ -137,15 +147,14 @@ var listar = {
         } else if (desde.unix() == hasta.unix()) {
           this.filtros.filtro_date = 'same';
         } else {
-          toastr.warning('Fechas no válidas para la búsqueda x', 'Revisar');
+          if (!norender) toastr.warning('Fechas no válidas para la búsqueda x', 'Revisar');
           this.filtros.success_date = false;
         }
       } else {
-        toastr.warning('Fechas no válidas para la búsqueda', 'Revisar');
+        if (!norender) toastr.warning('Fechas no válidas para la búsqueda', 'Revisar');
         this.filtros.success_date = false;
       }
-
-      if (this.filtros.success_date) this.dt_tbl_recibo.draw();
+      if (!norender) if (this.filtros.success_date) this.dt_tbl_recibo.draw();
     },
     fnOnClick_btnAcciones: function fnOnClick_btnAcciones(e) {
       var dataset = e.currentTarget.dataset;
@@ -169,7 +178,7 @@ var listar = {
     }
   },
   created: function created() {
-    console.log('componente cargado');
+    this.onSubmit_frmAplicarFiltro(true);
     // axios.get(BASE_URL + '/api/cilindro').then(res => {
     //   console.log(res)
     //   this.producciones = res.data

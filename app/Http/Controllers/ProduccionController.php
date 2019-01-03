@@ -362,6 +362,8 @@ class ProduccionController extends Controller
         if ($produccion) {
             $data['edit'] = $edit;
             $data['produccion'] = $produccion;
+            $date_salida = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->salida);
+            $date_entrada = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->entrada);
             $data['name'] = 'jaen';
             $data['operadores'] = Operador::all();
             // $sistemas = Sistema::where('attr', 's')->get();
@@ -400,15 +402,17 @@ class ProduccionController extends Controller
 
                 $data['js']['sistema'] = $sis->sis_id;
                 $data['js']['produccion'] = $produccion;
+
                 if ($sis->lote != null) {
                     // dd($produccion->detalles);
                     $data['js']['serie_lote'] = $sis->lote->serie;
+                    $data['js']['turno'] = $produccion->turno;
                     $data['js']['lote_success'] = true;
                     $data['js']['numero_lote'] = fill_zeros($produccion->numero_lote);
-                    $data['js']['entrada'] = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->entrada)->format('H:i');
-                    $data['js']['salida'] = Carbon::createFromFormat('Y-m-d H:i:s', $produccion->salida)->format('H:i');
-                    $data['js']['fecha'] = Carbon::createFromFormat('Y-m-d', $produccion->fecha)->format('Y-m-d');
-                    $data['js']['fecha_salida'] = Carbon::createFromFormat('Y-m-d', $produccion->fecha)->format('Y-m-d');
+                    $data['js']['fecha'] = $date_entrada->format('Y-m-d');
+                    $data['js']['entrada'] = $date_entrada->format('H:i');
+                    $data['js']['fecha_salida'] = $date_salida->format('Y-m-d');
+                    $data['js']['salida'] = $date_salida->format('H:i');
                     $data['js']['observacion'] = $produccion->observacion;
                     // dd($produccion);
                     $data['js']['cilindros'] = $produccion->detalles->map(function($item) {
@@ -492,7 +496,7 @@ class ProduccionController extends Controller
                             $res['data'] = $produccion;
                         });
                         break;
-                    case 'produccion':
+                    case 'produccion'://modifica l aproducción, cilindro, fecha, turno etc...
                         $valida = $request->validate([
                             'entrada' => 'required',
                             'salida' => 'required',
@@ -505,6 +509,7 @@ class ProduccionController extends Controller
                             'total_cilindros' => 'required',
                             'total_libras' => 'required',
                         ]);
+                        // dd($request);
                         DB::transaction(function () use ($request, $id, &$res) {
                             $produccion = Produccion::find($id);
                             if ($produccion) {
@@ -520,8 +525,30 @@ class ProduccionController extends Controller
                                 $produccion->total_cilindros = $request->total_cilindros;
                                 $produccion->total_presion = $request->total_libras;
 
-                                $cilindros_registrados = $produccion->detalles;
+                                $cilindros_actuales = $produccion->detalles;
+                                $cilindros_id_actuales = $produccion->detalles->map(function($item) {
+                                        return $item->cilindro_id;
+                                    });;
                                 //posibilidade de poder modificar el estado de los nuevos cilindros, agregar a cada modificación una referneica en las observaciones,pra indicar que se agrego el cilindro como parte de una modificación
+
+                                $eliminar_id = [];
+                                $actualizar_id = [];
+                                //temporal, id de cilindros que serán registrados y/o actualizados
+                                foreach (request('cilindros') as $cil) {
+                                    $cilindros_id[] = $cil['id'];
+                                }
+                                //determinar que cilindros serán eliminado
+                                foreach ($cilindros_id_actuales as $key => $value) {
+                                    if (in_array($value, $cilindros_id)) {
+                                        $actualizar_id[] = $value;
+                                    } else {
+                                        $eliminar_id[] = $value;
+                                    }
+                                }
+
+                                foreach ($eliminar_id as $key => $value) {
+
+                                }
                                 $cil_nuevos = collect($request->cilindros)->where('registrado', 0);
                                 //clindros nuevos, seguimiento, estado
                                 $send_produccion_cilindros = [];
@@ -530,6 +557,47 @@ class ProduccionController extends Controller
                                 $cilindros_id_retiro = [];
                                 $cilindros_retirados = [];
                                 $now = Carbon::now();
+
+                                foreach (request('cilindros') as $cil) {
+                                    $registra = true;
+                                    if ($cil['registrado'] == 1 && in_array($cil['id'], $actualizar_id)) {
+                                        $detalle_temp = $cilindros_actuales->where('cilindro_id', $cil['id'])->first();
+                                            if ($detalle_temp) {
+                                                // dd($request);
+                                                $ingreso = Carbon::createFromFormat('Y-m-d H:i:s', $request->entrada);
+                                                $salida = Carbon::createFromFormat('Y-m-d H:i:s', $request->salida);
+                                                $detalle_temp->pro_capacidad = $cil['capacidad'];
+                                                $detalle_temp->pro_presion = $cil['cantidad'];
+
+                                                $detalle_temp->propietario_id = $cil['propietario_id'];
+                                                $detalle_temp->propietario_name = $cil['propietario'];
+                                                $detalle_temp->cilindro_serie = $cil['serie'];
+                                                $detalle_temp->cilindro_codigo = $cil['codigo'];
+                                                $detalle_temp->observacion = $cil['observacion'];
+                                                $detalle_temp->ingreso = $request->entrada;
+                                                $detalle_temp->salida = $request->salida;
+                                                $detalle_temp->save();
+                                                // dd($detalle_temp);
+                                                // if ($detalle_temp->save()) dd('xx');
+
+                                                CilindroSeguimiento::where('cilindro_id', $detalle_temp->cilindro_id)
+                                                    ->where('referencia_id', $detalle_temp->produccion_id)
+                                                    ->whereIn('evento', ['cargando'])
+                                                    ->update([
+                                                        'fecha' => $ingreso->format('Y-m-d'),
+                                                        'fecha_detalle' => $request->entrada
+                                                    ]);
+                                                CilindroSeguimiento::where('cilindro_id', $detalle_temp->cilindro_id)
+                                                    ->where('referencia_id', $detalle_temp->produccion_id)
+                                                    ->whereIn('evento', ['cargado'])
+                                                    ->update([
+                                                        'fecha' => $salida->format('Y-m-d'),
+                                                        'fecha_detalle' => $request->salida
+
+                                                    ]);
+                                            }
+                                    }
+                                }
 
                                 foreach ($cil_nuevos as $cil) {
                                     // $cilindro = Cilindro::find($cil['id']);

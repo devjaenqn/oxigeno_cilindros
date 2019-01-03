@@ -90,11 +90,11 @@ var registro = {
       // numero_comprobante: '',
       fecha_emision: moment().format('YYYY-MM-DD'),
       anular: false,
-      motivo: 'VENTA',
+      // motivo: 'VENTA',
       turno: '7AM - 7PM',
       entrada: '00:00',
       salida: '00:00',
-      referencia: '',
+      // referencia: '',
       observacion: '',
       // sistema: 0,
       // total_cilindros: 0,
@@ -118,9 +118,11 @@ var registro = {
         capacidad: 0,
         propietario: '',
         propietario_id: 0,
-        motivo: '',
+        // motivo: '',
+        delete: true,
         cantidad: 0,
         tapa: 0,
+        registrado: 0,
         observacion: ''
       }
     });
@@ -141,6 +143,8 @@ var registro = {
       this.cilindro.propietario_id = 0;
       this.cilindro.cantidad = 0;
       this.cilindro.tapa = 0;
+      this.cilindro.delete = true;
+      this.cilindro.registrado = 0;
       this.cilindro.observacion = '';
     },
     resetCliente: function resetCliente() {
@@ -213,87 +217,98 @@ var registro = {
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this2 = this;
 
-      if (confirm('¿Deseas continuar?')) {
-        loading.show();
-        var now = moment();
-        // let entrada = moment(now.format('YYYY-MM-DD') + ' ' + this.entrada)
-        // let salida = moment(now.format('YYYY-MM-DD') + ' ' + this.salida)
+      msg.pregunta('Recibo', '¿Dese continuar?', function (quest) {
+        if (quest) {
+          var now = moment();
+          if (_this2.comprobante_success) {
+            // if (entrada.isValid() && salida.isValid()){
+            var success_reg = true;
 
-        if (this.comprobante_success) {
-          // if (entrada.isValid() && salida.isValid()){
-          var success_reg = true;
-
-          if (this.cliente.id == 0) {
-            success_reg = false;
-            toastr.warning('Seleccione un cliente', 'Revisar');
-          }
-
-          if (this.comprobante == 0) {
-            success_reg = false;
-            toastr.error('Guía no encontrada', 'Error');
-          }
-          if (!this.anular) {
-            if (this.cilindros.length <= 0) {
+            if (_this2.cliente.id == 0) {
               success_reg = false;
-              toastr.warning('Registre al menos un cilindro', 'Revisar');
+              toastr.warning('Seleccione un cliente', 'Revisar');
             }
-          }
 
-          if (this.cliente.destino != 0) {
-            var locacion = this.cliente.destinos.find(function (v) {
-              return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
-            });
-
-            if (typeof locacion == 'undefined') this.cliente.id = 0;
-          }
-
-          if (this.cliente.destino_nombre.trim() == '') {
-            success_reg = false;
-            toastr.warning('Ingrese destino', 'Revisar');
-          }
-
-          if (success_reg) {
-            var sendData = {
-              negocio: this.negocio,
-              anular: this.anular ? '1' : '0',
-              comprobante: this.comprobante,
-              serie: this.serie_comprobante,
-              referencia: this.referencia,
-              numero: this.numero_comprobante,
-              fecha: this.fecha_emision,
-              motivo: this.motivo,
-              observacion: this.observacion,
-              cliente: this.cliente.id,
-              destino: this.cliente.destino,
-              destino_nombre: this.cliente.destino_nombre.toUpperCase(),
-              total_cilindros: this.total_cilindros,
-              total_presion: this.total_libras,
-              total_cubicos: this.total_cubicos,
-              cilindros: this.cilindros
-            };
-            axios.post(BASE_URL + '/api/recibo', sendData).then(function (res) {
-              loading.hide();
-              if (res.data.success) {
-                toastr.success('Registro realizado con éxito', 'Producción - Success');
-                _this2.resetForm();
+            if (_this2.comprobante == 0) {
+              success_reg = false;
+              toastr.error('Guía no encontrada', 'Error');
+            }
+            if (!_this2.anular) {
+              if (_this2.cilindros.length <= 0) {
+                success_reg = false;
+                toastr.warning('Registre al menos un cilindro', 'Revisar');
               }
-            }).catch(function (err) {
-              loading.hide();
-              toastr.error(parsePreJson(err.response.data));
+            }
+
+            if (_this2.cliente.destino != 0) {
+              var locacion = _this2.cliente.destinos.find(function (v) {
+                return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
+              });
+
+              if (typeof locacion == 'undefined') _this2.cliente.id = 0;
+            }
+
+            if (_this2.cliente.destino_nombre.trim() == '') {
+              success_reg = false;
+              toastr.warning('Ingrese destino', 'Revisar');
+            }
+
+            if (success_reg) {
+              var sendData = {
+                negocio: _this2.negocio,
+                anular: _this2.anular ? '1' : '0',
+                comprobante: _this2.comprobante,
+                serie: _this2.serie_comprobante,
+                // referencia: this.referencia,
+                numero: _this2.numero_comprobante,
+                fecha: _this2.fecha_emision,
+                // motivo: this.motivo,
+                observacion: _this2.observacion,
+                cliente: _this2.cliente.id,
+                destino: _this2.cliente.destino,
+                destino_nombre: _this2.cliente.destino_nombre.toUpperCase(),
+                total_cilindros: _this2.total_cilindros,
+                total_presion: _this2.total_libras,
+                total_cubicos: _this2.total_cubicos,
+                cilindros: _this2.cilindros,
+                metodo: _this2.is_edit ? 'modificar_recibo' : ''
+              };
+              if (_this2.is_edit) {
+                return axios.put(BASE_URL + '/api/recibo/' + _this2.data_despacho.des_id, sendData);
+              } else {
+                return axios.post(BASE_URL + '/api/recibo', sendData);
+              }
+            }
+
+            // } else {
+            //   //fechas invalidas
+            //   toastr.warning('Fechas no válidas', 'Revisar')
+            // }
+          } else {
+            toastr.error('Lote no encontrado', 'Error');
+          }
+        }
+      }).then(function (res) {
+        if (res.data) {
+          if (res.data.success) {
+            var mensaje = 'Elemento registrado con éxito!';
+            if (_this2.is_edit) {
+              mensaje = 'Elemento actualizado con éxito';
+            }
+            msg.success('Recibo', mensaje, 5000).then(function (event) {
+              location.href = base_url('home/recibo');
             });
           } else {
-            loading.hide();
+            if (_this2.anular) _this2.anular = false;
+            if (res.data.show_message) {
+              toastr.warning(res.data.msg, 'Revisar!');
+            }
           }
-
-          // } else {
-          //   //fechas invalidas
-          //   toastr.warning('Fechas no válidas', 'Revisar')
-          // }
-        } else {
-          loading.hide();
-          toastr.error('Lote no encontrado', 'Error');
+        } else if (res.cancel) {
+          console.log('cancel proce');
+          if (_this2.anular) _this2.anular = false;
         }
-      }
+      });
     },
     frmOnSubmit_frmAgregaCilindro: function frmOnSubmit_frmAgregaCilindro() {
       console.log('registrar cilindro');
@@ -308,9 +323,12 @@ var registro = {
             propietario_id: this.cilindro.propietario_id,
             cantidad: this.cilindro.cantidad,
             tapa: this.cilindro.tapa,
-            motivo: this.cilindro.motivo,
+            delete: this.cilindro.delete,
+            registrado: this.cilindro.registrado,
+            // motivo: this.cilindro.motivo,
             observacion: this.cilindro.observacion
           });
+          this.$refs.cilindro_th.focus();
         } else {
           toastr.warning('Cilindro no seleccionado', 'Revisar');
         }
@@ -408,7 +426,41 @@ var registro = {
   },
   created: function created() {
     console.log(this);
-    console.log('registro produccion');
+    if (this.is_edit) {
+      this.comprobante = this.data_despacho.documento_id;
+      this.serie_comprobante = this.data_despacho.doc_serie;
+      this.numero_comprobante = this.data_despacho.doc_numero;
+      this.fecha_emision = this.data_despacho.fecha_emision;
+      // this.motivo = this.data_despacho.motivo
+      // this.referencia = this.data_despacho.doc_referencia
+      this.observacion = this.data_despacho.observacion;
+
+      this.cliente.id = this.data_despacho.destino.entidad.ent_id;
+      this.cliente.nombre = this.data_despacho.destino.entidad.nombre;
+      this.cliente.direccion = this.data_despacho.destino.entidad.direccion;
+      this.cliente.tipo_doc = this.data_despacho.destino.entidad.documento.corto;
+      this.cliente.numero_doc = this.data_despacho.destino.entidad.numero;
+      this.cliente.destino = this.data_despacho.destino.elo_id;
+      this.cliente.destino_nombre = this.data_despacho.destino.locacion;
+      this.cliente.destinos = this.data_despacho.destino.entidad.locaciones;
+
+      this.cilindros = this.data_despacho.detalles.map(function (v) {
+
+        return {
+          id: v.cilindro_id,
+          serie: v.cilindro_serie,
+          codigo: v.cilindro_codigo,
+          capacidad: v.des_capacidad,
+          propietario: v.propietario_nombre,
+          propietario_id: v.propietario.ent_id,
+          cantidad: v.des_presion,
+          registrado: 1,
+          tapa: +v.cilindro_tapa,
+          delete: false,
+          observacion: v.observacion
+        };
+      });
+    }
     // this.negocio = this.data_negocios[0].sis_id
   },
   mounted: function mounted() {
@@ -494,7 +546,11 @@ var registro = {
           var no_buscar = _this.cilindros.map(function (v) {
             return v.id;
           });
-          axios.get(BASE_URL + '/api/cilindro?m=recibo&q=' + q, { params: { cilindros: no_buscar } }).then(function (res) {
+          axios.get(BASE_URL + '/api/cilindro', { params: {
+              m: this.is_edit ? 'editar' : 'recibo',
+              q: q,
+              cilindros: no_buscar
+            } }).then(function (res) {
             // axios.get(BASE_URL + '/api/cilindro?m=all&q=' + q).then(res => {
             // console.log(res.data)
             // return res.data

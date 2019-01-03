@@ -31,7 +31,6 @@
                             <label class="col-md-6 col-form-label line-height-2-1 pr-0 pt-0 pb-0 text-left" for="comprobante">Guías</label>
                             <div class="col-md-18">
                               <select name="comprobante" required="" id="comprobante" v-model="comprobante" class="form-control pt-1 pr-2 pl-2 pb-1" style="height: 31px" form="frm_registro_despacho">
-
                                 @if ($negocios->count() > 0)
                                   @foreach ($negocios as $neg)
                                     @foreach ($neg->guias as $guia)
@@ -42,16 +41,13 @@
                                           <option value="{{ $guia->cne_id }}">{{ strtoupper($guia->nombre) }}</option>
                                         @endif
                                       @else
-
                                         <option value="{{ $guia->cne_id }}">{{ strtoupper($guia->nombre) }}</option>
                                       @endif
                                     @endforeach
                                   @endforeach
                                 @else
                                   <option value="0">DEFINIR NEGOCIOS</option>
-
                                 @endif
-
                               </select>
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                             </div>
@@ -206,7 +202,7 @@
                             <td>@{{ cil.tapa == 1 ? 'SI' : 'NO' }}</td>
                             <td>@{{ cil.observacion }}</td>
                             <td>
-                              <button class="btn btn-sm btn-default btn-accion-table btn-acciones" @click="cilindros.splice(index,1)" type="button" data-id="${d}" data-accion="eliminar" title="Quitar cilindro"><i class="fa fa-trash"></i> </button>
+                              <button v-if="cil.delete" class="btn btn-sm btn-default btn-accion-table btn-acciones" @click="cilindros.splice(index,1)" type="button" data-id="${d}" data-accion="eliminar" title="Quitar cilindro"><i class="fa fa-trash"></i> </button>
                             </td>
                           </tr>
                           <tr v-if="cilindros.length == 0">
@@ -381,19 +377,15 @@
       </div>
     </div>
   </template>
-
-
 @endsection
 @push('script')
-@if (!$no_encontrado)
-
-  <script type="text/javascript">
-    const data_vue = {!! json_encode($js) !!};
-
-  </script>
-@endif
-
-{{-- <script src="{{ url('vendors/jquery.maskedinput/dist/jquery.maskedinput.min.js') }}"></script> --}}
-<script src="{{ url('js/home/despacho/registro.js') }}"></script>
-  {{-- <script src="{{ url('jaen.js') }}"></script> --}}
+  @if (!$no_encontrado)
+    <script type="text/javascript">
+      const data_vue = {!! json_encode($js) !!};
+    </script>
+    {{-- <script src="{{ url('vendors/jquery.maskedinput/dist/jquery.maskedinput.min.js') }}"></script> --}}
+    <script src="{{ url('js/home/despacho/registro.js') }}"></script>
+      {{-- <script src="{{ url('jaen.js') }}"></script> --}}
+  @endif
 @endpush
+

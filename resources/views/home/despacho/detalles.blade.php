@@ -19,26 +19,24 @@
                       <div class="card-body"> --}}
 
                         <div class="form-group row mb-1 mt-1">
-                          <label class="col-md-6 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="negocio">Guías :</label>
+                          <label class="col-md-6 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="negocio">Guía :</label>
                           <div class="col-md-18">
-                            {{-- <p class="form-control-static m-0 ">{{ $despacho->guia->negocio->nombre }}</p> --}}
-                            <p class="form-control-static m-0 ">{{ $documento->nombre }}</p>
+                            <p class="form-control-static m-0 ">{{ $despacho->guia->negocio->nombre }}</p>
+                            <p class="form-control-static m-0 ">{{ $despacho->documento->cne_attr.'-'.$despacho->doc_serie.'-'.fill_zeros($despacho->doc_numero) }}</p>
                           </div>
                         </div>
 
-                        <div class="form-group row mb-1 mt-1">
+                        {{-- <div class="form-group row mb-1 mt-1">
                           <label class="col-md-6 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="serie_comprobante">Serie :</label>
                           <div class="col-md-7">
                             <p class="form-control-static m-0 ">{{ $despacho->doc_serie }}</p>
-                            {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                           </div>
 
                           <label class="col-md-5 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="numero_comprobante">Número :</label>
                           <div class="col-md-6">
                             <p class="form-control-static m-0 ">{{ fill_zeros($despacho->doc_numero) }}</p>
-                            {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                           </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group row mb-1 mt-1">
                           <label class="col-md-6 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="fecha_emision">Emisión :</label>

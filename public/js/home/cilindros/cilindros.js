@@ -1834,6 +1834,10 @@ module.exports = function spread(callback) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _watch;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   template: '#vue_cilindro_seguimiento',
   dt_tbl_seguimiento_cilindro: null,
@@ -1845,20 +1849,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cilindro_id: getCilindro(),
         query: '',
         success_date: true,
-        fecha_desde: moment([2018, 1, 1]).format('YYYY-MM-DD'),
-        fecha_hasta: moment().format('YYYY-MM-DD'),
+        fecha_desde: localvalues.getVal('seguimiento_filter_fecha_desde', moment().format('YYYY-MM-DD')),
+        fecha_hasta: localvalues.getVal('seguimiento_filter_fecha_hasta', moment().format('YYYY-MM-DD')),
         filtro_date: 'interval'
       }
     };
   },
 
-  watch: {
+  watch: (_watch = {
     'filtros.fecha_desde': function filtrosFecha_desde(nv, ov) {
       console.log('xxxx');
     }
-  },
+  }, _defineProperty(_watch, 'filtros.fecha_desde', function filtrosFecha_desde(nv) {
+    localvalues.setVal('seguimiento_filter_fecha_desde', nv);
+  }), _defineProperty(_watch, 'filtros.fecha_hasta', function filtrosFecha_hasta(nv) {
+    localvalues.setVal('seguimiento_filter_fecha_hasta', nv);
+  }), _watch),
   methods: {
     onSubmit_frmAplicarFiltro: function onSubmit_frmAplicarFiltro() {
+      var norender = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
       var desde = moment(this.filtros.fecha_desde);
       var hasta = moment(this.filtros.fecha_hasta);
       this.filtros.success_date = true;
@@ -1868,21 +1878,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         } else if (desde.unix() == hasta.unix()) {
           this.filtros.filtro_date = 'same';
         } else {
-          toastr.warning('Fechas no válidas para la búsqueda x', 'Revisar');
+          if (!norender) toastr.warning('Fechas no válidas para la búsqueda x', 'Revisar');
           this.filtros.success_date = false;
         }
       } else {
-        toastr.warning('Fechas no válidas para la búsqueda', 'Revisar');
+        if (!norender) toastr.warning('Fechas no válidas para la búsqueda', 'Revisar');
         this.filtros.success_date = false;
       }
-
-      if (this.filtros.success_date) this.dt_tbl_seguimiento_cilindro.draw();
+      if (!norender) if (this.filtros.success_date) this.dt_tbl_seguimiento_cilindro.draw();
     }
+  },
+  created: function created() {
+    this.onSubmit_frmAplicarFiltro(true);
   },
   mounted: function mounted() {
     var _this = this;
 
     console.log(this);
+
     this.tbl_seguimiento_cilindro = $('#tbl_seguimiento_cilindro');
     // var temp_url = new URL(CURRENT_URL);
 
@@ -2052,17 +2065,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 // const app_r = new Vue(registro)
-
-var app = new Vue({
-  el: '#vue_cilindros',
-  components: {
-    listar: __WEBPACK_IMPORTED_MODULE_0__listar_js__["a" /* default */],
-    registro: __WEBPACK_IMPORTED_MODULE_1__registro_js__["a" /* default */],
-    seguimiento: __WEBPACK_IMPORTED_MODULE_2__seguimiento_js__["default"],
-    seguimientotres: __WEBPACK_IMPORTED_MODULE_3__seguimientotres_js__["a" /* default */],
-    situacion: __WEBPACK_IMPORTED_MODULE_4__situacion_js__["a" /* default */]
-    // router
-  } });
+window.onload = function (e) {
+	var app = new Vue({
+		el: '#vue_cilindros',
+		components: {
+			listar: __WEBPACK_IMPORTED_MODULE_0__listar_js__["a" /* default */],
+			registro: __WEBPACK_IMPORTED_MODULE_1__registro_js__["a" /* default */],
+			seguimiento: __WEBPACK_IMPORTED_MODULE_2__seguimiento_js__["default"],
+			seguimientotres: __WEBPACK_IMPORTED_MODULE_3__seguimientotres_js__["a" /* default */],
+			situacion: __WEBPACK_IMPORTED_MODULE_4__situacion_js__["a" /* default */]
+			// router
+		} });
+};
 
 /***/ }),
 /* 65 */

@@ -260,23 +260,25 @@ class CilindroController extends Controller
           // if ($request->ajax()) {
             $all = CilindrosEntradaSalida::with(['guia', 'recibo'])
                     ->select('cilindros_entrada_salida.*',
+                      'doc.cne_attr',
                       'd.doc_nombre as guia_nombre',
                       'd.doc_numero as guia_numero',
                       'd.doc_serie as guia_serie',
                       'e.nombre as nombre_cliente_guia',
                       DB::raw('cs.orden_seg as orden_seg_des'),
                       DB::raw("IF(ISNULL(d.des_id), 0, 1) as order_helper_despacho"),
-                      DB::raw("CONCAT(d.doc_serie,'-', d.doc_numero) as guia_correlativo"),
+                      DB::raw("CONCAT(doc.cne_attr,'-',d.doc_serie,'-', d.doc_numero) as guia_correlativo"),
                       'dd.doc_nombre as recibo_nombre',
                       'dd.doc_numero as recibo_numero',
                       'dd.doc_serie as recibo_serie',
                       'ee.nombre as nombre_cliente_recibo',
                       DB::raw('css.orden_seg as orden_seg_rec'),
                       DB::raw("IF(ISNULL(dd.des_id), 0, 1) as order_helper_recibo"),
-                      DB::raw("CONCAT(dd.doc_serie,'-', dd.doc_numero) as recibo_correlativo")
+                      DB::raw("CONCAT(docr.cne_attr,'-',dd.doc_serie,'-', dd.doc_numero) as recibo_correlativo")
                     )
                     ->leftJoin('despacho as d' , 'cilindros_entrada_salida.guia_id', '=', 'd.des_id')
                     ->leftJoin('entidades as e' , 'e.ent_id', '=', 'd.entidad_id')
+                    ->leftJoin('comprobantes_negocio as doc' , 'doc.cne_id', '=', 'd.documento_id')
                     ->leftJoin('cilindros_seguimiento as cs', function ($join) {
                       $join->on('cilindros_entrada_salida.cilindro_id', '=', DB::raw('cs.cilindro_id'))
                       ->where('cs.evento', '=', 'despacho')
@@ -284,6 +286,7 @@ class CilindroController extends Controller
                     })
                     ->leftJoin('despacho as dd' , 'cilindros_entrada_salida.recibo_id', '=', 'dd.des_id')
                     ->leftJoin('entidades as ee' , 'ee.ent_id', '=', 'dd.entidad_id')
+                    ->leftJoin('comprobantes_negocio as docr' , 'docr.cne_id', '=', 'dd.documento_id')
                     ->leftJoin('cilindros_seguimiento as css', function ($join) {
                       $join->on('cilindros_entrada_salida.cilindro_id', '=', DB::raw('css.cilindro_id'))
                       ->where('css.evento', '=', 'vacio')
@@ -706,7 +709,8 @@ class CilindroController extends Controller
                   $situacion['situacion'] = 'CILINDRO LISTO PARA RECARGAR';
                   // $situacion['fecha_desde'] = Carbon::createFromFormat('Y-m-d H:i:s', $recibo->fecha_llegada)->format('Y-m-d h:i a');
                   $situacion['fecha_desde'] = Carbon::createFromFormat('Y-m-d H:i:s', $recibo->fecha_llegada)->format('d/m/Y');
-                  $situacion['recibo'] = $recibo->doc_nombre.', '.$recibo->doc_serie.'-'.fill_zeros($recibo->doc_numero);
+                  // $situacion['recibo'] = $recibo->doc_nombre.', '.$recibo->doc_serie.'-'.fill_zeros($recibo->doc_numero);
+                  $situacion['recibo'] = $recibo->documento->cne_attr.'-'.$recibo->doc_serie.'-'.fill_zeros($recibo->doc_numero);
                   $situacion['cliente'] = $recibo->origen->entidad->nombre;
                   $situacion['observacion'] = $recibo->observacion;
                   $situacion['observacion_detalle'] = $cilindro_detalle->observacion;

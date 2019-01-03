@@ -641,6 +641,7 @@ class DespachoController extends Controller
             // return response()->json(ProduccionResource::collection($all));
         } else {
             $despacho = Despacho::find($id);
+
             // $despacho->fecha = Carbon::createFromFormat('Y-m-d', $despacho->fecha)->format('d/m/y');
 
             // $dd = new ProduccionResource($despacho);
@@ -650,6 +651,7 @@ class DespachoController extends Controller
             $data['documento'] = $despacho->documento;
             $data['cilindros'] = $despacho->detalles;
             $data['entidad'] = $despacho->destino->entidad;
+            // dd($despacho);
             $data['titulo_pagina'] = $data['documento']->nombre.', '.$despacho->doc_serie.'-'.fill_zeros($despacho->doc_numero);
             // $data['despacho'] = $despacho;
             return view('home.despacho.detalles', $data);
@@ -922,11 +924,11 @@ class DespachoController extends Controller
 
                                         //jalar del mismo o solo
                                         $registra = true;
-                                        foreach ($actualizar_id as $key => $value) {
+                                        // foreach ($actualizar_id as $key => $value) {
                                             // if ($value == $cil['id']) {
                                             if ($cil['registrado'] == 1 && in_array($cil['id'], $actualizar_id)) {
                                                 //actualizar los seguimeintos y la entrada y salida
-                                                $detalle_temp = $cilindros_actuales->where('cilindro_id', $value)->first();
+                                                $detalle_temp = $cilindros_actuales->where('cilindro_id', $cil['id'])->first();
                                                 if ($detalle_temp) {
                                                     $detalle_temp->des_capacidad = $cil['capacidad'];
                                                     $detalle_temp->des_presion = $cil['cantidad'];
@@ -939,7 +941,7 @@ class DespachoController extends Controller
                                                     $detalle_temp->cilindro_tapa = ''.$cil['tapa'];
                                                     $detalle_temp->save();
 
-                                                    CilindroSeguimiento::where('cilindro_id', $value)
+                                                    CilindroSeguimiento::where('cilindro_id', $cil['id'])
                                                         ->where('referencia_id', $despacho->des_id)
                                                         ->whereIn('evento', ['despacho', 'transporte', 'cliente'])
                                                         ->update([
@@ -947,7 +949,7 @@ class DespachoController extends Controller
                                                         'fecha_detalle' => request('fecha')
                                                     ]);
 
-                                                    CilindrosEntradaSalida::where('cilindro_id', $value)
+                                                    CilindrosEntradaSalida::where('cilindro_id', $cil['id'])
                                                         ->where('guia_id', $despacho->des_id)
                                                         ->update([
                                                         'salida' => request('fecha'),
@@ -957,7 +959,7 @@ class DespachoController extends Controller
                                                 }
                                                 break;
                                             }
-                                        }
+                                        // }
                                         // $cilindros_id[] = $cil['id'];
                                         // if ($registra) {
                                         if ($cil['registrado'] == 0) {

@@ -341,12 +341,14 @@ var listar = {
     $('#tbl_despacho').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);
   }
 };
-var app_produccion_listar = new Vue({
-  el: '#vue_despacho',
-  components: {
-    listar: listar
-    // router
-  } });
+window.onload = function () {
+  var app_produccion_listar = new Vue({
+    el: '#vue_despacho',
+    components: {
+      listar: listar
+      // router
+    } });
+};
 
 /***/ })
 
