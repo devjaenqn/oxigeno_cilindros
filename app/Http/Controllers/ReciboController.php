@@ -97,7 +97,7 @@ class ReciboController extends Controller
         // dd($data['js']);
         // dd($data);
         // return response()->json($data);
-        $data['titulo_pagina'] = 'Recibo - Crear';
+        $data['titulo_pagina'] = 'RECIBO REGISTRAR';
         return view('home.recibo.registro', $data);
     }
 
@@ -427,10 +427,10 @@ class ReciboController extends Controller
                     // dd($comprobante);
                     if ($comprobante != null) {
                         $data['js']['comprobante_success'] = true;
-                        $data['js']['comprobante'] = $comprobante->cne_id;
-                        $data['js']['serie_comprobante'] = $comprobante->serie;
+                        $data['js']['comprobante'] = $despacho->documento_id;
+                        $data['js']['serie_comprobante'] = $despacho->doc_serie;
                         // $data['js']['numero_comprobante'] = fill_zeros(8232323232329);
-                        $data['js']['numero_comprobante'] = fill_zeros($comprobante->actual);
+                        $data['js']['numero_comprobante'] = fill_zeros($despacho->doc_numero);
                     }
                 }
                 // $comprobante = $sis->getDocumentoActivo('guia');

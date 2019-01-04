@@ -303,7 +303,8 @@ var registro = {
           } else {
             if (_this2.anular) _this2.anular = false;
             if (res.data.show_message) {
-              toastr.warning(res.data.msg, 'Revisar!');
+              // toastr.warning(res.data.msg, 'Revisar!')
+              msg.error('Recibo - error', res.data.msg);
             }
           }
         } else if (res.cancel) {

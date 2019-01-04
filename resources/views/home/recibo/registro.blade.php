@@ -67,7 +67,7 @@
 
                             <label class="col-md-3 col-form-label line-height-2-1 pt-0 pr-0 pb-0 text-left" for="numero_comprobante">Num.</label>
                             <div class="col-md-9">
-                              <input class="form-control pt-1 pr-2 pb-1 pl- 2 text-select" id="numero_comprobante"  type="text" name="numero_comprobante" v-model="numero_comprobante" placeholder="000000000" readonly="">
+                              <input class="form-control pt-1 pr-2 pb-1 pl- 2 text-select" id="numero_comprobante"  type="text" name="numero_comprobante" v-model="numero_comprobante" placeholder="000000000" >
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                             </div>
                           </div>

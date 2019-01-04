@@ -80,6 +80,7 @@ var listar = {
   template: '#vue_produccion_listar',
   data: function data() {
     return {
+      timeoutfiltertext: null,
       despacho_id: 0,
       sending: false,
       llegada_salida: {
@@ -109,6 +110,14 @@ var listar = {
     },
     'filtros.fecha_hasta': function filtrosFecha_hasta(nv) {
       localvalues.setVal('despacho_filter_fecha_hasta', nv);
+    },
+    'filtros.query': function filtrosQuery(nv) {
+      var _this = this;
+
+      clearTimeout(this.timeoutfiltertext);
+      this.timeoutfiltertext = setTimeout(function () {
+        _this.dt_tbl_despacho.draw();
+      }, 200);
     }
   },
   methods: {
@@ -170,7 +179,7 @@ var listar = {
       if (!norender) if (this.filtros.success_date) this.dt_tbl_despacho.draw();
     },
     fnOnSubmit_registrarLlegada: function fnOnSubmit_registrarLlegada() {
-      var _this = this;
+      var _this2 = this;
 
       var hora = moment(this.llegada_salida.fecha + ' ' + this.llegada_salida.hora);
       var metodo = '';
@@ -180,20 +189,20 @@ var listar = {
         axios.put(BASE_URL + '/api/despacho/' + this.despacho_id, { metodo: metodo, hora: hora.format('YYYY-MM-DD HH:mm:ss') }).then(function (res) {
           console.log(res.data);
           if (res.data.success) {
-            _this.sending = false;
-            _this.dt_tbl_despacho.draw();
+            _this2.sending = false;
+            _this2.dt_tbl_despacho.draw();
             $('#modRegistroLlegada').modal('hide');
             //reload datatable
             // window.location = BASE_URL + '/home/despacho'
           }
         }).catch(function (err) {
-          _this.sending = false;
+          _this2.sending = false;
           console.log(err.response);
         });
       }
     },
     fnOnClick_btnAcciones: function fnOnClick_btnAcciones(e) {
-      var _this2 = this;
+      var _this3 = this;
 
       var dataset = e.currentTarget.dataset;
       switch (dataset.accion) {
@@ -214,7 +223,7 @@ var listar = {
           this.llegada_salida.hora = fecha.format('HH:mm');
           $('#modRegistroLlegada').modal('show');
           $('#modRegistroLlegada').on('show.bs.modal', function (e) {
-            _this2.$refs.fecha_llegada.focus();
+            _this3.$refs.fecha_llegada.focus();
           });
           break;
         case 'llegada':
@@ -234,7 +243,7 @@ var listar = {
             if (res.data.success) {
               //reload datatable
               // window.location = BASE_URL + '/home/despacho'
-              _this2.dt_tbl_despacho.draw();
+              _this3.dt_tbl_despacho.draw();
             }
           }).catch(function (err) {
             console.log(err.response);
@@ -251,15 +260,15 @@ var listar = {
     // })
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     $('#modRegistroLlegada').on('hide.bs.modal', function (be) {
       console.log('cerra modal');
-      _this3.llegada_salida.documento = '';
-      _this3.despacho_id = 0;
-      _this3.llegada_salida.hora = '';
-      _this3.llegada_salida.titulo = '';
-      _this3.llegada_salida.metodo = 0;
+      _this4.llegada_salida.documento = '';
+      _this4.despacho_id = 0;
+      _this4.llegada_salida.hora = '';
+      _this4.llegada_salida.titulo = '';
+      _this4.llegada_salida.metodo = 0;
     });
 
     this.tbl_despacho = $('#tbl_despacho');
@@ -280,11 +289,11 @@ var listar = {
       ajax: {
         url: BASE_URL + '/home/despacho/datatable?m=despacho',
         data: function data(d) {
-          d.buscar = _this3.filtros.query;
-          if (_this3.filtros.success_date) {
-            d.filtro_date = _this3.filtros.filtro_date;
-            d.desde = _this3.filtros.fecha_desde;
-            d.hasta = _this3.filtros.fecha_hasta;
+          d.buscar = _this4.filtros.query;
+          if (_this4.filtros.success_date) {
+            d.filtro_date = _this4.filtros.filtro_date;
+            d.desde = _this4.filtros.fecha_desde;
+            d.hasta = _this4.filtros.fecha_hasta;
           }
         }
       },
