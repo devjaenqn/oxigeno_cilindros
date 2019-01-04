@@ -639,7 +639,7 @@ class ProduccionController extends Controller
                                         'descripcion' => 'Cargando, lote producción'.PHP_EOL.'Agregado después '.$now->format('Y-m-d H:i:s'),
                                         'referencia_id' => $produccion->pro_id,
                                         'origen' => 'app',
-                                        'fecha' => request('fecha'),
+                                        'fecha' => $cil['ingreso'],
                                         'fecha_detalle' => $cil['ingreso']
                                     ];
                                     //finaliza carga
@@ -652,7 +652,8 @@ class ProduccionController extends Controller
                                         'descripcion' => 'Cargado, lote producción finalizado'.PHP_EOL.'Agregado después '.$now->format('Y-m-d H:i:s'),
                                         'referencia_id' => $produccion->pro_id,
                                         'origen' => 'app',
-                                        'fecha' => request('fecha'),
+                                        // 'fecha' => Carbon::createFromFormat('Y-m-d H:i:s', $cil['salida'])->format('Y-m-d'),
+                                        'fecha' => $cil['salida'],
                                         'fecha_detalle' => $cil['salida']
                                     ];
                                 }

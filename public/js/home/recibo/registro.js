@@ -89,9 +89,10 @@ var registro = {
       // serie_comprobante: '',
       // numero_comprobante: '',
       fecha_emision: moment().format('YYYY-MM-DD'),
+      hora_emision: moment().format('HH:mm'),
       anular: false,
       // motivo: 'VENTA',
-      turno: '7AM - 7PM',
+      // turno: '7AM - 7PM',
       entrada: '00:00',
       salida: '00:00',
       // referencia: '',
@@ -262,6 +263,7 @@ var registro = {
                 // referencia: this.referencia,
                 numero: _this2.numero_comprobante,
                 fecha: _this2.fecha_emision,
+                fecha_detalle: _this2.fecha_emision + ' ' + _this2.hora_emision,
                 // motivo: this.motivo,
                 observacion: _this2.observacion,
                 cliente: _this2.cliente.id,
@@ -431,6 +433,9 @@ var registro = {
       this.serie_comprobante = this.data_despacho.doc_serie;
       this.numero_comprobante = this.data_despacho.doc_numero;
       this.fecha_emision = this.data_despacho.fecha_emision;
+      var datetemp = moment(this.data_despacho.fecha_llegada);
+      this.hora_emision = datetemp.format('HH:mm');
+      // this.fecha_emision = this.data_despacho.fecha_emision
       // this.motivo = this.data_despacho.motivo
       // this.referencia = this.data_despacho.doc_referencia
       this.observacion = this.data_despacho.observacion;

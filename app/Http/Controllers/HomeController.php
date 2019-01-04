@@ -22,7 +22,8 @@ class HomeController extends Controller
   public function propietarios () {
     $documentos = DocumentosIdentidad::all();
     $data = [
-      'documentos' => $documentos
+      'documentos' => $documentos,
+      'titulo_pagina' => 'PROPIETARIOS GESTIÓN'
     ];
     return view('home.propietarios', $data);
   }

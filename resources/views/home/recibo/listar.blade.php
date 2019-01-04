@@ -84,12 +84,13 @@
                 <thead>
                   <tr>
                     <th width="50px">FECHA</th>
-                    <th width="20px"></th>
+                    {{-- <th width="20px"></th> --}}
                     {{-- <th>NEGOCIO</th> --}}
-                    <th width="30px">SERIE</th>
-                    <th width="70px">NUMERO</th>
+                    {{-- <th width="30px">SERIE</th> --}}
+                    <th width="170px">RECIBO</th>
                     <th>CLIENTE</th>
-                    <th width="80px">CILINDROS</th>
+                    <th>DESDE</th>
+                    <th width="25px">CIL.</th>
                     <th width="20px">M3</th>
                     <th width="60px">ACCIONES</th>
                   </tr>

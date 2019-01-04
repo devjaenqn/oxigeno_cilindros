@@ -78,6 +78,10 @@
                               <input class="form-control pt-1 pr-2 pb-1 pl- 2 text-select" id="fecha_emision"  type="date" name="fecha_emision" v-model="fecha_emision" placeholder="DD/MM/YYYY" >
                               {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
                             </div>
+                            <div class="col-md-8">
+                              <input class="form-control pt-1 pr-2 pb-1 pl- 2 text-select" id="hora_emision"  type="time" name="hora_emision" v-model="hora_emision" placeholder="HH:MM" >
+
+                            </div>
                           </div>
                           <div class="form-group row mb-1 mt-1">
                             <label class="col-md-6 col-form-label line-height-2-1 pt-0 pr-0 pb-0 text-left" for="observacion">Observación</label>

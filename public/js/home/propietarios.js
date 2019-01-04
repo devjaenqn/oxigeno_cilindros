@@ -12334,38 +12334,76 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     frmOnSubmit_frmRegistro: function frmOnSubmit_frmRegistro() {
       var _this2 = this;
 
-      if (confirm('¿Deseas continuar?')) {
-        loading.show();
-        this.error.numero = false;
-        var sendData = {
-          documento: this.documento,
-          numero: this.numero,
-          nombre: this.nombre,
-          direccion: this.direccion,
-          telefono: this.celular,
-          referencia: this.referencia,
-          correo: this.correo
-        };
-        var config = {
-          method: this.edit ? 'PUT' : 'POST',
-          params: sendData,
-          url: this.edit ? BASE_URL + '/api/propietarios/' + this.propietario.ent_id : BASE_URL + '/api/propietarios'
-        };
+      msg.continuar('Propietarios', function (quest) {
+        if (quest) {
 
-        axios(config).then(function (res) {
-          loading.hide();
+          _this2.error.numero = false;
+          var sendData = {
+            documento: _this2.documento,
+            numero: _this2.numero,
+            nombre: _this2.nombre,
+            direccion: _this2.direccion,
+            telefono: _this2.celular,
+            referencia: _this2.referencia,
+            correo: _this2.correo
+          };
+          var config = {
+            method: _this2.edit ? 'PUT' : 'POST',
+            params: sendData,
+            url: _this2.edit ? BASE_URL + '/api/propietarios/' + _this2.propietario.ent_id : BASE_URL + '/api/propietarios'
+          };
+
+          return axios(config);
+        }
+      }).then(function (res) {
+        if (res.data) {
           if (res.data.success) {
-            toastr.success("El registro se realizó con éxito", "Propietario - Success");
-            _this2.resetData();
+            var mensaje = 'Elemento registrado con éxito!';
+            if (_this2.edit) {
+              mensaje = 'Elemento actualizado con éxito';
+            }
+            msg.success('Propietarios', mensaje, 5000).then(function (event) {
+              location.href = base_url('home/propietarios');
+            });
           }
-          // this.$router.push({path: '/'})
-        }).catch(function (err) {
-          loading.hide();
-          _this2.error.numero = true;
-          toastr.error("El número de RUC se encuentra registrado", "Propietario - Error");
-          // toastr.info('Are you the 6 fingered man?')
-        });
-      }
+        }
+      }).catch(function (err) {
+        _this2.error.numero = true;
+        // toastr.error("El número de RUC se encuentra registrado", "Propietario - Error")
+        msg.error('Propietarios', 'El número de RUC se encuentra registrado');
+      });
+      // if (confirm('¿Deseas continuar?')) {
+      //   loading.show()
+      //   this.error.numero = false
+      //   let sendData = {
+      //     documento: this.documento,
+      //     numero: this.numero,
+      //     nombre: this.nombre,
+      //     direccion: this.direccion,
+      //     telefono: this.celular,
+      //     referencia: this.referencia,
+      //     correo: this.correo,
+      //   }
+      //   let config = {
+      //     method: this.edit ? 'PUT' : 'POST',
+      //     params: sendData,
+      //     url: this.edit ? BASE_URL + '/api/propietarios/' + this.propietario.ent_id : BASE_URL + '/api/propietarios'
+      //   }
+
+      //   axios(config).then( res => {
+      //     loading.hide()
+      //     if (res.data.success){
+      //       toastr.success("El registro se realizó con éxito", "Propietario - Success")
+      //       this.resetData()
+      //     }
+      //       // this.$router.push({path: '/'})
+      //   }).catch(err => {
+      //     loading.hide()
+      //     this.error.numero = true
+      //     toastr.error("El número de RUC se encuentra registrado", "Propietario - Error")
+      //     // toastr.info('Are you the 6 fingered man?')
+      //   })
+      // }
     },
     btnOnClick_btnCancelar: function btnOnClick_btnCancelar() {
       this.$router.push({ path: '/' });

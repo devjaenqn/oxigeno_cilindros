@@ -232,7 +232,7 @@ var listar = {
         } }],
       columnDefs: [{
         targets: [8],
-        className: 'text-right'
+        className: 'text-center'
       }]
     });
 

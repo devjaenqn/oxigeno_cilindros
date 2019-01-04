@@ -186,7 +186,7 @@ class PropietariosController extends Controller
       if (request('documento') != 0) {
         if (request('numero') != '0000') {
           $pro = Propietarios::existe(request('numero'), request('documento'));
-          $success = $pro == null;
+          $success = $pro == null ? true : ($pro->ent_id == $propietario->ent_id);
         }
       }
       if ($propietario && $success) {

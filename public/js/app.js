@@ -31385,6 +31385,25 @@ window.msg = {
 			allowOutsideClick: false
 		});
 	},
+	error: function error() {
+		var title = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+		var texto = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+		var timer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+		return swal({
+			title: title,
+			text: texto,
+			type: 'error',
+			customClass: 'sac',
+			timer: timer,
+			allowOutsideClick: false
+		});
+	},
+	continuar: function continuar(title) {
+		var loader = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+		return this.pregunta(title, '¿Desea continuar?', loader);
+	},
 	pregunta: function pregunta(title, text) {
 		var loader = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 

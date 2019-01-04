@@ -2590,7 +2590,7 @@ var win = window;
 			}).then(function (res) {
 				if (res.data) {
 					if (res.data.success) {
-						msg.success('Actualiado', 'Situación de cilindro actualizado', 5000).then(function (event) {
+						msg.success('Actualizado', 'Situación de cilindro actualizado', 5000).then(function (event) {
 							location.href = base_url('home/cilindro?c=' + OBJ_CILINDRO.serie);
 						});
 					}

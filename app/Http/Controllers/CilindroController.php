@@ -143,7 +143,7 @@ class CilindroController extends Controller
             // print_r($res);
             return response()->json($ress);
         }
-        $data['titulo_pagina'] = 'Cilindro - Listar';
+        $data['titulo_pagina'] = 'CILINDRO LISTAR';
         return view('home.cilindros.listar', $data);
 
 
@@ -157,6 +157,7 @@ class CilindroController extends Controller
     public function create()
     {
         $data['edit'] = false;
+        $data['titulo_pagina'] = 'CILINDRO REGISTRAR';
         return view('home.cilindros.registro', $data);
     }
 
@@ -497,6 +498,9 @@ class CilindroController extends Controller
                   // dd($cilindro);
                   $data['situacion'] = $situacion;
                 }
+                $data['titulo_pagina'] = 'CAMBIAR SITUACIÓN';
+                if ($cilindro)
+                  $data['titulo_pagina'] .= ', '.$cilindro->serie;
                 return view('home.cilindros.cambiarsituacion', $data);
                 break;
               case 'rastros':
@@ -505,10 +509,21 @@ class CilindroController extends Controller
                 // $eventos = CilindroSeguimiento::all();
                 // $eventos = $cilindro->getEventosFecha()->get();
                 $eventos = $cilindro->seguimiento()->orderBy('fecha_date', 'asc')->orderBy('orden', 'asc')->get();
-                echo "<table  style='border:1px solid black'><thead><tr><th>ID</th><th>CREATED</th><th>UPDATED</th><th>EVENTO</th><th>DES</th><th>REF_ID</th><th>ORI</th><th>FECHA</th><th>FORZADO</th></tr></thead><tbody>";
+                echo "<table  style='border:1px solid black'><thead><tr><th>ID</th><th>CREATED</th><th>UPDATED</th><th>EVENTO</th><th>DES</th><th>REF_ID</th><th>ORI</th><th>FECHA</th><th>FECHA_DETALLE</th><th>FORZADO</th></tr></thead><tbody>";
                 foreach ($eventos as $key => $value) {
 
-                  echo "<tr><td style='border:1px solid black'>$value->cis_id</td><td style='border:1px solid black'>$value->created_at</td><td style='border:1px solid black'>$value->updated_at</td><td style='border:1px solid black'>$value->evento</td><td style='border:1px solid black'>$value->descripcion</td><td style='border:1px solid black'>$value->referencia_id</td><td style='border:1px solid black'>$value->origen</td><td style='border:1px solid black'>$value->fecha</td><td style='border:1px solid black'>$value->forzado</td></tr>";
+                  echo "<tr>
+                          <td style='border:1px solid black'>$value->cis_id</td>
+                          <td style='border:1px solid black'>$value->created_at</td>
+                          <td style='border:1px solid black'>$value->updated_at</td>
+                          <td style='border:1px solid black'>$value->evento</td>
+                          <td style='border:1px solid black'>$value->descripcion</td>
+                          <td style='border:1px solid black'>$value->referencia_id</td>
+                          <td style='border:1px solid black'>$value->origen</td>
+                          <td style='border:1px solid black'>$value->fecha</td>
+                          <td style='border:1px solid black'>$value->fecha_detalle</td>
+                          <td style='border:1px solid black'>$value->forzado</td>
+                        </tr>";
 
                 }
                 echo "</tbody></table>";
@@ -878,7 +893,7 @@ class CilindroController extends Controller
                   $seguimiento->cilindro_id = $cilindro->cil_id;
                   $seguimiento->evento = 'cliente';
                   $seguimiento->forzado = '1';
-                  $seguimiento->descripcion = 'EN CLIENTE POR SITUACIÓN';
+                  $seguimiento->descripcion = 'EN CLIENTE DESDE SITUACIÓN';
                   if (request('motivo') != '') {
                     $seguimiento->descripcion .= ', '.request('motivo');
                   }
@@ -904,7 +919,8 @@ class CilindroController extends Controller
                   // dd($cilindro);
                   DB::transaction(function () use ($cilindro, &$res, $ubicacion) {
                     $pre_evento = $cilindro->evento;
-                    $cilindro->evento = 'cargado';
+                    if ($ubicacion == 'cliente')
+                      $cilindro->evento = 'cliente';
                     $cilindro->cargado = '2';
                     $cilindro->situacion = $ubicacion;
                     $cilindro->defectuoso = 0;
@@ -914,34 +930,53 @@ class CilindroController extends Controller
                     $cilindro->save();
 
                     //seguimiento
-                    $seguimiento = new CilindroSeguimiento();
-                    $seguimiento->cilindro_id = $cilindro->cil_id;
-                    $seguimiento->evento = 'cargando';
-                    $seguimiento->forzado = '1';
-                    $seguimiento->descripcion = 'CARGANDO DESDE SITUACIÓN';
-                    if (request('motivo') != '') {
-                      $seguimiento->descripcion .= ', '.request('motivo');
-                    }
-                    $seguimiento->referencia_id = 0;
-                    // $seguimiento->referencia_id = $cilindro->cil_id;
-                    $seguimiento->origen = 'app';
-                    $seguimiento->fecha = request('fecha').' '.request('hora');
-                    $seguimiento->save();
+                    if ($ubicacion == 'cliente') {
+                      $seguimiento = new CilindroSeguimiento();
+                      $seguimiento->cilindro_id = $cilindro->cil_id;
+                      $seguimiento->evento = 'cliente';
+                      $seguimiento->forzado = '1';
+                      $seguimiento->descripcion = 'EN CLIENTE DESDE SITUACIÓN';
+                      if (request('motivo') != '') {
+                        $seguimiento->descripcion .= ', '.request('motivo');
+                      }
+                      $seguimiento->referencia_id = 0;
+                      // $seguimiento->referencia_id = $cilindro->cil_id;
+                      $seguimiento->origen = 'app';
+                      $seguimiento->fecha = request('fecha').' '.request('hora');
+                      $seguimiento->fecha_detalle = request('fecha').' '.request('hora');
+                      $seguimiento->save();
+                    } else {
+                      $seguimiento = new CilindroSeguimiento();
+                      $seguimiento->cilindro_id = $cilindro->cil_id;
+                      $seguimiento->evento = 'cargando';
+                      $seguimiento->forzado = '1';
+                      $seguimiento->descripcion = 'CARGANDO DESDE SITUACIÓN';
+                      if (request('motivo') != '') {
+                        $seguimiento->descripcion .= ', '.request('motivo');
+                      }
+                      $seguimiento->referencia_id = 0;
+                      // $seguimiento->referencia_id = $cilindro->cil_id;
+                      $seguimiento->origen = 'app';
+                      $seguimiento->fecha = request('fecha').' '.request('hora');
+                      $seguimiento->fecha_detalle = request('fecha').' '.request('hora');
+                      $seguimiento->save();
 
-                    //seguimiento
-                    $seguimiento_b = new CilindroSeguimiento();
-                    $seguimiento_b->cilindro_id = $cilindro->cil_id;
-                    $seguimiento_b->evento = 'cargado';
-                    $seguimiento_b->forzado = '1';
-                    $seguimiento_b->descripcion = 'CARGADO DESDE SITUACIÓN';
-                    if (request('motivo') != '') {
-                      $seguimiento_b->descripcion .= ', '.request('motivo');
+                      //seguimiento
+                      $seguimiento_b = new CilindroSeguimiento();
+                      $seguimiento_b->cilindro_id = $cilindro->cil_id;
+                      $seguimiento_b->evento = 'cargado';
+                      $seguimiento_b->forzado = '1';
+                      $seguimiento_b->descripcion = 'CARGADO DESDE SITUACIÓN';
+                      if (request('motivo') != '') {
+                        $seguimiento_b->descripcion .= ', '.request('motivo');
+                      }
+                      $seguimiento_b->referencia_id = 0;
+                      // $seguimiento_b->referencia_id = $cilindro->cil_id;
+                      $seguimiento_b->origen = 'app';
+                      $seguimiento_b->fecha = request('fecha').' '.request('hora');
+                      $seguimiento->fecha_detalle = request('fecha').' '.request('hora');
+                      $seguimiento_b->save();
                     }
-                    $seguimiento_b->referencia_id = 0;
-                    // $seguimiento_b->referencia_id = $cilindro->cil_id;
-                    $seguimiento_b->origen = 'app';
-                    $seguimiento_b->fecha = request('fecha').' '.request('hora');
-                    $seguimiento_b->save();
 
                     $res['success'] = true;
                   });

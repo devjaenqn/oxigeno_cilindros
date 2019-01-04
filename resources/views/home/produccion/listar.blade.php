@@ -93,7 +93,7 @@
                 <th>CILINDROS</th>
                 <th>LIBRAS</th>
                 <th>OPERADOR</th>
-                <th>ACCIONES</th>
+                <th width="60px">ACCIONES</th>
               </tr>
             </thead>
             <tbody>

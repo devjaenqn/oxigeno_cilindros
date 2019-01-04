@@ -310,11 +310,12 @@ var listar = {
       //   else return  salida + transporte + confirma
       // }},
       // {data: 'guia.negocio.attr'},
-      { data: 'doc_serie' }, { data: 'doc_numero', render: function render(d, t, r) {
+      // {data: 'doc_serie'},
+      { data: 'documento_correlativo', render: function render(d, t, r) {
           return d + (+r.anulado == 1 ? '&nbsp;<span class="badge badge-danger rounded-2">A</span>' : '');
         } }, { data: 'destino.entidad.nombre', render: function render(d, t, r) {
           return d.toUpperCase();
-        } }, { data: 'total_cilindros' }, { data: 'total_cubicos' }, { data: 'des_id', render: function render(d, t, r) {
+        } }, { data: 'destino_nombre' }, { data: 'total_cilindros' }, { data: 'total_cubicos' }, { data: 'des_id', render: function render(d, t, r) {
           var confirma = '';
           var llegada = '';
           var salida = '';
@@ -332,10 +333,7 @@ var listar = {
           }
           return '\n                ' + salida + '\n                ' + llegada + '\n                ' + confirma + '\n                <a href="' + (BASE_URL + '/home/despacho/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles" title="Detalles"><i class="fa fa-eye"></i> </a>\n                <a href="' + (BASE_URL + '/home/despacho/' + d + '/edit') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones"  data-id="' + d + '" data-accion="editar" title="Editar"><i class="fa fa-pencil"></i> </a>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar" title="Eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
         } }],
-      columnDefs: [{
-        targets: [6],
-        className: 'text-right'
-      }]
+      columnDefs: [{ targets: [5], className: 'text-right' }, { targets: [4, 6], className: 'text-center' }]
     });
 
     $('#tbl_despacho').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);
