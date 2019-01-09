@@ -18,6 +18,7 @@
     var cilindro_url = "{{ request()->filled('c') ? request('c') : '' }}";
   </script>
   <script src="{{ url('vendors/datatable/datatables.js') }}"></script>
+  <script src="{{ url('js/home/cilindros/colores_cilindro.js') }}"></script>
   <script src="{{ url('js/home/cilindros/cilindros.js') }}"></script>
   {{-- @stack('script') --}}
 {{-- @endprepend --}}

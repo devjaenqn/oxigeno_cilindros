@@ -2085,6 +2085,7 @@ window.onload = function (e) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -2115,40 +2116,7 @@ window.onload = function (e) {
       }, 200);
     }
   },
-  methods: {
-    getSituacion: function getSituacion(num) {
-      switch (+num) {
-        case 0:
-          return { name: 'extraviado', color: 'success' };
-        case 1:
-          return { name: 'fabrica', color: 'success' };
-        case 2:
-          return { name: 'transporte', color: 'success' };
-        case 3:
-          return { name: 'cliente', color: 'primary' };
-      }
-      return 'no_definido';
-    },
-    getCargado: function getCargado(num) {
-      switch (+num) {
-        case 0:
-          return { attr: 'V', color: 'warning' };
-        case 1:
-          return { attr: 'R', color: 'primary' };
-        case 2:
-          return { attr: 'C', color: 'success' };
-      }
-      return { attr: 'X', color: 'default' };
-    },
-    getDefectuoso: function getDefectuoso(num) {
-      switch (+num) {
-        case 0:
-          return 'D';
-        case 1:
-          return 'N';
-      }
-      return 'X';
-    },
+  methods: _extends({}, metodosColorCilindro, {
     fnOnSubmit_AplicarFiltro: function fnOnSubmit_AplicarFiltro() {
       // if (gdw.success) {
       // this.frmFilter = gdw.dw
@@ -2197,7 +2165,7 @@ window.onload = function (e) {
           break;
       }
     }
-  },
+  }),
   created: function created() {
     console.log('componente cargado');
 

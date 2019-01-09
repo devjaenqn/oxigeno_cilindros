@@ -50,6 +50,10 @@ class PropietariosController extends Controller
     if ($request->has('entidad_id_val')) {
       $all = CilindrosEntradaSalida::selectRaw(
         'cilindro_id,
+        cilindros.evento as cilindro_evento,
+        cilindros.situacion as cilindro_situacion,
+        cilindros.cargado as cilindro_cargado,
+        cilindros.defectuoso as cilindro_defectuoso,
         cilindros.codigo as cilindro_codigo,
         CONCAT(comprobantes_negocio.cne_attr,\'-\',despacho.doc_serie,\'-\', despacho.doc_numero) as documento_correlativo,
         despacho.fecha_emision,

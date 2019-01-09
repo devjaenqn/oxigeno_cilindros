@@ -21,6 +21,7 @@
     "/js/home/despacho/registro.js": "/js/home/despacho/registro.js",
     "/js/home/despacho/listar.js": "/js/home/despacho/listar.js",
     "/js/home/cilindros/seguimiento.js": "/js/home/cilindros/seguimiento.js",
+    "/js/home/cilindros/colores_cilindro.js": "/js/home/cilindros/colores_cilindro.js",
     "/vendors/simple-line-icons/css/simple-line-icons.css": "/vendors/simple-line-icons/css/simple-line-icons.css",
     "/vendors/@coreui/icons/css/coreui-icons.min.css": "/vendors/@coreui/icons/css/coreui-icons.min.css",
     "/vendors/flag-icon-css/css/flag-icon.min.css": "/vendors/flag-icon-css/css/flag-icon.min.css",

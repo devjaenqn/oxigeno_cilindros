@@ -68,6 +68,7 @@
           <thead>
             <tr>
               <th>CILINDRO</th>
+              <th>SITUACIÓN</th>
               <th>GUÍA</th>
               <th>DESDE</th><!--PRIMER CILINDRO QUE DEBE-->
               {{-- <th>ACCIONES</th> --}}
@@ -92,6 +93,7 @@
 @endsection
 @if ($propietario)
   @push('script')
+    <script src="{{ url('js/home/cilindros/colores_cilindro.js') }}"></script>
     <script src="{{ url('vendors/datatable/datatables.js') }}"></script>
     <script type="text/javascript">
       var ENTIDAD_ID = {{ $propietario->ent_id }};

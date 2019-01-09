@@ -60,76 +60,57 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 86);
+/******/ 	return __webpack_require__(__webpack_require__.s = 70);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 86:
+/***/ 70:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(87);
+module.exports = __webpack_require__(71);
 
 
 /***/ }),
 
-/***/ 87:
+/***/ 71:
 /***/ (function(module, exports) {
 
-new Vue({
-  el: '#debe_cilindros',
-  data: function data() {
-    return {
-      tbl_datatable: null,
-      dt_tbl_datatable: []
-    };
-  },
-
-  methods: {
-    btnOnClick_btnCancelar: function btnOnClick_btnCancelar() {
-      console.log('cancelar');
+window.metodosColorCilindro = {
+  getSituacion: function getSituacion(num) {
+    switch (+num) {
+      case 0:
+        return { name: 'extraviado', color: 'success' };
+      case 1:
+        return { name: 'fabrica', color: 'success' };
+      case 2:
+        return { name: 'transporte', color: 'success' };
+      case 3:
+        return { name: 'cliente', color: 'primary' };
     }
+    return 'no_definido';
   },
-  mounted: function mounted() {
-    this.tbl_datatable = $('#tbl_datatable');
-    this.dt_tbl_datatable = this.tbl_datatable.DataTable({
-      data: this.producciones,
-      // rowCallback: function (r, d) {
-      //   // console.log(this)
-      //   console.log(r)
-      //   console.log(d)
-      //   if (+d.anulado == 1) {
-      //     r.classList.add("mystyle")
-      //   }
-      //   // if ()
-      // },
-      dom: '<"table-responsive"t>p',
-      pageLength: 10,
-      processing: true,
-      ajax: {
-        url: BASE_URL + '/home/propietarios/datatable_deben',
-        data: function data(d) {
-          // d.buscar = _this3.filtros.query;
-          // if (_this3.filtros.success_date) {
-          //   d.filtro_date = _this3.filtros.filtro_date;
-          //   d.desde = _this3.filtros.fecha_desde;
-          //   d.hasta = _this3.filtros.fecha_hasta;
-          // }
-        }
-      },
-      serverSide: true,
-      columns: [{ data: 'nombre' }, { data: 'cilindros_deuda' }, { data: 'desde' }, { data: 'ent_id', render: function render(d, t, r) {
-          return '\n            <a href="' + (BASE_URL + '/home/propietarios/deben/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles" title="Detalles"><i class="fa fa-eye"></i> </a>\n          ';
-        } }]
-      // columnDefs: [{
-      //   targets: [6],
-      //   className: 'text-right'
-      // }]
-    });
-
-    // $('#tbl_datatable').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);
+  getCargado: function getCargado(num) {
+    switch (+num) {
+      case 0:
+        return { attr: 'V', color: 'warning' };
+      case 1:
+        return { attr: 'R', color: 'primary' };
+      case 2:
+        return { attr: 'C', color: 'success' };
+    }
+    return { attr: 'X', color: 'default' };
+  },
+  getDefectuoso: function getDefectuoso(num) {
+    switch (+num) {
+      case 0:
+        return 'D';
+      case 1:
+        return 'N';
+    }
+    return 'X';
   }
-});
+};
 
 /***/ })
 
