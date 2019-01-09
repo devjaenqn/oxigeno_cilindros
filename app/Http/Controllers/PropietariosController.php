@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PropietariosResource;
+
 use App\Propietarios;
 use App\PropietariosLocacion;
+use App\CilindrosEntradaSalida;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,9 +25,10 @@ class PropietariosController extends Controller
   }
 
   public function datatable_deben (Request $request) {
-    $all = Propietarios::select(
-      '*'
-    )->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
+    $all = Propietarios::select()->addDeudaCilindro();
+    // $all = Propietarios::select(
+    //   '*'
+    // )->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
 
     $make = DataTables::of($all)
             ->filter( function ($query) use ($request) {
@@ -42,12 +45,44 @@ class PropietariosController extends Controller
             });
     return $make->make(true);
   }
+  public function datatable_deben_detalles (Request $request) {
+    $make = collect();
+    if ($request->has('entidad_id_val')) {
+      $all = CilindrosEntradaSalida::selectRaw(
+        'cilindro_id,
+        cilindros.codigo as cilindro_codigo,
+        CONCAT(comprobantes_negocio.cne_attr,\'-\',despacho.doc_serie,\'-\', despacho.doc_numero) as documento_correlativo,
+        despacho.fecha_emision,
+        despacho.des_id'
+        )
+        ->join('despacho', 'despacho.des_id', 'cilindros_entrada_salida.guia_id')
+        ->join('comprobantes_negocio', 'comprobantes_negocio.cne_id', 'despacho.documento_id')
+        ->join('cilindros', 'cilindros.cil_id', 'cilindros_entrada_salida.cilindro_id')
+        ->where('despacho.entidad_id', $request->entidad_id_val);
+    // $all = Propietarios::select(
+    //   '*'
+    // )->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
+      $make = DataTables::of($all)
+              ->filter( function ($query) use ($request) {
+                  if ($request->has('buscar')) {
+                      if (request('buscar') != '') {
+                          $query->where( function( $query ) use($request) {
+
+                              $query->orWhere('entidades.nombre', 'like', "%{$request->buscar}%");
+                              $query->orWhere('entidades.numero', 'like', "%{$request->buscar}%");
+
+                          });
+                      }
+                  }
+              });
+    }
+    return $make->make(true);
+  }
   public function datatables (Request $request) {
     $propietario = new Propietarios();
     $all = $propietario->setTable('view_entidades_detalles')->select(
       '*'
     )->join('documentos_identidad', 'view_entidades_detalles.tipo_doc', 'documentos_identidad.cod');
-
     $make = DataTables::of($all)
             ->filter( function ($query) use ($request) {
                 if ($request->has('buscar')) {
@@ -62,9 +97,31 @@ class PropietariosController extends Controller
             });
     return $make->make(true);
   }
-  public function deben () {
+  public function deben_detalles (Request $request, $entidad_id) {
+    $propietario = Propietarios::find($entidad_id);
+    $data['propietario'] = null;
+    if ($propietario) {
+      $data['propietario'] = $propietario;
+      $data['titulo_pagina'] = 'DEBE CILINDROS - '.$propietario->nombre;
+    }
 
-    return view('home.propietarios.deben');
+    return view('home.propietarios.debendetalles', $data);
+  }
+  public function deben () {
+    $propietarios = Propietarios::all();
+    $totales = $propietarios->map(function($item) {
+
+      $cils = $item->cilindros_pendientes();
+      $cils->map(function($b) {
+        $b->cilindro = $b->cilindro->toArray();
+
+      });
+      $item->deben = $cils->toArray();
+      return $item;
+    });
+    // dd($totales->toArray());
+    $data['titulo_pagina'] = 'DEBEN CILINDROS';
+    return view('home.propietarios.deben', $data);
   }
     public function listar () {
       $propietarios =  Propietarios::all();

@@ -908,6 +908,7 @@ class CilindroController extends Controller
                 break;
             }
             //situacion
+            // dd($ubicacion);
             if ($avanzar) {
               switch ($request->situacion) {
                 case 'trasegada':
@@ -917,9 +918,9 @@ class CilindroController extends Controller
                   break;
                 case 'cargada':
                   // dd($cilindro);
-                  DB::transaction(function () use ($cilindro, &$res, $ubicacion) {
+                  DB::transaction(function () use ($cilindro, &$res, $ubicacion, $request) {
                     $pre_evento = $cilindro->evento;
-                    if ($ubicacion == 'cliente')
+                    if ($request->ubicacion == 'cliente')
                       $cilindro->evento = 'cliente';
                     $cilindro->cargado = '2';
                     $cilindro->situacion = $ubicacion;
@@ -930,7 +931,8 @@ class CilindroController extends Controller
                     $cilindro->save();
 
                     //seguimiento
-                    if ($ubicacion == 'cliente') {
+
+                    if ($request->ubicacion == 'cliente') {
                       $seguimiento = new CilindroSeguimiento();
                       $seguimiento->cilindro_id = $cilindro->cil_id;
                       $seguimiento->evento = 'cliente';
@@ -974,7 +976,7 @@ class CilindroController extends Controller
                       // $seguimiento_b->referencia_id = $cilindro->cil_id;
                       $seguimiento_b->origen = 'app';
                       $seguimiento_b->fecha = request('fecha').' '.request('hora');
-                      $seguimiento->fecha_detalle = request('fecha').' '.request('hora');
+                      $seguimiento_b->fecha_detalle = request('fecha').' '.request('hora');
                       $seguimiento_b->save();
                     }
 

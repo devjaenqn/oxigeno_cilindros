@@ -23,8 +23,19 @@ class CilindrosEntradaSalida extends Model
   	return $this->belongsTo('App\Despacho', 'guia_id');
   }
 
+  public  function scopeByPropietario ($query, $propietario_id) {
+    return $query->select(
+      'des_id', 'doc_serie', 'doc_numero', 'entidad_id', 'fecha_emision', 'destino_nombre', 'cilindro_id'
+    )->where('entidad_id', $propietario_id)
+      ->join('despacho', 'despacho.des_id', 'cilindros_entrada_salida.guia_id');
+  }
+
   public function recibo () {
   	return $this->belongsTo('App\Despacho', 'recibo_id');
+  }
+
+  public function cilindro () {
+   return $this->belongsTo('App\Cilindro', 'cilindro_id');
   }
 
 

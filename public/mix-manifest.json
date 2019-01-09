@@ -13,6 +13,7 @@
     "/js/home/usuarios/listar.js": "/js/home/usuarios/listar.js",
     "/js/home/recibo/registro.js": "/js/home/recibo/registro.js",
     "/js/home/recibo/listar.js": "/js/home/recibo/listar.js",
+    "/js/home/propietarios/deben_detalles.js": "/js/home/propietarios/deben_detalles.js",
     "/js/home/propietarios/deben.js": "/js/home/propietarios/deben.js",
     "/js/home/produccion/registro.js": "/js/home/produccion/registro.js",
     "/js/home/produccion/listar.js": "/js/home/produccion/listar.js",

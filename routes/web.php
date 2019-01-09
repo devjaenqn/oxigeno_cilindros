@@ -22,8 +22,11 @@ Route::middleware(['autenticado'])->group(function() {
 	Route::get('home/news', 'HomeController@news');
 	Route::get('home/botellas', 'HomeController@botellas');
 
-	foreach (['datatables', 'deben', 'balance', 'datatable_deben'] as $key => $value) {
-		Route::get('home/propietarios/'.$value, 'PropietariosController@'.$value);
+	foreach (['datatables', 'deben',['deben/{entidad_id}', 'deben_detalles'], 'balance', 'datatable_deben', 'datatable_deben_detalles'] as $key => $value) {
+		if (is_array($value))
+			Route::get('home/propietarios/'.$value[0], 'PropietariosController@'.$value[1]);
+		else
+			Route::get('home/propietarios/'.$value, 'PropietariosController@'.$value);
 	}
 
 	Route::get('home/propietarios/', 'HomeController@propietarios');

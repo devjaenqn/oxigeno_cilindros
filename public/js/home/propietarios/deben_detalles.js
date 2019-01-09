@@ -60,20 +60,20 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 84);
+/******/ 	return __webpack_require__(__webpack_require__.s = 86);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 84:
+/***/ 86:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(85);
+module.exports = __webpack_require__(87);
 
 
 /***/ }),
 
-/***/ 85:
+/***/ 87:
 /***/ (function(module, exports) {
 
 new Vue({
@@ -107,7 +107,7 @@ new Vue({
       pageLength: 10,
       processing: true,
       ajax: {
-        url: BASE_URL + '/home/propietarios/datatable_deben',
+        url: BASE_URL + '/home/propietarios/datatable_deben_detalles?entidad_id_val=' + ENTIDAD_ID,
         data: function data(d) {
           // d.buscar = _this3.filtros.query;
           // if (_this3.filtros.success_date) {
@@ -118,9 +118,11 @@ new Vue({
         }
       },
       serverSide: true,
-      columns: [{ data: 'nombre' }, { data: 'cilindros_deuda' }, { data: 'desde' }, { data: 'ent_id', render: function render(d, t, r) {
-          return '\n            <a href="' + (BASE_URL + '/home/propietarios/deben/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles" title="Detalles"><i class="fa fa-eye"></i> </a>\n          ';
-        } }]
+      columns: [{ data: 'cilindro_codigo', render: function render(d, t, r) {
+          return '\n            <span><a href="' + (BASE_URL + '/home/cilindro/' + r.cilindro_id) + '" class="" >' + d + '</a></span>\n          ';
+        } }, { data: 'documento_correlativo', render: function render(d, t, r) {
+          return '\n           <span><a href="' + (BASE_URL + '/home/despacho/' + r.des_id) + '" class="" >' + d + '</a></span>\n          ';
+        } }, { data: 'fecha_emision' }]
       // columnDefs: [{
       //   targets: [6],
       //   className: 'text-right'
