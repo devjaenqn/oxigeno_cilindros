@@ -137,6 +137,7 @@
                             {{-- <input class="form-control pl-2 pt-1 pr-2 pb-1 text-select text" id="turno"  type="text" name="turno" v-model="turno" placeholder="Turno" required="" form="frm_registro_produccion"> --}}
                             <select name="turno" id="turno" class="form-control pl-2 pt-1 pr-2 pb-1" required="required" v-model="turno" form="frm_registro_produccion" style="height: 31px">
                               <option value="6AM - 2PM">6AM - 2PM</option>
+                              <option value="6AM - 6AM">6AM - 6AM</option>
                               <option value="2PM - 10PM">2PM - 10PM</option>
                               <option value="7PM - 7AM">7PM - 7AM</option>
                               <option value="7PM - 7AM">7PM - 7AM</option>
