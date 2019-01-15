@@ -141,6 +141,7 @@
                               <option value="2PM - 10PM">2PM - 10PM</option>
                               <option value="7PM - 7AM">7PM - 7AM</option>
                               <option value="7PM - 7AM">7PM - 7AM</option>
+                              <option value="10PM - 6AM">10PM - 6AM</option>
                             </select>
 
                           </div>
