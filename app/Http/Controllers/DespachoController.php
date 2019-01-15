@@ -352,6 +352,7 @@ class DespachoController extends Controller
                     } else {
                         $despacho->doc_numero = $guia->actual;
                         $guia->actual += 1;
+                        $guia->save();
                     }
                 } else {
                     $despacho->doc_numero = $numero_doc;
@@ -371,7 +372,7 @@ class DespachoController extends Controller
                 // }
 
 
-                $guia->save();
+
                 //fin incremento°!
                 $despacho->fecha_emision = request('fecha');
                 $despacho->motivo = 'venta';

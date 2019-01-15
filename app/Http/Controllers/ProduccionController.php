@@ -39,7 +39,7 @@ class ProduccionController extends Controller
                     break;
             }
         else {
-            $data['titulo_pagina'] = 'Producción - Listar';
+            $data['titulo_pagina'] = 'PRODUCCIÓN LISTAR';
             return view('home.produccion.listar', $data);
         }
     }

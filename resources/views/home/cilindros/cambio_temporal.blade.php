@@ -104,7 +104,7 @@
 						<td><label for="">EVENTO</label></td>
 						<td>
 
-							<select name="" id="evento" class="form-control" required="required">
+							<select name="evento" id="evento" class="form-control" required="required">
 								<option value="create">CREATE</option>
 								<option value="cargando">CARGANDO</option>
 								<option value="cargado">CARGADO</option>

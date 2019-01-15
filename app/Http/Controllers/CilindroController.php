@@ -508,17 +508,31 @@ class CilindroController extends Controller
                 // dd($cilindro->getEventosFecha()->get());
                 // $eventos = CilindroSeguimiento::all();
                 // $eventos = $cilindro->getEventosFecha()->get();
+                echo '<h3>'.$cilindro->serie.'</h3></br>';
                 $eventos = $cilindro->seguimiento()->orderBy('fecha_date', 'asc')->orderBy('orden', 'asc')->get();
                 echo "<table  style='border:1px solid black'><thead><tr><th>ID</th><th>CREATED</th><th>UPDATED</th><th>EVENTO</th><th>DES</th><th>REF_ID</th><th>ORI</th><th>FECHA</th><th>FECHA_DETALLE</th><th>FORZADO</th></tr></thead><tbody>";
+                $table = '';
                 foreach ($eventos as $key => $value) {
 
-                  echo "<tr>
+                  $table .= "<tr>
                           <td style='border:1px solid black'>$value->cis_id</td>
                           <td style='border:1px solid black'>$value->created_at</td>
                           <td style='border:1px solid black'>$value->updated_at</td>
                           <td style='border:1px solid black'>$value->evento</td>
                           <td style='border:1px solid black'>$value->descripcion</td>
-                          <td style='border:1px solid black'>$value->referencia_id</td>
+                          <td style='border:1px solid black'>";
+                          if ($value->referencia_id != 0) {
+                            if ($value->evento == 'cargado')
+                              $table .= '<a href="'.url('home/produccion/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
+                            else if ($value->evento == 'despacho' || $value->evento == 'cliente')
+                              $table .= '<a href="'.url('home/despacho/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
+                            else if ($value->evento == 'vacio')
+                              $table .= '<a href="'.url('home/recibo/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
+                          } else {
+                            $table .= $value->referencia_id;
+                          }
+
+                  $table .= "</td>
                           <td style='border:1px solid black'>$value->origen</td>
                           <td style='border:1px solid black'>$value->fecha</td>
                           <td style='border:1px solid black'>$value->fecha_detalle</td>
@@ -526,6 +540,7 @@ class CilindroController extends Controller
                         </tr>";
 
                 }
+                echo $table;
                 echo "</tbody></table>";
                 exit;
                 break;

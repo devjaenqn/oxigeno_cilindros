@@ -246,7 +246,7 @@ var registro = {
                 return v.locacion.toUpperCase().trim() == _this2.cliente.destino_nombre.toUpperCase().trim();
               });
 
-              if (typeof locacion == 'undefined') _this2.cliente.id = 0;
+              if (typeof locacion == 'undefined') _this2.cliente.destino = 0;
             }
 
             if (_this2.cliente.destino_nombre.trim() == '') {

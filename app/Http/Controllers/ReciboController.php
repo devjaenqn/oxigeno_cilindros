@@ -24,7 +24,7 @@ class ReciboController extends Controller
      */
     public function index()
     {
-        $data['titulo_pagina'] = 'Recibo - Listar';
+        $data['titulo_pagina'] = 'RECIBO LISTAR';
         return view('home.recibo.listar', $data);
     }
 
@@ -134,7 +134,7 @@ class ReciboController extends Controller
         $negocio = Negocio::find(request('negocio'));
         $cliente = Propietarios::find(request('cliente'));
         $recibo = NegocioComprobantes::find(request('comprobante'));
-
+        // dd($request);
         // $guia = $negocio->getDocumentoActivo('guia');
         // return response()->json($recibo);
         if ($recibo && $recibo->negocio->neg_id == $negocio->neg_id) {
@@ -149,16 +149,37 @@ class ReciboController extends Controller
                 $proceso->doc_nombre = $recibo->nombre;
                 // $recibo->doc_referencia = request('referencia', '');
                 //incrementar el correlativo
-                if (+request('numero') == $recibo->actual){
-                    $proceso->doc_numero = $recibo->actual;
-                    $recibo->actual += 1;
+
+                // if (+request('numero') == $recibo->actual){
+                //     $proceso->doc_numero = $recibo->actual;
+                //     $recibo->actual += 1;
+                // } else {
+                //     $proceso->doc_numero = +request('numero');
+                //     if ($recibo->actual < +request('numero'))
+                //         $recibo->actual = +request('numero') + 1;
+                // }
+
+                $numero_doc = +request('numero');
+                if ($numero_doc >= $recibo->actual){
+
+                    if ($numero_doc > $recibo->actual){
+                        $proceso->doc_numero = $numero_doc;
+                        $recibo->actual = $numero_doc + 1;
+                    } else {
+                        $proceso->doc_numero = $recibo->actual;
+                        $recibo->actual += 1;
+                        $recibo->save();
+                    }
                 } else {
-                    $proceso->doc_numero = +request('numero');
-                    if ($recibo->actual < +request('numero'))
-                        $recibo->actual = +request('numero') + 1;
+                    $proceso->doc_numero = $numero_doc;
+                    // if ($guia->actual < +$numero_doc)
+                    // $next_numero = $numero_doc + 1;
+                    // if (Despacho::existe_numero(+request('comprobante'), $next_numero))
+                    // $guia->actual = +$numero_doc + 1;
                 }
+
                 // $recibo->actual += 1;
-                $recibo->save();
+                // $recibo->save();
                 //fin incremento
                 $proceso->fecha_emision = request('fecha');
                 $proceso->fecha_llegada = request('fecha_detalle');
