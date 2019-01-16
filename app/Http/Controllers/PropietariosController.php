@@ -49,6 +49,7 @@ class PropietariosController extends Controller
     return $make->make(true);
   }
   public function datatable_deben_detalles (Request $request) {
+    
     $make = collect();
     if ($request->has('entidad_id_val')) {
       $all = CilindrosEntradaSalida::selectRaw(
@@ -95,7 +96,8 @@ class PropietariosController extends Controller
       $data['rows'] = $casa;
       //considera negocio tempo como temporal
       $data['negocio'] = Negocio::find(2);
-      $data['titulo'] = 'CILINDROS EN CLIENTE';
+      $data['propietario'] = Propietarios::find(request('entidad_id_val'));
+      $data['titulo'] = 'CILINDROS PENDIENTES';
       $pdf = PDF::loadView('home.propietarios.pdf_deben_detalles', $data);
       // $pdf = PDF::loadView('home.cilindros.pdfseguimiento', $data);
       $pdf->setPaper('A4', 'landscape');
@@ -131,7 +133,23 @@ class PropietariosController extends Controller
   }
   public function deben_detalles (Request $request, $entidad_id) {
     $propietario = Propietarios::find($entidad_id);
+    $negocios = Negocio::all();
+    $negocios->makeHidden(['comprobantes']);
+    $negocios->map(function ($item) {
+        $item->recibos = $item->setDocumentosActivos('recibo')->comprobantes;
+        $item->setDefaultFilter();
+        $item->recibos->map(function ($g) {
+            $g->actual = fill_zeros($g->actual);
+            return $g;
+        });
+        return $item;
+    });
+    $data['negocios'] = $negocios;
+
+    // dd($negocios);
     $data['propietario'] = null;
+
+
     if ($propietario) {
       $data['propietario'] = $propietario;
       $data['titulo_pagina'] = 'DEBE CILINDROS - '.$propietario->nombre;

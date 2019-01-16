@@ -48,8 +48,12 @@
         </table>
 
         <div class="container-fluid">
+          <div class="animated">
+            @section('pre-contenido')
+              <h1>SIN CONTENIDO</h1>
+            @show
+          </div>  
           <div class="animated fadeIn">
-
             <!-- CONTENIDO -->
             @section('contenido')
               <h1>SIN CONTENIDO</h1>

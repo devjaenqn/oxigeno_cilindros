@@ -134,7 +134,9 @@ new Vue({
           return span;
         } }, { data: 'documento_correlativo', render: function render(d, t, r) {
           return '\n           <span><a href="' + (BASE_URL + '/home/despacho/' + r.des_id) + '" class="" >' + d + '</a></span>\n          ';
-        } }, { data: 'fecha_emision' }]
+        } }, { data: 'fecha_emision' }, { data: 'cilindro_id', render: function render(d, t, r) {
+          return '\n          <a href="' + (BASE_URL + '/home/cilindro/' + d + '/rastros') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="cambio_temporal" title="Rastros"><i class="fa fa-bug"></i> </a>\n          <a href="' + base_url('home/cilindro/' + d + '/seguimiento') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles" title="Seguimiento"><i class="fa fa-exchange"></i> </a>\n          <button type="button" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="retorno" title="Confirmar retorno"><i class="fa fa-check"></i> </button>\n          ';
+        } }]
       // columnDefs: [{
       //   targets: [6],
       //   className: 'text-right'
@@ -144,6 +146,10 @@ new Vue({
       delete g.length;
       delete g.start;
       _this.print_url = BASE_URL + '/home/propietarios/datatable_deben_detalles?entidad_id_val=' + ENTIDAD_ID + '&' + $.param(g) + '&export=pdf';
+    }).on('click', '.btn-acciones[data-accion="retorno"]', function (e) {
+      e.preventDefault();
+      var cilindro_id = e.currentTarget.dataset.id;
+      $('#model_retorno').modal('show');
     });
 
     // $('#tbl_datatable').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);

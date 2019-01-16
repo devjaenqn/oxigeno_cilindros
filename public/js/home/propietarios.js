@@ -11955,7 +11955,7 @@ var $ = window.jQuery;
         } }, { data: 'cilindros_total' }, { data: 'telefono' }, { data: 'estado', render: function render(d, t, r) {
           return '<span class="badge badge-success">Active</span>';
         } }, { data: 'ent_id', render: function render(d, t, r) {
-          return '\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="detalles"><i class="fa fa-eye"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="editar"><i class="fa fa-pencil"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
+          return '\n                <a href="' + base_url('home/propietarios/deben/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones"  data-id="' + d + '" data-accion="detalles"><i class="fa fa-exclamation-triangle"></i> </a>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="editar"><i class="fa fa-pencil"></i> </button>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
         } }],
       columnDefs: [
         // {
