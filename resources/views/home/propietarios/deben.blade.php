@@ -78,8 +78,8 @@
         </table>
       </div>
       <div class="card-footer">
-        <button class="btn btn-sm btn-primary" type="submit">
-          <i class="fa fa-dot-circle-o"></i> Agregar</button>
+        {{-- <button class="btn btn-sm btn-primary" type="submit">
+          <i class="fa fa-dot-circle-o"></i> Agregar</button> --}}
         <button class="btn btn-sm btn-success" @click="btnOnClick_btnCancelar">
           <i class="fa fa-table"></i> Listar propietarios</button>
       </div>
@@ -91,6 +91,9 @@
 @section('templates')
 @endsection
 @push('script')
+  <script>
+    var CURRENT_URL = '{{ url()->current() }}'
+  </script>
   <script src="{{ url('vendors/datatable/datatables.js') }}"></script>
   <script src="{{ url('js/home/propietarios/deben.js') }}"></script>
 @endpush

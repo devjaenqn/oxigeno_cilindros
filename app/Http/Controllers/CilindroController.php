@@ -23,15 +23,14 @@ class CilindroController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index (Request $request)
-    {
+    public function index (Request $request) {
 
-      //  $cilindros = Cilindro::all();
+      //$cilindros = Cilindro::all();
 
-      // $pdf = PDF::loadView('home.cilindros.pdflistar', compact('cilindros'));
-      // return $pdf->download('invoice.pdf');
+      //$pdf = PDF::loadView('home.cilindros.pdflistar', compact('cilindros'));
+      //return $pdf->download('invoice.pdf');
 
-        if ($request->filled('type')){
+        if ($request->filled('type')) {
             switch(request('type')){
                 case 'json':
                     $all = Cilindro::with('propietario')->select()
@@ -42,9 +41,9 @@ class CilindroController extends Controller
                                 if ($request->has('custom_filter')) {
                                     $custom = $request->custom_filter;
                                     if (isset($custom['query']) && trim($custom['query']) != '') {
-                                        $query->where( function($query) use ($custom) {
-                                          $query->where('serie', 'like', "%{$custom['query']}%");
-                                          $query->orWhere('entidades.nombre', 'like', "%{$custom['query']}%");
+                                        $query->where(function($queryb) use ($custom) {
+                                          $queryb->where('serie', 'like', "%{$custom['query']}%");
+                                          $queryb->orWhere('entidades.nombre', 'like', "%{$custom['query']}%");
                                         });
                                     }
                                     $query->whereIn('situacion', $custom['situacion']);
@@ -341,7 +340,7 @@ class CilindroController extends Controller
 
             });
             $mm = $mm->make(true);
-
+            // dd($mm);
             if ($request->has('export')) {
               $casa = [];
               $casa = $mm->original['data'];
@@ -937,6 +936,8 @@ class CilindroController extends Controller
                     $pre_evento = $cilindro->evento;
                     if ($request->ubicacion == 'cliente')
                       $cilindro->evento = 'cliente';
+                    if ($request->ubicacion == 'fabrica')
+                      $cilindro->evento = 'cargado';
                     $cilindro->cargado = '2';
                     $cilindro->situacion = $ubicacion;
                     $cilindro->defectuoso = 0;

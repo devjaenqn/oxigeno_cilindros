@@ -39,7 +39,9 @@
             </tr>
             <tr>
               <td colspan="2" class="text-center">
-                SEGUIMIENTO CILINDRO,
+                @if (isset($titulo))  
+                  {{$titulo}}
+                @endif
               </td>
             </tr>
           </tbody>

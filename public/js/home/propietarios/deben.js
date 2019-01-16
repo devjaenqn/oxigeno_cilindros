@@ -81,7 +81,8 @@ new Vue({
   data: function data() {
     return {
       tbl_datatable: null,
-      dt_tbl_datatable: []
+      dt_tbl_datatable: [],
+      print_url: CURRENT_URL
     };
   },
 
@@ -91,6 +92,8 @@ new Vue({
     }
   },
   mounted: function mounted() {
+    var _this = this;
+
     this.tbl_datatable = $('#tbl_datatable');
     this.dt_tbl_datatable = this.tbl_datatable.DataTable({
       data: this.producciones,
@@ -125,6 +128,11 @@ new Vue({
       //   targets: [6],
       //   className: 'text-right'
       // }]
+    }).on('draw', function () {
+      var g = _this.dt_tbl_datatable.ajax.params();
+      delete g.length;
+      delete g.start;
+      _this.print_url = BASE_URL + '/home/propietarios/datatable_deben_detalles?' + $.param(g) + '&export=pdf';
     });
 
     // $('#tbl_datatable').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);

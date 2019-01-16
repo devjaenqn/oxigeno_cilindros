@@ -79,10 +79,14 @@
         </table>
       </div>
       <div class="card-footer">
-        {{-- <button class="btn btn-sm btn-primary" type="submit">
-          <i class="fa fa-dot-circle-o"></i> Agregar</button> --}}
-        <a href="{{ url('home/propietarios/deben') }}" class="btn btn-sm btn-success" >
-          <i class="fa fa-table"></i> Listar propietarios</a>
+        <form class="form-horizontal"  >
+          
+          {{-- <button class="btn btn-sm btn-primary" type="submit">
+            <i class="fa fa-dot-circle-o"></i> Agregar</button> --}}
+          <a class="btn btn-primary btn-sm" target="_blank" :href="print_url" role="button"><i class="fa fa-print"></i>&nbsp;Imprimir</a>
+          <a href="{{ url('home/propietarios/deben') }}" class="btn btn-sm btn-success" >
+            <i class="fa fa-table"></i> Listar propietarios</a>
+        </form>
       </div>
       </form>
     </div>
@@ -93,6 +97,9 @@
 @endsection
 @if ($propietario)
   @push('script')
+    <script>
+      var CURRENT_URL = '{{ url()->current() }}'
+    </script>
     <script src="{{ url('js/home/cilindros/colores_cilindro.js') }}"></script>
     <script src="{{ url('vendors/datatable/datatables.js') }}"></script>
     <script type="text/javascript">

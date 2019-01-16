@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PropietariosResource;
+use App\Negocio;
 
 use App\Propietarios;
-use App\PropietariosLocacion;
-use App\CilindrosEntradaSalida;
 use Illuminate\Http\Request;
+use App\PropietariosLocacion;
+use Illuminate\Support\Carbon;
+use App\CilindrosEntradaSalida;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Http\Resources\PropietariosResource;
 
 class PropietariosController extends Controller
 {
@@ -57,9 +60,11 @@ class PropietariosController extends Controller
         cilindros.codigo as cilindro_codigo,
         CONCAT(comprobantes_negocio.cne_attr,\'-\',despacho.doc_serie,\'-\', despacho.doc_numero) as documento_correlativo,
         despacho.fecha_emision,
+        entidades_locacion.locacion as destino_guia,
         despacho.des_id'
         )
         ->join('despacho', 'despacho.des_id', 'cilindros_entrada_salida.guia_id')
+        ->join('entidades_locacion', 'entidades_locacion.elo_id', 'despacho.destino_id')
         ->join('comprobantes_negocio', 'comprobantes_negocio.cne_id', 'despacho.documento_id')
         ->join('cilindros', 'cilindros.cil_id', 'cilindros_entrada_salida.cilindro_id')
         ->where('despacho.entidad_id', $request->entidad_id_val);
@@ -80,7 +85,30 @@ class PropietariosController extends Controller
                   }
               });
     }
-    return $make->make(true);
+    $mm = $make->make(true);
+    // dd($mm);
+    if ($request->has('export')) {
+      $casa = [];
+      
+      $casa = $mm->original['data'];
+      // dd($casa);
+      $data['rows'] = $casa;
+      //considera negocio tempo como temporal
+      $data['negocio'] = Negocio::find(2);
+      $data['titulo'] = 'CILINDROS EN CLIENTE';
+      $pdf = PDF::loadView('home.propietarios.pdf_deben_detalles', $data);
+      // $pdf = PDF::loadView('home.cilindros.pdfseguimiento', $data);
+      $pdf->setPaper('A4', 'landscape');
+      $pdf->setOptions(['dpi' => 250, 'fontHeightRatio' => 0.8]);
+
+      set_time_limit(60);
+      // dd($pdf);
+      return $pdf->stream('DETALLES-DEUDA_'.Carbon::now().'.pdf');
+      // return $pdf->download('listado.pdf');
+    // dd($mm->original['data']);
+    } else {
+      return $mm;
+    }
   }
   public function datatables (Request $request) {
     $propietario = new Propietarios();
