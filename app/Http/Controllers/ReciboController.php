@@ -28,6 +28,54 @@ class ReciboController extends Controller
         return view('home.recibo.listar', $data);
     }
 
+    public function registrar_cilindro (Request $request) {
+      // dd($request);
+      $res = ['success' => false];
+      $validate = $request->validate([
+        'cilindro_id' => 'required',
+        'numero_doc' => 'required',
+        'entrada_salida_id' => 'required',
+        'recibo_id' => 'required'
+      ]);
+      $ces = CilindrosEntradaSalida::find(request('entrada_salida_id'));
+      
+      $recibo = Despacho::find(request('recibo_id'));
+      if ($ces && $recibo) {
+        $ces->entrada = $recibo->fecha_emision;
+        $ces->recibo_id = $recibo->des_id;
+        $ces->observacion_entrada = 'AGREGADO DESDE DEUDA';
+        $ces->completado = '1';
+        $res['success'] = $ces->save();
+      }
+      return response()->json($res);
+    }
+    /**
+     * [verificar_cilindro Existencia de cilindro en un recibo]
+     *
+     * @return  [type]  [return description]
+     */
+    public function verificar_cilindro (Request $request) {
+      // dd($request);
+      $res = ['success' => false, 'recibo_id' => null];
+      $validate = $request->validate([
+        'cilindro_id' => 'required',
+        'numero_doc' => 'required',
+        'comprobante_id' => 'required'
+      ]);
+      if ($validate) {
+        $doc = Despacho::getByNumeroAndDoc(request('comprobante_id'), request('numero_doc'));
+        if ($doc) {
+          $cilindro = $doc->detalles()->where('cilindro_id', request('cilindro_id'))->count() > 0 ? true : false;
+          if ($cilindro) {
+            $res['success'] = true;
+            $res['recibo_id'] = $doc->des_id;
+
+          }
+        }
+      }
+      return response()->json($res);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

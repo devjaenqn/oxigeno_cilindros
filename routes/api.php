@@ -41,6 +41,8 @@ Route::resource ('despacho', 'DespachoController')->only([
 Route::resource ('recibo', 'ReciboController')->only([
     'store', 'update', 'destroy'
 ]);
+Route::post('recibo/verificar-cilindro', 'ReciboController@verificar_cilindro');
+Route::post('recibo/registrar-cilindro', 'ReciboController@registrar_cilindro');
 Route::resource ('usuarios', 'UsuariosController')->only([
     'store', 'update', 'destroy'
 ]);

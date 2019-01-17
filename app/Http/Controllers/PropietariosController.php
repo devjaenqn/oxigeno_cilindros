@@ -54,6 +54,7 @@ class PropietariosController extends Controller
     if ($request->has('entidad_id_val')) {
       $all = CilindrosEntradaSalida::selectRaw(
         'cilindro_id,
+        cilindros_entrada_salida.ces_id as entrada_salida_id,
         cilindros.evento as cilindro_evento,
         cilindros.situacion as cilindro_situacion,
         cilindros.cargado as cilindro_cargado,
@@ -68,7 +69,8 @@ class PropietariosController extends Controller
         ->join('entidades_locacion', 'entidades_locacion.elo_id', 'despacho.destino_id')
         ->join('comprobantes_negocio', 'comprobantes_negocio.cne_id', 'despacho.documento_id')
         ->join('cilindros', 'cilindros.cil_id', 'cilindros_entrada_salida.cilindro_id')
-        ->where('despacho.entidad_id', $request->entidad_id_val);
+        ->where('despacho.entidad_id', $request->entidad_id_val)
+        ->where('completado', '0');
     // $all = Propietarios::select(
     //   '*'
     // )->join('documentos_identidad', 'entidades.tipo_doc', 'documentos_identidad.cod');
@@ -145,7 +147,14 @@ class PropietariosController extends Controller
         return $item;
     });
     $data['negocios'] = $negocios;
-
+    $data_vue['comprobante'] = 0;
+    if ($negocios->count() > 0) {
+      if ($negocios[0]->recibos->count() > 0) {
+        $comprobante = $negocios[0]->recibos[0];
+        $data_vue['comprobante'] = $comprobante->cne_id;
+      }
+    }
+    $data['js'] = $data_vue;
     // dd($negocios);
     $data['propietario'] = null;
 
@@ -171,6 +180,7 @@ class PropietariosController extends Controller
     });
     // dd($totales->toArray());
     $data['titulo_pagina'] = 'DEBEN CILINDROS';
+
     return view('home.propietarios.deben', $data);
   }
     public function listar () {

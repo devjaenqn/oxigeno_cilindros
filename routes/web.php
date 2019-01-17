@@ -57,6 +57,7 @@ Route::middleware(['autenticado'])->group(function() {
 	Route::resource('home/recibo', 'ReciboController')->only([
 	    'index', 'create', 'show', 'edit'
 	]);
+	
 	Route::get('test', 'HomeController@test');
 
 

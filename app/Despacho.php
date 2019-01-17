@@ -34,6 +34,9 @@ class Despacho extends Model
   public function destino () {
     return $this->belongsTo('App\PropietariosLocacion', 'destino_id');
   }
+  public static function getByNumeroAndDoc ($documento, $numero) {
+    return self::where('doc_numero', $numero)->where('documento_id', $documento)->first();
+  }
   public static function existe_numero ($documento, $numero) {
     $res = false;
     $find = self::where('doc_numero', '=', fill_zeros($numero))
