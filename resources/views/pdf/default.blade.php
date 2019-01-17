@@ -37,20 +37,26 @@
               <td>{{ $negocio->telefono }}</td>
               <td></td>
             </tr>
+          </tbody>
+        </table>
+        <br>
+        <table style="width: 100%">
+          <thead>
             <tr>
-              <td colspan="2" class="text-center">
+              <th class="text-center">
                 @if (isset($titulo))  
                   {{$titulo}}
                 @endif
-              </td>
+              </th>
             </tr>
-          </tbody>
+          </thead>
         </table>
+        <br>
 
         <div class="container-fluid">
           <div class="animated">
             @section('pre-contenido')
-              <h1>SIN CONTENIDO</h1>
+              <h3>SIN CONTENIDO</h3>
             @show
           </div>  
           <div class="animated fadeIn">

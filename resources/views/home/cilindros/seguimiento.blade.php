@@ -65,6 +65,7 @@
                     <th>DESPACHO</th>
                     <th>ENTRADA</th>
                     <th>RECIBO</th>
+                    <th>ACCIONES</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -88,12 +89,79 @@
           </form>
         </div>
       </div>
+      
+    <div class="modal fade" id="model_retorno" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Agregar recibo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <form id="frm_verifica" @submit.prevent="fnOnSubmit_verificar"></form>
+              <form  @submit.prevent="fnOnSubmit_regRecibo" class="form-horizontal" id="frm_regitro_recibo" >
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group row mb-1 mt-1">
+                      <label class="col-md-6 col-form-label line-height-2-1 pt-0 pr-0 pb-0 text-left" for="comprobante">Recibo</label>
+                      <div class="col-md-18">
+                        <select name="comprobante" required="" id="comprobante" v-model="comprobante" class="form-control pt-1 pr-2 pb-1 pl- 2" style="height: 31px" form="frm_registro_recibo">
+                          @if ($negocios->count() > 0)
+                            @foreach ($negocios as $neg)
+                              @foreach ($neg->recibos as $recibo)
+                              
+                                  <option value="{{ $recibo->cne_id }}">{{ strtoupper($recibo->nombre) }}</option>
+                              
+                              @endforeach
+                            @endforeach
+                          @else
+                            <option value="0">DEFINIR NEGOCIOS</option>
+  
+                          @endif
+  
+                        </select>
+                        {{-- <span class="help-block" ifs="error.propietario">Seleccione un propietario</span> --}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row mb-1 mt-1">
+                  <label for="serie_comprobante" class="col-md-6 col-form-label line-height-2-1 pt-0 pr-0 pb-0 text-left">Num.</label> 
+                  <div class="col-md-9">
+                    
+                    <input form="frm_verifica" id="numero_comprobante" type="text" name="numero_comprobante" v-model="numero_doc" placeholder="000000000" class="form-control pt-1 pr-2 pb-1 pl- 2 text-select">
+                  </div>
+                  <div class="col">
+                    <button form="frm_verifica" type="submit"  title="Verificar" class="btn btn-sm btn-success"><i class="fa fa-check"></i></button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="offset-md-6 col-md-9">
+                    <p class="">
+                      <span v-if="procesa" class="badge badge-success">Verificado</span>
+                      <span v-else class="badge badge-danger">Sin verificar</span>
+                    </p>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button form="frm_regitro_recibo" type="submit" class="btn btn-sm btn-primary">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    
   </template>
 @endsection
 @push('script')
   <script>
     var CURRENT_URL = '{{ url()->current() }}'
+    const DATA_VUE = {!! json_encode($js) !!};
     function getCilindro () {
       return {{ $cilindro->cil_id }}
     }

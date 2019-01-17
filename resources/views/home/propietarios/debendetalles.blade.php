@@ -155,7 +155,7 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
   </div>
 <template id="tmpl_registro_propietarios"></template>
 <!-- Button trigger modal -->

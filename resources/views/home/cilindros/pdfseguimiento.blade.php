@@ -3,10 +3,12 @@
   <style>
     table {
       background-color: red;
-
     }
   </style>
 @endprepend
+@section('pre-contenido')
+  <h3>asdasdasd</h3>
+@endsection
 @section('contenido')
 <table class="table table-bordered table-inverse table-hover table-pdf">
   <thead>

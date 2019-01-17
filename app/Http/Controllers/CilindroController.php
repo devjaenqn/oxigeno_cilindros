@@ -340,14 +340,15 @@ class CilindroController extends Controller
 
             });
             $mm = $mm->make(true);
-            // dd($mm);
+            // dd($request);
             if ($request->has('export')) {
               $casa = [];
               $casa = $mm->original['data'];
-
+              $cilindro = Cilindro::find(request('cilindro_id'));
               $data['rows'] = $casa;
               //considera negocio tempo como temporal
               $data['negocio'] = Negocio::find(2);
+              $data['titulo'] = 'SEGUIMIENTO CILINDRO '.$cilindro->codigo;
               $pdf = PDF::loadView('home.cilindros.pdflistar', $data);
                   // $pdf = PDF::loadView('home.cilindros.pdfseguimiento', $data);
                   $pdf->setPaper('A4', 'landscape');
@@ -448,7 +449,28 @@ class CilindroController extends Controller
 
                     // dd($seguimiento);
                     // $data['cilindro'] = $cilindro;
-                    $data['titulo_pagina'] = $cilindro->serie.' - Seguimiento';
+                    $data['titulo_pagina'] = 'SEGUIMIENTO '.$cilindro->serie;
+                    $negocios = Negocio::all();
+
+                    $negocios->makeHidden(['comprobantes']);
+                    $negocios->map(function ($item) {
+                        $item->recibos = $item->setDocumentosActivos('recibo')->comprobantes;
+                        $item->setDefaultFilter();
+                        $item->recibos->map(function ($g) {
+                            $g->actual = fill_zeros($g->actual);
+                            return $g;
+                        });
+                        return $item;
+                    });
+                    $data['negocios'] = $negocios;
+                    $data_vue['comprobante'] = 0;
+                    if ($negocios->count() > 0) {
+                      if ($negocios[0]->recibos->count() > 0) {
+                        $comprobante = $negocios[0]->recibos[0];
+                        $data_vue['comprobante'] = $comprobante->cne_id;
+                      }
+                    }
+                    $data['js'] = $data_vue;
                     return view('home.cilindros.seguimiento', $data);
                   }
 

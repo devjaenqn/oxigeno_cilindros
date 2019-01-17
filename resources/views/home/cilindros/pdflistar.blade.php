@@ -6,6 +6,8 @@
     }
   </style>
 @endprepend
+@section('pre-contenido')
+@endsection
 @section('contenido')
 <table class="table table-bordered table-inverse table-hover  table-minimal" >
   <thead>
@@ -18,7 +20,7 @@
       <th width="150">DE/OBSERVACIÓN</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="fs-30">
     @foreach ($rows as $item)
       <tr>
         <td>{{ $item['salida'] }}</td>

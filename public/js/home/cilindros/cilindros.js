@@ -1836,6 +1836,8 @@ module.exports = function spread(callback) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var _watch;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1843,7 +1845,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   dt_tbl_seguimiento_cilindro: null,
   tbl_seguimiento_cilindro: null,
   data: function data() {
-    return {
+    return _extends({
+      cilindro: 0,
+      entrada_salida_id: 0,
+      procesa: 0,
+      numero_doc: 0
+    }, DATA_VUE, {
       print_url: CURRENT_URL,
       filtros: {
         cilindro_id: getCilindro(),
@@ -1853,7 +1860,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         fecha_hasta: localvalues.getVal('seguimiento_filter_fecha_hasta', moment().format('YYYY-MM-DD')),
         filtro_date: 'interval'
       }
-    };
+    });
   },
 
   watch: (_watch = {
@@ -1866,6 +1873,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     localvalues.setVal('seguimiento_filter_fecha_hasta', nv);
   }), _watch),
   methods: {
+    fnOnSubmit_regRecibo: function fnOnSubmit_regRecibo() {
+      var _this = this;
+
+      if (this.procesa) {
+        var frmData = new FormData();
+
+        frmData.append('cilindro_id', this.cilindro);
+        frmData.append('numero_doc', this.numero_doc);
+        frmData.append('comprobante_id', this.comprobante);
+        frmData.append('entrada_salida_id', this.entrada_salida_id);
+        frmData.append('recibo_id', this.recibo_id);
+        // frmData.append('procesa', this.procesa ? 1 : 0)
+
+        axios.post(base_url('api/recibo/registrar-cilindro'), frmData).then(function (res) {
+          if (res.data.success) {
+            $('#model_retorno').modal('hide');
+            _this.dt_tbl_datatable.draw();
+          }
+        });
+      }
+    },
+    fnOnSubmit_verificar: function fnOnSubmit_verificar() {
+      var _this2 = this;
+
+      var frmData = new FormData();
+
+      frmData.append('cilindro_id', this.cilindro);
+      frmData.append('numero_doc', this.numero_doc);
+      frmData.append('comprobante_id', this.comprobante);
+      // frmData.append('procesa', this.procesa ? 1 : 0)
+
+      axios.post(base_url('api/recibo/verificar-cilindro'), frmData).then(function (res) {
+        if (res.data.success) {
+          _this2.procesa = true;
+          _this2.recibo_id = res.data.recibo_id;
+        }
+      });
+    },
     onSubmit_frmAplicarFiltro: function onSubmit_frmAplicarFiltro() {
       var norender = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
@@ -1892,7 +1937,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.onSubmit_frmAplicarFiltro(true);
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this3 = this;
 
     console.log(this);
 
@@ -1948,13 +1993,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       ajax: {
         url: BASE_URL + '/home/cilindro/seguimiento',
         data: function data(d) {
-          d.buscar = _this.filtros.query;
-          if (_this.filtros.success_date) {
-            d.cilindro_id = _this.filtros.cilindro_id;
-            d.filtro_date = _this.filtros.filtro_date;
-            d.buscar = _this.filtros.query;
-            d.desde = _this.filtros.fecha_desde;
-            d.hasta = _this.filtros.fecha_hasta;
+          d.buscar = _this3.filtros.query;
+          if (_this3.filtros.success_date) {
+            d.cilindro_id = _this3.filtros.cilindro_id;
+            d.filtro_date = _this3.filtros.filtro_date;
+            d.buscar = _this3.filtros.query;
+            d.desde = _this3.filtros.fecha_desde;
+            d.hasta = _this3.filtros.fecha_hasta;
           }
         }
       },
@@ -1971,15 +2016,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       dom: '<"table-responsive"t>p',
       // order: [[0, "desc"]],
       // bSort: false,
-      columns: [{ data: 'salida' }, { data: 'guia_correlativo' }, { data: 'entrada' }, { data: 'recibo_correlativo' }],
+      columns: [{ data: 'salida' }, { data: 'guia_correlativo' }, { data: 'entrada' }, { data: 'recibo_correlativo' }, { data: 'ces_id', render: function render(d, t, r) {
+          return '\n              \n            <button type="button" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default" data-entrada-salida-id="' + d + '"  data-id="' + r.cilindro_id + '" data-accion="retorno" title="Cambiar recibo"><i class="fa fa-refresh"></i> </button>\n            ';
+        } }],
       columnDefs: [
         // {targets: [7], className: 'text-right'}
       ]
     }).on('draw', function () {
-      var g = _this.dt_tbl_seguimiento_cilindro.ajax.params();
+      var g = _this3.dt_tbl_seguimiento_cilindro.ajax.params();
       delete g.length;
       delete g.start;
-      _this.print_url = BASE_URL + '/home/cilindro/seguimiento?' + $.param(g) + '&export=pdf';
+      _this3.print_url = BASE_URL + '/home/cilindro/seguimiento?' + $.param(g) + '&export=pdf';
+    }).on('click', '.btn-acciones[data-accion="retorno"]', function (e) {
+      e.preventDefault();
+      var cilindro_id = e.currentTarget.dataset.id;
+      $('#model_retorno').modal('show');
+      _this3.cilindro = cilindro_id;
+      _this3.entrada_salida_id = e.currentTarget.dataset.entradaSalidaId;
+      _this3.procesa = false;
     });
   }
 });
