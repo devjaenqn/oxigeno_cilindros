@@ -14,6 +14,11 @@ class CilindrosEntradaSalida extends Model
   	return self::where('cilindro_id', $cilindro_id)
   							->where('completado', '0')->orderBy('salida', 'desc')->first();
   }
+  public static function getByDespachoAndCilindro ($cilindro_id, $despacho_id) {
+    return self::where('cilindro_id', $cilindro_id)
+                ->where('guia_id', $despacho_id)
+                ->first();
+  }
   public static function getDespachoSalida ($cilindro_id, $despacho_id) {
     return self::where('cilindro_id', $cilindro_id)
                 ->where('guia_id', $despacho_id)

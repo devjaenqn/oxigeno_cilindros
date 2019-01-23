@@ -279,7 +279,8 @@ class ProduccionController extends Controller
             // });
             // return response()->json(ProduccionResource::collection($all));
             // DB::enableQueryLog();
-            $all = Produccion::with(['operador', 'detalles'])
+						$all = Produccion::with(['operador', 'detalles'])
+								->soloActivos()
                 ->join('operador', 'operador.ope_id', '=', 'produccion.operador_id')
                 ->join('produccion_cilindros', 'produccion_cilindros.produccion_id', '=', 'produccion.pro_id')
                 ->selectRaw('distinct produccion.*, operador.nombre, operador.apellidos, CONCAT(produccion.serie_lote, "-", produccion.numero_lote) as lote_format');
@@ -715,8 +716,53 @@ class ProduccionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+			$res = ['success' => false];
+			$objPro = Produccion::find($id);
+			if ($objPro) {
+				//obtener detalles y editar
+				//llevar a los cilindros a estado vacio|fabrica
+				DB::transaction(function () use($objPro, &$res) {	
+					$objPro->detalles->map(function($item) use($objPro) {
+						$cil = $item->cilindro;
+						$cil->situacion = Cilindro::getSituacion('fabrica');
+						$cil->cargado = '0';
+						$cil->evento = 'vacio';
+						$cil->despacho_id_salida = 0;
+						$cil->recibo_id_entrada = 0;
+						$cil->save();
+						// $cilindro->defectuoso = 1;
+						//agregar seguimiento
+						$seg = new CilindroSeguimiento();
+						$seg->cilindro_id = $cil->cil_id;
+						$orden_seg = 1;
+						if (CilindroSeguimiento::existe_en_fecha($cil->cil_id, now()->format('Y-m-d'))) {
+								$orden_seg = CilindroSeguimiento::extraer_nuevo_orden($cil->cil_id, now()->format('Y-m-d'));
+						}
+						$seg->orden_seg = $orden_seg;
+						$seg->evento = 'eliminado_produccion';
+						$seg->descripcion = 'PRODUCCION ELIMINADA '.now()->format('Y-m-d H:i:s');
+						$seg->referencia_id = $objPro->pro_id;
+						$seg->origen = 'app';
+						$seg->forzado = '1';
+						$seg->fecha = now()->format('Y-m-d');
+						$seg->fecha_detalle = now()->format('Y-m-d H:i:s');
+						$seg->save();
+					});
+					$objPro->eliminado = 1;
+					if (strlen(trim($objPro->observacion)) == 0) {
+						$objPro->observacion = 'ELIMINADO '.now()->format('Y-m-d H:i:s');
+					} else {
+						$objPro->observacion .= ', ELIMINADO '.now()->format('Y-m-d H:i:s');
+					}
+	
+					//agregar seguimiento
+					
+					$objPro->save();
+					$res['success'] = true;
+				});
+			}
+			return response()->json($res);
     }
 }

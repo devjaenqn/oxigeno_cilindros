@@ -209,6 +209,18 @@ var listar = {
         case 'detalles':
           break;
         case 'eliminar':
+          msg.pregunta('Despacho', '¿Desea eliminar este elemento?', function (quest) {
+            if (quest) {
+              return axios.delete(base_url('api/despacho/' + dataset.id));
+            }
+          }).then(function (res) {
+            if (res.data) {
+              if (res.data.success) {
+                _this3.dt_tbl_despacho.draw(false);
+                msg.success('Despacho', 'Elemento eliminado');
+              }
+            }
+          });
           break;
         case 'salida':
           this.sending = false;
@@ -342,7 +354,12 @@ var listar = {
           }
           return '\n                ' + salida + '\n                ' + llegada + '\n                ' + confirma + '\n                <a href="' + (BASE_URL + '/home/despacho/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles" title="Detalles"><i class="fa fa-eye"></i> </a>\n                <a href="' + (BASE_URL + '/home/despacho/' + d + '/edit') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones"  data-id="' + d + '" data-accion="editar" title="Editar"><i class="fa fa-pencil"></i> </a>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar" title="Eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
         } }],
-      columnDefs: [{ targets: [5], className: 'text-right' }, { targets: [4, 6], className: 'text-center' }]
+      columnDefs: [{ targets: [5], className: 'text-right' }, { targets: [4, 6], className: 'text-center' }],
+      rowCallback: function rowCallback(row, data) {
+        if (data.eliminado == 1) {
+          row.classList.add('bg-danger');
+        }
+      }
     });
 
     $('#tbl_despacho').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);

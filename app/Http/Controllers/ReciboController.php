@@ -64,7 +64,7 @@ class ReciboController extends Controller
       ]);
       if ($validate) {
         $doc = Despacho::getByNumeroAndDoc(request('comprobante_id'), request('numero_doc'));
-        if ($doc) {
+        if ($doc && $doc->eliminado == 0) {
           $cilindro = $doc->detalles()->where('cilindro_id', request('cilindro_id'))->count() > 0 ? true : false;
           if ($cilindro) {
             $res['success'] = true;
@@ -861,8 +861,60 @@ class ReciboController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+      
+			$res = ['success' => false];
+			$objDes = Despacho::find($id);
+			
+			if ($objDes) {
+				DB::transaction(function () use($objDes, &$res) {	
+						$objDes->detalles->map(function($item) use($objDes) {
+								$cil = $item->cilindro;
+								$cil->situacion = Cilindro::getSituacion('cliente');
+								$cil->cargado = '2';
+								$cil->evento = 'cliente';
+								$cil->despacho_id_salida = 0;
+								$cil->recibo_id_entrada = 0;
+								$cil->save();
+								// $cilindro->defectuoso = 1;
+
+								// $entr_salida = CilindrosEntradaSalida::getByDespachoAndCilindro($cil->cil_id, $objDes->des_id);
+								// if ($entr_salida->completado == 0) {
+								// 	$entr_salida->delete();
+								// }
+
+								//agregar seguimiento
+								
+								$seg = new CilindroSeguimiento();
+								$seg->cilindro_id = $cil->cil_id;
+								$orden_seg = 1;
+								if (CilindroSeguimiento::existe_en_fecha($cil->cil_id, now()->format('Y-m-d'))) {
+												$orden_seg = CilindroSeguimiento::extraer_nuevo_orden($cil->cil_id, now()->format('Y-m-d'));
+								}
+								$seg->orden_seg = $orden_seg;
+								$seg->evento = 'eliminado_recibo';
+								$seg->descripcion = 'RECIBO ELIMINADO '.now()->format('Y-m-d H:i:s');
+								$seg->referencia_id = $objDes->des_id;
+								$seg->origen = 'app';
+								$seg->forzado = '1';
+								$seg->fecha = now()->format('Y-m-d');
+								$seg->fecha_detalle = now()->format('Y-m-d H:i:s');
+								$seg->save();
+						});
+						$objDes->eliminado = 1;
+						if (strlen(trim($objDes->observacion)) == 0) {
+							$objDes->observacion = 'ELIMINADO '.now()->format('Y-m-d H:i:s');
+						} else {
+							$objDes->observacion .= ', ELIMINADO '.now()->format('Y-m-d H:i:s');
+						}
+
+						//agregar seguimiento
+						
+						$objDes->save();
+						$res['success'] = true;
+				});
+			}
+			return response()->json($res);
     }
 }

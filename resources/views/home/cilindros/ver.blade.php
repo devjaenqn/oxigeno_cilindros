@@ -16,7 +16,28 @@
                 <div class="form-group row mb-1 mt-1">
                   <label class="col-md-6 col-form-label line-height-2-1 pt-0 pb-0 pr-0 text-left" for="negocio">Serie : </label>
                   <div class="col-md-18">
-                    <p class="form-control-static m-0 ">{{ $cilindro->serie }}</p>
+                    <p class="form-control-static m-0 ">{{ $cilindro->serie }}
+                        @if ($cilindro->situacion == 0)
+                        <span class="badge badge-success rounded-2">extraviado</span>
+                      @endif
+                      @if ($cilindro->situacion == 1)
+                        <span class="badge badge-success rounded-2">fabrica</span>
+                      @endif
+                      @if ($cilindro->situacion == 2)
+                        <span class="badge badge-success rounded-2">transporte</span>
+                      @endif
+                      @if ($cilindro->situacion == 3)
+                        <span class="badge badge-primary rounded-2">cliente</span>
+                      @endif
+            
+                      @if ($cilindro->defectuoso)
+                        <span class="badge badge-danger rounded-2">D</span>
+                      @endif
+            
+                      @if ($cilindro->evento == 'create')
+                        <span class="badge badge-info rounded-2">new</span>
+                      @endif
+                    </p>
                   </div>
                 </div>
                 <div class="form-group row mb-1 mt-1">
@@ -65,7 +86,7 @@
             </div> --}}
           </div>
         </div>
-        <hr>
+        <hr>  
         <h4>SITUACIÓN ACTUAL</h4>
             <div class="row">
               <div class="col-sm-10">
@@ -168,3 +189,8 @@
     @endsection
     @section('templates')
     @endsection
+    @prepend('script')
+      <script>
+        var OBJ_CILINDRO = {!! $cilindro->toJson() !!};
+      </script>
+    @endprepend

@@ -65,7 +65,7 @@ class CilindroSeguimiento extends Model
 
     static::addGlobalScope('orden_evento', function (Builder $builder) {
         $builder->select(['*', DB::raw('DATE(fecha) as fecha_date')]);
-        $builder->join('eventos', 'cilindros_seguimiento.evento', '=', 'eventos.evento_id');
+        $builder->leftJoin('eventos', 'cilindros_seguimiento.evento', '=', 'eventos.evento_id');
 
     });
   }

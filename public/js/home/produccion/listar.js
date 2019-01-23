@@ -161,6 +161,8 @@ var listar = {
       }
     },
     fnOnClick_btnAcciones: function fnOnClick_btnAcciones(e) {
+      var _this = this;
+
       var dataset = e.currentTarget.dataset;
       switch (dataset.accion) {
         case 'finalizar':
@@ -176,6 +178,18 @@ var listar = {
         case 'detalles':
           break;
         case 'eliminar':
+          msg.pregunta('Produccion', '¿Desea eliminar este elemento?', function (quest) {
+            if (quest) {
+              return axios.delete(base_url('api/produccion/' + dataset.id));
+            }
+          }).then(function (res) {
+            if (res.data) {
+              if (res.data.success) {
+                _this.dt_tbl_produccion.draw(false);
+                msg.success('Produccion', 'Elemento eliminado');
+              }
+            }
+          });
           break;
       }
     }
@@ -189,7 +203,7 @@ var listar = {
     // })
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     // this.producciones = res.data
     this.tbl_produccion = $('#tbl_produccion');
@@ -201,11 +215,11 @@ var listar = {
       ajax: {
         url: BASE_URL + '/home/produccion/datatable',
         data: function data(d) {
-          d.buscar = _this.filtros.query;
-          if (_this.filtros.success_date) {
-            d.filtro_date = _this.filtros.filtro_date;
-            d.desde = _this.filtros.fecha_desde;
-            d.hasta = _this.filtros.fecha_hasta;
+          d.buscar = _this2.filtros.query;
+          if (_this2.filtros.success_date) {
+            d.filtro_date = _this2.filtros.filtro_date;
+            d.desde = _this2.filtros.fecha_desde;
+            d.hasta = _this2.filtros.fecha_hasta;
           }
         }
       },
@@ -233,7 +247,12 @@ var listar = {
       columnDefs: [{
         targets: [8],
         className: 'text-center'
-      }]
+      }],
+      rowCallback: function rowCallback(row, data) {
+        if (data.eliminado == 1) {
+          row.classList.add('bg-danger');
+        }
+      }
     });
 
     this.tbl_produccion.on('click', '.btn-acciones', this.fnOnClick_btnAcciones);

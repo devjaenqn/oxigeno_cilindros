@@ -22,7 +22,11 @@ class Despacho extends Model
   }
 
 
-
+  
+  public function scopeSoloActivos ($query) {
+    return $query->where('eliminado', 0);
+  }
+  
   public function guia () {
     return $this->belongsTo('App\NegocioComprobantes', 'documento_id');
   }

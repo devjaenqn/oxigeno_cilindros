@@ -255,9 +255,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       columns: [{ data: 'salida' }, { data: 'guia_correlativo' }, { data: 'entrada' }, { data: 'recibo_correlativo' }, { data: 'ces_id', render: function render(d, t, r) {
           return '\n              \n            <button type="button" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default" data-entrada-salida-id="' + d + '"  data-id="' + r.cilindro_id + '" data-accion="retorno" title="Cambiar recibo"><i class="fa fa-refresh"></i> </button>\n            ';
         } }],
-      columnDefs: [
-        // {targets: [7], className: 'text-right'}
-      ]
+      columnDefs: [{ targets: [3], className: 'td-recibo' }],
+      rowCallback: function rowCallback(row, data) {
+        console.log(data);
+        if (data.recibo) {
+          if (data.recibo.eliminado == 1) {
+            console.log(row);
+            $(row).find('.td-recibo').addClass('bg-danger');
+          }
+        }
+        // if (data.eliminado == 1) {
+        //   row.classList.add('bg-danger')
+        // }
+      }
     }).on('draw', function () {
       var g = _this3.dt_tbl_seguimiento_cilindro.ajax.params();
       delete g.length;

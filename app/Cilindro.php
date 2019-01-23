@@ -77,9 +77,11 @@ class Cilindro extends Model
 
   public function getUltimoEventoApp ($saltar = 0) {
 
-    $ultimo = $this->getEventos()->whereIn('origen', ['app', 'forzado'])->orderBy('cis_id', 'desc');
+    $ultimo = $this->getEventos()->whereIn('origen', ['app', 'forzado'])
+      ->orderBy('orden', 'asc')
+      ->orderBy('fecha_detalle', 'asc');
     // $count = $this->getEventos()->count();
-
+    // dd($ultimo->get()->toArray());
     if ($saltar >= 0) {
       // if ($saltar <= $count) {
       $ultimo->offset($saltar)->limit(1);

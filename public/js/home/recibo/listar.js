@@ -157,11 +157,25 @@ var listar = {
       if (!norender) if (this.filtros.success_date) this.dt_tbl_recibo.draw();
     },
     fnOnClick_btnAcciones: function fnOnClick_btnAcciones(e) {
+      var _this = this;
+
       var dataset = e.currentTarget.dataset;
       switch (dataset.accion) {
         case 'detalles':
           break;
         case 'eliminar':
+          msg.pregunta('Recibo', '¿Desea eliminar este elemento?', function (quest) {
+            if (quest) {
+              return axios.delete(base_url('api/recibo/' + dataset.id));
+            }
+          }).then(function (res) {
+            if (res.data) {
+              if (res.data.success) {
+                _this.dt_tbl_recibo.draw(false);
+                msg.success('Recibo', 'Elemento eliminado');
+              }
+            }
+          });
           break;
         case 'confirmar':
           axios.put(BASE_URL + '/api/despacho/' + dataset.id, { metodo: 'confirmar_llegada' }).then(function (res) {
@@ -185,7 +199,7 @@ var listar = {
     // })
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     this.tbl_recibo = $('#tbl_recibo');
     this.dt_tbl_recibo = this.tbl_recibo.DataTable({
@@ -195,11 +209,11 @@ var listar = {
       ajax: {
         url: BASE_URL + '/home/despacho/datatable?m=recibo',
         data: function data(d) {
-          d.buscar = _this.filtros.query;
-          if (_this.filtros.success_date) {
-            d.filtro_date = _this.filtros.filtro_date;
-            d.desde = _this.filtros.fecha_desde;
-            d.hasta = _this.filtros.fecha_hasta;
+          d.buscar = _this2.filtros.query;
+          if (_this2.filtros.success_date) {
+            d.filtro_date = _this2.filtros.filtro_date;
+            d.desde = _this2.filtros.fecha_desde;
+            d.hasta = _this2.filtros.fecha_hasta;
           }
         }
       },
@@ -229,7 +243,12 @@ var listar = {
           // }
           return '\n                ' + confirma + '\n                <a href="' + (BASE_URL + '/home/recibo/' + d) + '" class="btn btn-sm btn-default btn-accion-table btn-acciones btn-acciones-default"  data-id="' + d + '" data-accion="detalles" title="Detalles"><i class="fa fa-eye"></i> </a>\n                <a href="' + (BASE_URL + '/home/recibo/' + d + '/edit') + '" class="btn btn-sm btn-default btn-accion-table btn-acciones"  data-id="' + d + '" data-accion="editar" title="Editar"><i class="fa fa-pencil"></i> </a>\n                <button class="btn btn-sm btn-default btn-accion-table btn-acciones" type="button" data-id="' + d + '" data-accion="eliminar" title="Eliminar"><i class="fa fa-trash"></i> </button>\n\n              ';
         } }],
-      columnDefs: [{ targets: [5], className: 'text-right' }, { targets: [4, 6], className: 'text-center' }]
+      columnDefs: [{ targets: [5], className: 'text-right' }, { targets: [4, 6], className: 'text-center' }],
+      rowCallback: function rowCallback(row, data) {
+        if (data.eliminado == 1) {
+          row.classList.add('bg-danger');
+        }
+      }
     });
 
     this.tbl_recibo.on('click', '.btn-acciones', this.fnOnClick_btnAcciones);

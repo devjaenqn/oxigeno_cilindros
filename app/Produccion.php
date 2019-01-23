@@ -24,6 +24,9 @@ class Produccion extends Model
     return $this->belongsTo('App\Operador', 'operador_id');
   }
 
+  public function scopeSoloActivos ($query) {
+    return $query->where('eliminado', 0);
+  }
   // public function scopeActivo ($query) {
   //   return $query->where('activo', 1);
   // }

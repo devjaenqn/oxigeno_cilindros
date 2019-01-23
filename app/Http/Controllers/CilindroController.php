@@ -549,6 +549,12 @@ class CilindroController extends Controller
                               $table .= '<a href="'.url('home/despacho/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
                             else if ($value->evento == 'vacio')
                               $table .= '<a href="'.url('home/recibo/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
+                            else if ($value->evento == 'eliminado_produccion')
+                              $table .= '<a href="'.url('home/produccion/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
+                            else if ($value->evento == 'eliminado_despacho')
+                              $table .= '<a href="'.url('home/despacho/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
+                            else if ($value->evento == 'eliminado_recibo')
+                              $table .= '<a href="'.url('home/recibo/'.$value->referencia_id).'">'.$value->referencia_id.'</a>';
                           } else {
                             $table .= $value->referencia_id;
                           }
@@ -730,6 +736,7 @@ class CilindroController extends Controller
               $data['cilindro'] = $cilindro;
               // DB::enableQueryLog();
               $evento = $cilindro->getUltimoEventoApp()->first();
+              // dd($evento);
               $data['evento'] = $evento;
               $situacion = [];
               $situacion['observacion'] = '';
