@@ -29,7 +29,20 @@
                       @if ($cilindro->situacion == 3)
                         <span class="badge badge-primary rounded-2">cliente</span>
                       @endif
-            
+                      
+                      @if ($cilindro->cargado == 0)
+                        <span class="badge badge-warning rounded-2">V</span>
+                      @endif
+                      
+                      @if ($cilindro->cargado == 1)
+                        <span class="badge badge-primary rounded-2">R</span>
+                      @endif
+                      
+                      @if ($cilindro->cargado == 2)
+                        <span class="badge badge-success rounded-2">C</span>
+                      @endif
+
+
                       @if ($cilindro->defectuoso)
                         <span class="badge badge-danger rounded-2">D</span>
                       @endif
