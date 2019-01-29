@@ -44,6 +44,7 @@ class Despacho extends Model
   public static function existe_numero ($documento, $numero) {
     $res = false;
     $find = self::where('doc_numero', '=', fill_zeros($numero))
+              ->where('eliminado', 0)
               ->where('documento_id', '=', $documento)
               ->get();
     foreach ($find as $value) {
