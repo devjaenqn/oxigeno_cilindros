@@ -73,6 +73,7 @@ class CilindroController extends Controller
             DB::enableQueryLog();
             $build = Cilindro::select()
                 ->where('defectuoso', Cilindro::getEstado('optimo'))
+                ->orderBy('serie', 'asc')
                 ->where(function ($query) {
                     $query->where('serie', 'like', '%'.request('q').'%')
                         ->orWhere('codigo', 'like', '%'.request('q').'%');

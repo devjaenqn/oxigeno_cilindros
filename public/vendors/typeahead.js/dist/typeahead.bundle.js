@@ -1580,7 +1580,8 @@
             www.mixin(this);
             this.highlight = !!o.highlight;
             this.name = o.name || nameGenerator();
-            this.limit = o.limit || 5;
+            // this.limit = o.limit || 5;
+            this.limit = o.limit || 10;
             this.displayFn = getDisplayFn(o.display || o.displayKey);
             this.templates = getTemplates(o.templates, this.displayFn);
             this.source = o.source.__ttAdapter ? o.source.__ttAdapter() : o.source;
@@ -1717,10 +1718,13 @@
                     }
                 }
                 function async(suggestions) {
+                    //MODIFICADO
                     suggestions = suggestions || [];
                     if (!canceled && rendered < that.limit) {
                         that.cancel = $.noop;
                         rendered += suggestions.length;
+                        // console.log(rendered)
+                        // console.log(that.limit)
                         that._append(query, suggestions.slice(0, rendered > that.limit ?  that.limit - rendered : (rendered == that.limit ? that.limit :  rendered)));
                         that.async && that.trigger("asyncReceived", query);
                     }
