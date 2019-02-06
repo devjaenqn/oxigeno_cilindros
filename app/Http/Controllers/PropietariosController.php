@@ -63,12 +63,14 @@ class PropietariosController extends Controller
         CONCAT(comprobantes_negocio.cne_attr,\'-\',despacho.doc_serie,\'-\', despacho.doc_numero) as documento_correlativo,
         despacho.fecha_emision,
         entidades_locacion.locacion as destino_guia,
-        despacho.des_id'
+        despacho.des_id,
+        ent_cil.nombre as nombre_propietario'
         )
         ->join('despacho', 'despacho.des_id', 'cilindros_entrada_salida.guia_id')
         ->join('entidades_locacion', 'entidades_locacion.elo_id', 'despacho.destino_id')
         ->join('comprobantes_negocio', 'comprobantes_negocio.cne_id', 'despacho.documento_id')
         ->join('cilindros', 'cilindros.cil_id', 'cilindros_entrada_salida.cilindro_id')
+        ->join(DB::raw('entidades ent_cil'), 'ent_cil.ent_id', 'cilindros.propietario_id')
         ->where('despacho.entidad_id', $request->entidad_id_val)
         ->where('completado', '0');
     // $all = Propietarios::select(

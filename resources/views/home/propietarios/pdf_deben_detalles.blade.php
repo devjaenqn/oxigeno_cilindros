@@ -36,10 +36,11 @@
 <table class="table table-bordered table-inverse table-hover  table-minimal" >
   <thead>
     <tr>
-      <th width="80">CILINDRO</th>
-      <th width="100">GUIA</th>
-      <th width="80">DESDE</th>
-      <th width="150">OBSERVACIÓN</th>
+      <th width="30">CILINDRO</th>
+      <th width="70">GUIA</th>
+      <th width="130">PROPIETARIO</th>
+      <th width="30">DESDE</th>
+      <th width="130">OBSERVACIÓN</th>
     </tr>
   </thead>
   <tbody>
@@ -47,6 +48,7 @@
       <tr>
         <td>{{ $item['cilindro_codigo'] }}</td>
         <td>{{ $item['documento_correlativo'] }}</td>
+        <td>{{ str_limit($item['nombre_propietario'], 30) }}</td>
         <td>{{ $item['fecha_emision'] }}</td>
         <td>{{ $item['destino_guia'] }}</td>
       </tr>
