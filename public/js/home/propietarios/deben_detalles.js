@@ -1981,6 +1981,7 @@ new Vue({
       dom: '<"table-responsive"t>p',
       pageLength: 10,
       processing: true,
+      order: [[3, 'asc']],
       ajax: {
         url: BASE_URL + '/home/propietarios/datatable_deben_detalles?entidad_id_val=' + ENTIDAD_ID,
         data: function data(d) {

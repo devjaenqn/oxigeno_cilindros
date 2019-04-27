@@ -338,7 +338,6 @@ class CilindroController extends Controller
               } else {
                 return $item->guia_correlativo;
               }
-
             });
             $mm = $mm->make(true);
             // dd($request);
