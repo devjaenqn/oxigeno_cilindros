@@ -135,6 +135,13 @@ class PropietariosController extends Controller
             });
     return $make->make(true);
   }
+
+  
+  /**
+   * [deben_detalles description]
+   * URL: home/propietarios/deben/{entidad_id}
+   * @return  [type]  [return description]
+   */
   public function deben_detalles (Request $request, $entidad_id) {
     $propietario = Propietarios::find($entidad_id);
     $negocios = Negocio::all();

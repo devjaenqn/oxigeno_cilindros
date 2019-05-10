@@ -1915,17 +1915,41 @@ new Vue({
       numero_doc: 0,
       procesa: false,
       entrada_salida_id: 0,
-      recibo_id: 0
+      recibo_id: 0,
+      timeoutfiltertext: null,
+      filtros: {
+        query: ''
+        // fecha_desde: localvalues.getVal('despacho_filter_fecha_desde', moment().format('YYYY-MM-DD')),
+        // fecha_hasta: localvalues.getVal('despacho_filter_fecha_hasta', moment().format('YYYY-MM-DD')),
+        // fecha_desde: moment().format('YYYY-MM-DD'),
+        // fecha_hasta: moment().format('YYYY-MM-DD'),
+        // success_date: true,
+        // filtro_date: 'same'
+      }
     });
   },
 
+  watch: {
+    'filtros.query': function filtrosQuery(nv) {
+      var _this = this;
+
+      clearTimeout(this.timeoutfiltertext);
+      this.timeoutfiltertext = setTimeout(function () {
+        _this.dt_tbl_datatable.draw();
+      }, 200);
+    }
+  },
   methods: _extends({}, metodosColorCilindro, {
     btnOnClick_btnCancelar: function btnOnClick_btnCancelar() {
       console.log('cancelar');
     },
-    frmOnSubmit_frmAplicarFiltro: function frmOnSubmit_frmAplicarFiltro() {},
+    frmOnSubmit_frmAplicarFiltro: function frmOnSubmit_frmAplicarFiltro() {
+      console.log(this.filtros.query);
+      document.getElementById('txt_buscar').select();
+      // this.dt_tbl_datatable.draw()
+    },
     fnOnSubmit_regRecibo: function fnOnSubmit_regRecibo() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.procesa) {
         var frmData = new FormData();
@@ -1940,13 +1964,13 @@ new Vue({
         axios.post(base_url('api/recibo/registrar-cilindro'), frmData).then(function (res) {
           if (res.data.success) {
             $('#model_retorno').modal('hide');
-            _this.dt_tbl_datatable.draw();
+            _this2.dt_tbl_datatable.draw();
           }
         });
       }
     },
     fnOnSubmit_verificar: function fnOnSubmit_verificar() {
-      var _this2 = this;
+      var _this3 = this;
 
       var frmData = new FormData();
 
@@ -1957,14 +1981,14 @@ new Vue({
 
       axios.post(base_url('api/recibo/verificar-cilindro'), frmData).then(function (res) {
         if (res.data.success) {
-          _this2.procesa = true;
-          _this2.recibo_id = res.data.recibo_id;
+          _this3.procesa = true;
+          _this3.recibo_id = res.data.recibo_id;
         }
       });
     }
   }),
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     this.tbl_datatable = $('#tbl_datatable');
     this.dt_tbl_datatable = this.tbl_datatable.DataTable({
@@ -1981,10 +2005,11 @@ new Vue({
       dom: '<"table-responsive"t>p',
       pageLength: 10,
       processing: true,
-      order: [[3, 'asc']],
+      order: [[3, 'asc'], [2, 'asc'], [0, 'asc']],
       ajax: {
         url: BASE_URL + '/home/propietarios/datatable_deben_detalles?entidad_id_val=' + ENTIDAD_ID,
         data: function data(d) {
+          d.buscar = _this4.filtros.query;
           // d.buscar = _this3.filtros.query;
           // if (_this3.filtros.success_date) {
           //   d.filtro_date = _this3.filtros.filtro_date;
@@ -1997,9 +2022,9 @@ new Vue({
       columns: [{ data: 'cilindro_codigo', render: function render(d, t, r) {
           return '\n            <span><a href="' + (BASE_URL + '/home/cilindro/' + r.cilindro_id) + '" class="" >' + d + '</a></span>\n          ';
         } }, { data: 'cilindro_situacion', render: function render(d, t, r) {
-          var cargado = _this3.getCargado(r.cilindro_cargado);
+          var cargado = _this4.getCargado(r.cilindro_cargado);
 
-          var span = '<span class="badge badge-' + _this3.getSituacion(d).color + ' rounded-2">' + _this3.getSituacion(d).name + '</span>\n                      <span class="badge badge-' + cargado.color + ' rounded-2">' + cargado.attr + '</span>\n                      ';
+          var span = '<span class="badge badge-' + _this4.getSituacion(d).color + ' rounded-2">' + _this4.getSituacion(d).name + '</span>\n                      <span class="badge badge-' + cargado.color + ' rounded-2">' + cargado.attr + '</span>\n                      ';
           if (r.cilindro_defectuoso == 1) span += '<span class="badge badge-danger rounded-2">D</span>';
           if (r.cilindro_evento == 'create') span += '<span class="badge badge-info rounded-2">new</span>';
           return span;
@@ -2013,17 +2038,17 @@ new Vue({
       //   className: 'text-right'
       // }]
     }).on('draw', function () {
-      var g = _this3.dt_tbl_datatable.ajax.params();
+      var g = _this4.dt_tbl_datatable.ajax.params();
       delete g.length;
       delete g.start;
-      _this3.print_url = BASE_URL + '/home/propietarios/datatable_deben_detalles?entidad_id_val=' + ENTIDAD_ID + '&' + $.param(g) + '&export=pdf';
+      _this4.print_url = BASE_URL + '/home/propietarios/datatable_deben_detalles?entidad_id_val=' + ENTIDAD_ID + '&' + $.param(g) + '&export=pdf';
     }).on('click', '.btn-acciones[data-accion="retorno"]', function (e) {
       e.preventDefault();
       var cilindro_id = e.currentTarget.dataset.id;
       $('#model_retorno').modal('show');
-      _this3.cilindro = cilindro_id;
-      _this3.entrada_salida_id = e.currentTarget.dataset.entradaSalidaId;
-      _this3.procesa = false;
+      _this4.cilindro = cilindro_id;
+      _this4.entrada_salida_id = e.currentTarget.dataset.entradaSalidaId;
+      _this4.procesa = false;
     });
 
     // $('#tbl_datatable').on('click', '.btn-acciones', this.fnOnClick_btnAcciones);

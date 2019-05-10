@@ -25,9 +25,9 @@
 
                 <div class="col-sm-8">
                   <div class="form-group row">
-                    <!-- <label class="col-md-3 col-form-label" for="text-input">Text Input</label> -->
+                    <!-- <label class="col-md-3 col-form-label" for="txt_buscar">Text Input</label> -->
                     <div class="col-md-24">
-                      <input class="form-control" id="text-input" type="text" name="text-input" placeholder="Ingrese código cilindro">
+                      <input class="form-control" id="txt_buscar" type="text" name="txt_buscar" v-model="filtros.query" placeholder="Ingrese código cilindro">
                     </div>
                   </div>
                 </div>

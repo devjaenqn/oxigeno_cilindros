@@ -48,13 +48,7 @@ class CilindroController extends Controller
                                     }
                                     $query->whereIn('situacion', $custom['situacion']);
 
-
-
                                 }
-
-
-
-
                             })
                             ->make(true);
                     // return datatables()->of(CilindroResource::collection($xx))->toJson();
